@@ -1,0 +1,186 @@
+Mysql(W3SChool)
+
+Installation and integration with VS code: (need to Do)
+
+-- install the onprem Mysql server/Installing the mysql installer.
+-- intergrate with VSCode or Workbench or dbeaver.
+
+Core Mysql Concepts: (started)
+
+Basic:
+-- MySQL is own by Oracle. Developed in 1995. It is a reliable, scalable and open-source RDMS(Relational Database management system).
+-- MySQL and Oracle both are under Oracle, Mysql basically is a free and open-source while oracle is for commercial and paid. Mysql is more customizable.
+-- uses: Store data in Web-dev-projects.
+-- Web-dev requirement: RDMS(eg: Mysql), server-side scripting language(Nodejs or PHP), show content using HTML and CSS.
+
+RDMS
+-- It is used to maintain Relational database. Baiscally data is stored in a a table format, and all this tables realted to each others.
+-- RDMS eg: Mysql, MSSQL, Oracle, Microsoft Access.
+-- SQL -> Structured Query language uses to Access this database and manage data in these tables.( CRUD operations: Create, Read, Update and Delete)
+
+Notes:
+-- Sql keywords are case-sensitive. eg: select and SELECT is same thing.
+-- The Result of select is stored in a result table called result-set.
+-- select distinct returns unique values of the result-set table.
+
+-- where clause, filters the record of the result-set based on a condition.
+-- NOTE: Where clause can be used not only with select but with update and delete also.
+-- SQL requires single quote around Text values eg: 'Berlin' and numbers can be written as it is eg: 25
+-- operators supported by sql: =, >, <, >=, =<, <> or !=, Between, like, In.
+-- Note: 
+eg of Between clause: where price between 18 and 22;
+eg of Like clause: where productName like 'ch%';    Note:it will try to match the pattern.
+eg of in clause: where city in ('Berlin', 'London'); Note: It provides multiple options to filter the from.
+
+Mysql where clause Opertors
+-- And: Where country = 'Germany' and City = 'Berlin';
+-- OR: Where coutry = 'Germany' Or Country = 'Spain';
+-- Not: Where not country = 'Germany';
+
+Note: All this Operators can be combined together as per requirement.
+
+-- Order by -- this sorts the result-set into ascending or descending order. Default is asc, for Desc you have to mention it.
+-- Note: There can be multiple columns in order by.
+eg: order by country, city;  
+This means first it will sort by country then for those rows with same country it will order it by city.
+-- NOTE: Anywhere you can specify the order of sorting using ASC or DESC. eg: order by country asc, city desc; Means: sort country by asc then for rows with same country sort city by desc.
+
+MySQL Insert
+-- Command: Insert into table_name (column1, column2, ...) values (value1, value2, ...);
+-- this will insert one row in the specified table.
+NOTE: 
+-- Specifying column name is optional, If we are inserting an entire row in the specified table.
+-- If a column is auto-increment then no-need to insert that column vlaue while inserting the data in the table.
+-- Also you can chain the values to be inserted into the table. eg: insert into dummy values(value1, value2,...),(value1, value2,...); This will insert 2 rows into the table at once.
+
+Null Value in SQL
+-- Baiscally that field has no value. If a  field is optional in the table, then when no value is given while inserting that field will be saved as null value.
+NOTE: *Fetch Null Value from the table*
+-- we cannot use noraml operator like '=' to search for records with null value.
+-- we have to use special operator like 'is null' or 'is not null'
+eg: where city is null; this will fetch records where the city value is null.
+
+MySQL Update
+-- command: Update table_name set col1 = val1, col2 = val2 ... where condition.
+-- NOTE: Where clause decide which rows to update. If not mentioned all records of the table will be updated.
+
+MySQL Delete
+-- command: Delete from table_name where condition;
+-- NOTE: Where caluse decide which rows to delete; If not mentioned then all records will be deleted.
+
+Mysql Some important keywod and functions:
+**Limit: 
+-- select * from customer limit 2; 
+-- This Limits the number of record in the result-set table.
+** Min() --> Minimum value from the column.
+** Max() --> Max Value from the column.
+** count() --> Number of rows. ((NOTE: Null values wont be counted.))
+** Avg() --> average of the column. ((NOTE: Null Values will be ignored))
+** sum() --> Sum of the selected columns. ((NOTE: Null Values will be ignored))
+** concat_ws(',', col1,col2,...) --> It will concat all the mentioned columns with the mentioned seperator.
+** concat(col1, col2,...) --> It will just concat the mentioned columns.
+
+Mysql Like Operator
+-- Search for a pattern. eg: where column like pattern;
+-- Wildcards used with like: %(means zero, one or multiple chars) OR _(means one or single char).
+eg of patterns: 
+a__% (means starts with a and have atleast 3 chars length), 
+a%o (means starts with a but ends with o)
+
+Mysql IN Operator: where column IN ('val1', 'val2'); OR where column in (select col from table);
+--NOTE: Negation of the above: where column not in ('val1', 'val2');
+
+Mysql between: where col between val1 and val2;
+NOTE: val can be any range, it can number, text or date. Basically it will return rows based on the range given.
+
+Mysql Aliases: 
+-- it is used to give temporary name to a column or table. Alias creating needs a keyword called 'as'.
+-- NOTE: If the Alias name contains spaces, We need to put the Alias name inside '...' or "..."
+-- NOTE: Table Aliases are also used to make the query shorter.
+When to use Alias for tables and columns:
+-- while handling multiple tables.
+-- functions are used in the tables.
+-- columns are combined together or having bigger name.
+
+Mysql Joins (**Very Very Important**)
+
+-- Baically combine the rows from two or more table based on some related comlumns between them.
+-- If we are using Joins, Any condition on top of joins should be written using ON clause.
+eg: from orders o inner join customer c on c.id = o.id;
+
+**Supported Joins:  (eg: Table1 T1 and Table2 T2 consider)
+Natural Join
+-- It Return all the common Records from T1 and T2. 
+NOTE: No need to specify the matching column name, It will take the matching column by itself and give intersected Rows.
+
+Inner Join
+-- Return all the records that have matching values in both the tables. (Intersection of T1 and T2)
+-- eg for reference:
+SELECT c.CustomerId, CustomerName, Country, OrderID, ShipperName FROM Customers c
+inner join Orders o on c.CustomerId = o.CustomerId
+inner join Shippers s on o.ShipperId = s.ShipperId;
+
+Left Join
+-- Return all the records from the left table and the matched record from the right table. (T1 + Intersection of T1 and T2)
+-- eg for refernece:
+select c.customerName, o.orderID
+from Customers c
+left join Orders o on c.customerID = o.customerID
+
+NOTE: It will show all customerNames who have placed orders with orderID, also it will show rows with empty orderId meaans there are customers who haven't placed any orders yet.
+
+right Join
+-- Return all the records from the right table and the matched record from the left table. (T2 + Intersection of T1 and T2)
+-- eg for reference:
+select orderID, e.EmployeeId, firstName 
+from Orders o 
+right join Employees e on o.EmployeeID = e.EmployeeID;
+
+cross Join
+-- Return all records from both the tables. (T1 + T2)
+-- It returns very large data-set.
+-- It returns the entries from t1 + intersection of t1 and t2 + entries from t2;
+
+Self Join
+-- Here the table name is written two times with two different alieas names.
+-- eg: Display Two customers from the same city
+select c1.CustomerName as firstCustomer,c2.CustomerName as secondCustomer , c1.City 
+from Customers c1, Customers c2
+where c1.CustomerId != c2.CustomerId
+and c1.City = c2.City
+order by c1.City;
+
+
+Mysql Union and Union All --> Both will combine the result-set of two select queries.
+NOTE: Both the result-set must have same no.of column and in the same order from left to right. then only it will work.
+
+-- Union: This will combine unique elements.
+eg: select city from Customers
+union
+select city from Suppliers
+order by city;
+NOTE: No duplicates here.
+
+-- Union ALL: This will combine with duplicates.
+eg: select city from Customers
+union all
+select city from Suppliers
+order by city;
+Note: This will have duplicates.
+
+NOTE: In the below example, All the rows will have a column that called Type and it will have the value as Customers.
+eg: SELECT 'Customer' AS Type, ContactName, City, Country
+FROM Customers;
+
+
+
+
+
+
+
+
+
+
+Advance Mysql Concepts: (need to do)
+
+-- We need to do research on what advance topics we need to know. (Max 1 or 2 should be enough)

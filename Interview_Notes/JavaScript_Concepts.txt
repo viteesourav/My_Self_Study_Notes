@@ -1,0 +1,277 @@
+***NOTES On Important Interview concepts For JS***
+
+-- Js came out around 1995. By - Brendan Eich
+-- Js is OOPs compliant and Works on Both Client and server side. Server-Side Js is called Node JS
+
+**Basic Knowledge on JS**
+
+Data Types ?
+* Primitive: String, Number, BigInt, Boolean, undefined, null and symbol.
+NOTE:
+    -- 3 or 3.5 both are handled by Number type.
+    -- BigInt can hold huge number eg: let c = 3453656n; It ends with n suffix.
+    -- undefined: Value declared but not assigned.
+    -- null: Doesnot exist.
+    -- Symbol: newly added in ES6 of JS. stores anonymous and unique values. eg: let s = symbol('hi');
+* Non-Primitive: Arrays and Objects.
+
+Hoisting ? 
+-- variable and function Declaration moves to the top of the scope. Scope can be both local and global
+-- This behavior is strictly for declaration only. Intializing won't be hoisted. **Imp**
+-- Its JS default's Behaviour and can be stopped by adding this at the top "use strict".
+
+== vs === ?
+-- == will just check the value. Interanlly It converts both them to String and then checkes the value.
+-- === will check both typeOf and the value.
+
+var Vs let ?
+-- let came around 2015. Let is block Scoped i.e let can be accessed anywhere between '{' ans '}'
+-- Var is function scoped. var can be accessed anywhere inside a function.
+Note: 
+var vs Let vs Const ?
+-- Two Scopes: 
+   1) Block Scope eg: scope of if..else 
+   2) function Scope eg: funct() {...}
+-- Var is bounded by the scope of the function. Let and const are blocked scoped.
+Within a given scope:
+-- Redeclaration of var is allowed but for let and const not allowed. 
+-- Var is hoisted with undefined. But let and const hoisted with no Intialization.(throw error).
+
+implicit type coercion ?
+-- Automatic Conversion of Value from one data Type to another.(while using +,-, ||, && or ==).
+-- '+' convert both operands to String and then concat them.
+-- '-' convert both operands to Number and then subtract them. 
+-- '==' converts both sides to same type i.e string before comparing.
+NOTE: Boolean Coercion:
+-- Falsy: null, 0, 0n, -0, undefined, false, "" and NaN are falsey. REst are all are truthy. (**Imp**).
+Logical Operator Working ? 
+-- Returns one of the operand.
+1) OR Operator: a||b
+    -- if a truth --> returns a, otherwise always b is returned.
+2) And Operator: a && b
+    -- If a and b both are truty, then b is returned else whichever is false is returned.
+
+JS is static or Dynamic ?
+-- JS is dynamic. type of variable is checked during run-time not compile time.
+-- eg: let x =5; x= 'Sourav'; (Valid case for Dynamic language)
+
+ NaN ?
+ -- NaN -> Not a Number.
+ -- type is Number. It falls under special. eg: 0/0 gives NaN.
+ -- isNaN() -> checks if a number is NaN. It converts the arg to Number and then compares with NaN.
+ -- eg: isNaN('anyString') --> true, isNaN(undefined) --> true,  isNaN(45) --> false, isNaN(true) --> false.
+
+ pass by Value Or pass by Reference ?
+ -- Premitive data-types are passed by value.
+ eg: let x=5; let y=x; here, y points to a new location that copy's the value of x and put there. Changing x value wont effect y.
+ -- Non-premitive data-types are passed by Reference.
+ eg: let obj = {one:"1", two: "2"}; let obj1 = obj; here, obj1 is pointing at a refernce to obj. so Any change in Obj will be reflected in obj1.
+
+ Immediatly invoked Functions (IIFE or pronounced as IIFY) ?
+ -- function that runs as soon as it is declared.
+ -- Syntax: (function () {console.log('Hoola');})();
+ NOTE:
+ -- The First set of () around the function tells it is not a function defination, it is a fucntion expression. 
+ -- Without this bracket, it would throw error asking for function name not present.
+ -- The second set of () executes the function immediately. else it just returns a defination.
+
+NOTE: 
+About EcmaScript ?
+-- It is a standard for JS, and how it should be used. Js became ES standard in 1997 i.e ES1
+-- Each Release of ES addes and standarise some new features of JS.
+NOTE: ***Important Developements in ES***
+-- ES5 --> strict mode is introduced.
+-- ES6(2015) --> added let and const, Array.find() and Array.findIndex().
+-- NOTE:
+   -- All modern Browser fully supports ES6 standards.
+-- After 2015, we have ECMAScript 2015 - ECMAScript 2020 (**latest**)
+
+use Strict ? What and Why we use ?
+-- It runs the JS in strict mode. Introduced in ES5.
+-- "use Strict" --> add this line at the starting to enable strict mode.
+-- features of Strict Mode JS:
+   1) Duplicated declaration not allowed.
+   2) cannot use JS keyword in funct name or param.
+   3) Hoisting is not allowed i.e Intializing variable not allowed before defining it.
+
+Higher Ordered Functions ?
+-- Functions taking another funtions as parms or returning another function are called higher ordered function.
+-- All Callback functions are higher order functions. eg: forEach,map,filter,reduce. 
+-- Two Ways: 
+1) Function as an input: eg: 
+
+const eatFun = (foodFun) =>{
+    foodFun();
+    console.log('Function Digested !!');
+}
+
+eatFun(function(){
+    console.log('Shit! I am going to be eaten');
+});
+
+2) returns a Function: eg:
+
+const spitFun = ()=> {
+    let a = 5;
+    return function() {
+        console.log(`So i am been spitted out with ${a}`);
+    }
+}
+
+const newFun = spitFun();
+newFun();
+
+"this" keyword explain ?
+-- "this" points to the object, the current function is a property of.
+-- simply put, this is used to access the current object.
+Note: The Catch here is, this behaves differntly under normal funtion and arrow function.
+1) Noraml Function: "this" sees who is executing that function, it points to that.
+2) Arraow functions: "this" sees where the fun is created. OR we can put like it looks for function keyword above it.
+ -- If it finds that whoever executing that this points to the same.
+ -- If not, It points to the global Object. In browser we have windows object.
+
+eg: 
+const testObj = {
+    key1: "first key",
+    key2: "second Key",
+    fun1: function() {
+        console.log(this);   //"function" keyword is used, so this points to current Obj.
+        console.log('fun1 is executing !');
+    },
+    fun2: ()=>{
+        console.log(this);  //no "function" is used, so this points to global.
+        console.log('fun2 is executing !');
+    },
+    fun3: function() {
+        setTimeout(()=>{
+            console.log(this); //no function is used, but it is created inside a fun with "Function" keyword, so point to current Obj.
+            console.log('fun3 is executing !');
+        },3000);
+    },
+    fun4: function() {
+        setTimeout(function () {
+            console.log(this);   //"function" is used, so who is executing setTimeOut ? thus, this points to global Obj.
+            console.log('fun4 is executing !');
+        },3000);
+    }
+}
+
+Tag LINE: Never use "this" and arrow function together !!! **Important**
+
+Self Invoking Function ?
+-- functions invokes themselves automatically without calling them.
+-- eg: immediately invoked Function i.e IIFY.
+
+NOTE: What are rest param ?
+-- noraml fucntions have params syntax eg: ...msg
+-- Means no matter how many arguments you pass in the function during call time, all are pushed in an array called msg.
+eg: const example = function(...msg) {
+    console.log(msg);  //msg -> ['sourav', 45, 'hi']
+}
+example('sourav', 45, 'hi');
+
+call(), apply() and bind() ? What and Why ?
+-- All are methods for functions.
+1) call() 
+  -- it invokes function taking obj as a param. syntax: funName.call(obj);
+  -- use: 
+  1) When function is not a part of obj but it want to access the obj params.
+  2) Obj can access functions of another Obj.
+  eg: obj.sayHi.call(newObj, 'BeautifulDay')
+  Note: obj and newObj are different obj. obj has sayHi fun but newObj dont.
+  3) it takes param also, first obj and then any params you pass.(**Implementation of REST Param, i.e ...argv --> takes all the passed argv in the list)
+eg: 
+const add = function (msg) {
+    console.log(`Hello amigoo ${this.name} and msg: ${msg}`);
+}
+let obj = {name: "sourav"};
+add.call(obj, "call function done")
+
+2) apply()
+  -- similar as call() method.
+  -- Difference: It takes arguments as an array.
+eg: oldObj.fun.apply(newObj, ["sayThisMsg"]);
+
+3) bind()
+  -- returns a new function, where this belongs to the obj which is passed in the param.
+  -- "this" keyword in function will point to the newly passed param Obj.
+  -- bind() wont execute immediately unlike call and apply. It will wait untill the new function is called.
+eg:
+const newFun = oldObj.fun.bind(newObj, 'someMsg');
+newFun();
+
+Why we needed bind ?
+1) To manage the scope of 'this' when handling with callbacks.
+-- you have one myObj, with method sayHello() {console.log(this)};  Here this point to myObj.
+-- now you took refernece to this method: const newFun = myObj.sayHello;
+-- When you pass newFun to any callback, 'this' points to global scope thus a problem.
+-- solution: bind the method with obj before passing. const newFun = sayHello.bind(myObj); Thus the 'this' still points to myObj.
+
+2) To Borrow fun from other methods.
+-- you have obj1 with fly() and obj2 with run().
+-- If you want obj2 also to have run() eg: const newFly = obj1.fly.bind(obj2); newFly();
+
+exec() vs test()
+-- Both are RegExp methods in JS.
+exec() -> Test against the match. Returns the index of First matched char. If not matched return null.
+test() -> Test against the match. Return boolean. True/False. 
+eg: text = 'sourav is good'; 
+const res = /good/.exec(text);  //['good', index: 10] NOTE: Index of the first character matching.
+const res = /good/.test(text);  //return true.
+
+Currying in JS ?
+-- advanced tech to convert functions with n params to n functions with one or more param.
+-- basically Converts fun(a,b) to fun(a)(b);
+-- Functionality Remain same but the way it's invoke is different.
+eg: Modifying noraml sum function into currySum:
+const currySum = function(a) {
+    return function(b) {
+        return a+b;
+    }
+}
+currySum(5)(4);  //returns 9.
+    
+SCope and Scope chains ? 
+
+-- Role of scope: DEfines boundaries for variables and functions.
+-- 3 types: 
+1) Global  --> accessable to all functions. 
+2) local or Function Scope --> local to the function where it is defined.
+3) block Scope -> variable defined with { and } brases.
+
+SCope Chaining: (***Very important***)
+-- JS engine Follow a method to find the variable, not declared in the scope.
+-- If x used in nested function, but not declared.
+then, It will look for x in parent function. If not found
+then, it will go to global scope to find the declaration for the variable x.
+If still not found in the global scope, It throws refernce error, means it not able to identify x.
+
+closure in JS ? (***V.IMP***)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

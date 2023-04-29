@@ -1,0 +1,103 @@
+***Important Interview Oriented nodeJS Topics****
+
+nodeJS: 
+-- JS is made availble to port into literally any modern machine that exists and runs as a standalone application.
+-- Node JS is written in c++; Famouns and widely accepted backed framework i.e server-side.
+
+Basic Node JS
+
+first class functions in JS ?
+-- When functions are treated like variables, those fun are called first class function.
+-- Functions can be passed to other function as params. i.e callbacks eg: function(callback);
+-- Functions can be return another functions i.e higher Ordered function eg: .map() and .filter();
+
+NodeJS and Working ?
+-- A virtual machine that uses JS as its scripting langugage.
+-- Node Js is based on an event driven architecture, I/O runs asynchronously. Light-weight and efficient.
+-- used to develop desktop applications eg: electron
+-- provides API access to OS-level features like File System and network. 
+
+NOde JS package managers ?
+-- npm or yarn manages and provide all libs with controlling env specific features.
+-- It uses package.json and package-lock.json, Thus porting the app to another machine is no problem.
+
+Advantages of Node Js over other frameworks ?
+1) Its non-blocking I/O and even-based model result in short response Time and concurrent processing, unlike other framework where we need to thread management.
+-- BAsically, faster response and concurrency > thread management(Other Framework). --Reason 1
+2) runs on chrome's V8 Engine written in c++, makes it out shine with contant improvements. 
+3) Enables JS as a server-side language along with its front-end capability. Overall Full-stack in JS. **Overpowering**  --Reason 2
+4) Tones of open source libs available to work with. -- Reason 3.
+
+NOTE: Reasons marked as why node JS and any other framework !!
+
+"Control Flow" controls the function Stack ? is it ? How ? OR Basically how node JS function stack works ?
+-- Steps: 
+1) controls the order of Execution
+2) Collect Data
+3) Limit concurrency
+4) call the following step in programming.
+
+Timing functions availble in Node JS ?
+1) setTimeout -- Delay the code for specified millisecond. **Frq used**
+2) setInterval -- Set an Interval and execute the code after the specifed intervals. Usual returns a Interval ID.
+ --clearInteral -- accept the interval Id and stops the interaval.
+3) setImmediate -- function passed acts as a callback for the next iteration of the event loop. **Need to look into**
+4) process.nextTick -- same as setImmediate, Choice between the two depends upon nature of callback urgency.
+
+**Important**
+What are Event Loops in Node JS ? 
+-- It allows NodeJS to perfrom non-Blocking I/O operations, inspite JS is a single threaded language.
+-- It offloads operations to the System Kernel whenever possible. Thus, Makes the whole req,res cycle smooth.
+-- Why Kernel ? Kernel are multi-threaded thus they can handle multiple Operations in background.
+-- Event Loop cycle Overview:
+   timmers --> pending callbacks --> idle, prepare --> poll --> check --> close callback -- (back to timmers)
+NOTE:
+    timmers --> takes care of timmer functions.
+    pending callbacks --> takes care of i/o callbacks moves to the next loop iteration.
+    idle, preapre -> used internally.
+    poll --> handles almost all i/o callbacks.
+    check --> setImmediate callbacks will come here.
+    close callback --> executes close callbacks. eg: socket.on('close', ...);
+
+EXplain Non-Blocking I/O Of JS ? 
+-- Js runtime can do only one thing at a time.
+-- Browser gives more power to JS by giving windows global objects, fetch, setTimeout and other features.
+-- SetTimeout pushes the callback fun into the call stack waiting to get executed.
+-- Eventloop pushes the tasks from taskQueue/CallbackQueue to callStack where it can execute. **Important**
+-- Basically, 
+   Js will go from top to bottom and put funct in the call stack. Whenever it encounters any web-APi like fetch or setTimeout.
+   It pushes that to web-API where it will wait till executed. Once done, it puts in to the taskQueue OR CallbackQueue.
+   Then Event Loop pulls it from CallbackQueue and place it in callStack.
+   Hence, Non-blocking feature of JS.
+
+Why Promises and not callbacks ?
+-- If we have multiple synchronous calls then using callbacks approack leads to nesting of callbacks.
+-- Popularly known as "callback hell".
+-- Promises flatten the structure using .then() and .catch(), which can be be easy to understand.
+-- Futher more, async functions(functs returning promises) and await can make the entire things short and way way less complicated and flat it furtherMore.
+
+fork in NodeJS ?
+-- create a new child processes.
+-- create another instance of v8 engine to have multiple workers to execute the code.
+
+create a server using http ?
+-- pretty much old, we have better packages like express comes with build in middleware and error-handlers we can use.
+-- using http, eg:
+let http = require('http');
+http.createServer((req,res)=>{
+    res.writeHead(200, {'Content-Type': 'text/plain'});
+    res.end('Hello World\n');
+}).listen(8080);
+
+Types of API function Availble with Node JS ?
+Two Types:
+1) Async Functions: This are web-Apis and Rest Apis and timmers. 
+2) Sync Functions: This are noraml Sync functions running.
+
+async.queue Arguments ?
+-- It takes the task functios and Conccurrency Value. 
+
+Module.exports Why it is needed ?
+-- Improves the Overall structure of the code.
+-- All the methods can be encapsulated using module.exports.
+-- can be used elsewhere in the project just by using the keyword require('./path');

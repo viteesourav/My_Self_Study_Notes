@@ -1,0 +1,651 @@
+Notes Or Some Important points:
+
+*****Phase - I Of DSA Concepts and Notes*****
+
+Note: This practise am starting after lec 8 and onwards, before that go through the notes and add imp here...
+
+Reason for using namespace std ?
+-- Here std is used in front of cin and cout along with scope resolution operator, 
+-- which indicates that the object cin and cout are defined inside the namespace whose name is std. 
+-- The std is the standard library, and both cin and cout are defined inside this scope.
+
+-- bool type of function, return 0 means false and 1 means true.
+-- One way to find out if num is odd or even, num&1 if true odd else even. (Bitwise And)
+-- In Switch statements, you can just switch an int or char that's all.
+-- In an array initialization,
+   int arr[5] = {0} -> Initize all values to zero.
+   int arr[5] = {1} --> {1, 0, 0, 0, 0} only first value will be non-zero, rest will be zero.
+   int arr[5]; std::fill_n(arr, 5, 1); --> it will Initize all values with 1, Any non-zero value you can Initize the array with.
+-- why function handling arr expect size ?
+   Because we have situation where arr[10] = {1, 2}, here totalSize is 10 but the size we expect is 2. That's why always send it as param to function.
+-- NOTE: int arr[size], where size is a variable -> Bad practise.
+-- Inside For loop, inputs can be passed in a single line space seperated.
+-- Arrays are passed by reference, So no copy is made when passed to function. Any update of arr in function will be reflected. 
+-- XOR, use, finding unique elements among all duplicates.
+   a^a = 0, 0^a = a;
+   eg: 2, 3, 1, 3, 2 --> 2^3^1^3^2 -(XOR is commutative)->2^2^3^3^1 --> 0^0^1 --> 1(Unique Element).
+-- Time Complexity Order:
+  O(1) < O(logn) < O(n) < O(nlogn) < O(n^2) < O(n^3) < O(2^n) < O(n!)
+-- 10^8 Operation Rule --> Today's Mordern Machine can do 10^8 Operations/Second.
+   use ? 
+   -- Helps to decide which Complexity we can think of for our problem based on the constraints given.
+   -- use the chat below: For the given constraint based on n,
+      n < 10^8 --> at max O(n) or O(log n)
+      n < 10^6 --> at max O(nlogn)
+      n < 10^4 --> at max O(n^2)
+      n < 2000 --> at max O(n2logn)
+      n < 400 --> at max O(n^3)
+      n < 100 --> at max O(n^4)
+      n < [15..18] --> at max O(2^n * n^2)
+      n < [10..11] --> at max O(n!) or O(n^6)
+   -- This chart helps to avoid TLE. (Time Limit Exceeded).
+
+Note:
+   -- Anything % n --> will always lies between 0 to n (used in cyclic logic of array)
+
+**Kaden's Algo: Max contigious Sum Problem.
+   -- 3 Step Process: maxi = first ele, sum =0 and run a loop 0 to n-1
+      1) update sum.
+      2) put max of maxi and sum in maxi
+      3) If sum < 0 , make sum = 0.
+maxi will return the max sum of the contigious array.
+
+
+** Binary Search:
+ -- We update mid as (start+end)/2, if we have one situation when start is 2^31 -1 and end also same i.e INT_MAX.
+ -- then this case start+end will be out of range of int.
+ -- Solution: instead use this for mid, mid = s + (e-s)/2;  (**Very important Edge case**)
+ -- NOTE:
+    If we are doing finding any pivot element, do remeber the update the h = mid  instead h=mid-1, then condition like while(l<h) and return l as answer, There is a chance it will skip the pivot if you use the later.
+ -- we can find sqrt of x using BS as 0(logn) complexity --> logic minimizing the search space from 0 to x. 
+
+-- Very Famous Questions from Binary Search:
+Why Binary Search approach ?
+-- If we find a mid in a solution space(montonous i.e 1,2,3 ...), and can say like for all element < mid we can ignore and move to  rigth part or we can ignore all ele > mid and move to the left part. 
+we can use BS Approach.
+
+** Book Allocation Problem:
+   -- you have books with certain pages, find the max no of pages assigned to a student is minimum.
+   -- using the BS Sample Solution space.
+NOTE: Sample Solution Space: Its a big range of values between one l and one h, somewhere between the solution lies.
+   -- Find that solution using BS, and decidie if you want to search left or right of mid.
+NOTE: similar Questions like Book allocation Problem:
+1) Leetcode's Capacity To Ship Packages Within D Days.
+2) Painter's partion Problem.
+3) EKO_ SPOJ Problem: Forest and woodcutter, max height of the blade to get atleast k amount of wood.
+
+** Aggressive cow's:
+   -- Have n stalls and k Aggressive cows, assign k cows to n stalls such a way that min dist between them is max.
+   -- return largest min dist between the cows.
+
+** Cookie and cook:
+   -- Have RAting of the chefs given. R rated cook can cooks in R mins 1 dish, next dish in 2R min and so on.
+   -- Given the requiremnt of number of Cookies. minimise the time.
+
+*** Very Important NOTE For Binary SEarch problems****
+-- All Problems related the binary Search Works on the bases on Sample space.
+steps: 
+-- understand what the problem is asking, Find arr, k and what need to maximise or minimise.
+-- Find a range where the solution may lies, Take the mid of the range.
+-- See if you can use that mid and find out if there is a chance you can move to right or left to find the solution.
+-- Implement the BS algorithm, with a condition check wether to move left or right.
+-- Eventutally you will arrive at the solution.
+
+** STLs Basic:
+-- Clasiified into 2-parts: Containers and Algorithms.
+
+Containers STL:
+* Sequence Containers:
+1) Arrays: 
+   -- It is the same static array based on a normal array. That's why we dont use it.
+2) Vectors:
+   -- Dynamic Array. It expands,
+   -- When it overflows, It makes it size double. 
+   eg: vectors has 1,2, size = capacity = 2, Now add 3, size = 3 , capacity = 4 (since it overflowed the capacity Doubled)
+   NOte: when cleared, size becomes zer0, capacity remains the same.
+3) deque:
+   -- Doubly ended Queue, It is dynamic. 
+   -- you can push and pop from both front and back.
+   NOTE: 
+   -- It is not contigious memeory allocation. It uses some fixed static array and those are kept under track.
+   -- Erase(start, end) --> takes iterator range.
+   -- No dq.capacity() is there, just dq.size() works, that returns the total number of elements present.
+4) List:
+   -- It is implemented using doubly linked List.
+   -- Direct access of the element eg: v.at(1) or V[1] is not possible here. (**Main**)
+   -- Since direct access is not there, erase(post) --> time complexity will be O(n); Note: post has to be an iterator.
+   
+* Container Adapters:
+1) Stacks:
+   -- LIFO
+   -- TC of all Operations: O(1)
+2) Queue:
+   -- FIFO
+   -- TC for all Operations: O(1)
+3) Priority Queue (Very important):
+   -- Max heap --> A Queue where the first element is always greatest.
+   -- Min heap --> A Queue where the first element is always the minimum.
+   -- So You put data as usual in the Queue, But when you start puliing out data,
+      If maxHeap --> you will get the greatest element
+      If min Heap --> you will get the lowest element.
+   -- maxheap is by default, for minheap you need to do: priority_queue<int, vector<int>, greater<int>> Q;
+   -- ForEach doesnot work here.
+   -- NOTE: It is a queue, but the methods are similar to that of a stack,
+      top() --> returns max, pop()--> remove the max, empty()--> checks if its empty or not
+
+* Container Associative:
+1) set:
+   -- Set stores unique elements.
+   -- it is internally implemented using BST.
+   -- No Modification allowed, Two options allowed, insert and delete only.
+   -- It returns elements in sorted ordered.
+   -- Count tells if the set contains a particular element or not (**main**)
+   -- TC of insert(), find(), erase(), count() --> O(logn)
+   NOTE: 
+   unordered_set:
+   -- It is faster than set.
+   -- It stores the elements in random ordered.
+
+2) map:
+   -- key-value pairs, all keys are unique.
+   -- It is implemented using red-black tree or balanced tree.
+   -- just map, stores all the keys in sorted order..
+   -- TC of insert(), find(), erase(), count() --> O(logn)
+  Note:
+  unordered_map:
+   -- It is faster.
+   -- It stoes the keys in random order.
+   -- This is implemented using hashTable.(**main**)
+   Benefit: TC of search is O(1)
+
+Algorithms in STL:
+Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It includes all headers**)
+1) BinarySearch:
+   -- It takes starting post itr, ending position itr and searchElement. O(logn)
+   -- It returns 0 if ele not present or 1 if ele is present.
+   -- lower_bound returns itr of the ele and itr of ele - v.begin() gives the postion of element.  //O(logn)
+   -- lower_bound:
+      -- If ele exist -> returns the iterator.
+      -- If multiple ele exist --> return the first index iterator.
+      -- If doesnot exist --> return the next max index interator.
+   -- upper_bound:
+      -- If ele exist --> return the iterator of the next big ele.
+      -- If multiple ele exist --> return the iterator of the next big ele after the last occurance
+      -- If ele exist --> return the iterator of the next big ele.
+
+2) min, max and swap and reverse.
+3) rotate: It rotate the element at the given pivot point.
+4) Sort: 
+   -- It sorts the array between the given positions.
+   -- It is based on Intro sort that include: insertion, quick and heap sort. 
+
+
+
+** Sorting Techniques and Notes ***
+Selection sort: 
+   Logic is just start from left and look for the min elem towards right, swap it with the start index and move on...
+   TC: worst Case(If array is reversed): O(n2), BestCAse(if array is alrady sorted.): O(n2)
+   UseCase ? --> User whenEver the size of array is small.
+
+NOTE: Stable and unstable sorting algorithm:
+   -- An algorithm is called stable if two objects with the same key appers in the same order after sorting.
+   -- It mostly matters if we have duplicates in array, If all element are distinct it doesnot matter.
+   -- BAsically, Order of the element before sorting = Order of the element after sorting i.e stable sorting algorithms, Order of the elements are preserved.
+   -- eg: 
+      Stable Sort: Bubble sort, Insertion Sort, merge sort, count sort.
+      Unstable Sort: Heap Sort, selection Sort, Quick Sort.
+   -- Also Converting any comparison-based unstable sort to stable sort is possible, we need to take care of the position of the ele, while comparing.
+
+Bubble Sort:
+   -- Logic: comapare and swap neighbour elements and this takes the largest elemnt to the last.
+   -- useCAse: In any ith Round, placing the ith largest element in its correct place.
+   -- TC: O(n2)
+   -- scope of optimization: If any round, There are no swaps then just break away, means The array is already sorted.
+   -- TC for best case i.e if the array is already sorted, Then TC: O(n)
+
+NOTe: In-place and Out-Place Sorting:
+   -- In-place Sorting means the input and the output occupies the same memory and no extra space is needed while sorting.
+   -- Out-of-place sorting need extra space to work for sorting. soting that needs O(n) like merge sort are put under this.
+   -- below O(n) extra space, Sorting like heap and comb sort falls under in-place sorting.
+
+Insertion Sort:
+   -- Logic: Basically, Take the ele one-by-one and place them in between the elements where it belongs.
+   -- NOTE: No Swaping here, Insertion Sort is a stable sort.
+   -- For left to right, the array will get sorted slowly as we place elements in right place by shifting the array to right.
+   Why Insertion Sort ?
+   -- It is an adaptive Algorithm. It knows till where you need to go for placing the element at its place. So less comparisions.
+   -- It is a stable sorting algorithm, The Order of the ele before and after sorting remain same in case if duplicates present in the array.
+   -- If n is small Or If the array is partially sorted then its best algorithm.
+   -- TC:
+      Bestcase: If the arr is already sorted, then All we need is only 1 comparisions, So O(n)
+      Worstcase: If the arr is reversed, The Complexity is O(n2)    
+
+***Handling Char Array and String in C++***
+
+-- Char array type String is the C-way for Handling string in c++.
+-- string in c++, can be used to handle string in c++. It comes as a String Class support in c++.
+-- Strings in C++ --> 1-D Char Array.
+-- cin>>str works in c++. It ends the String with '\0' i.e a null character used as terminator.(use to detect where the string is ending !)
+-- Char array useful Methods:
+   here s1 and s2 are char arrays. 
+   strlen(charArr), strcmp(s1, s2)[Note: returns 0 if equal], strcpy(s1, s2);[NOTE: s1 and s2 must be same size]
+NOTE:
+   -- Cin stops taking input till it detects: space, tab or enter.
+   -- to accept String with spaces, use variable of dataType String and getline(cin, varName); **IMP**
+NOTE: getline takes a thrid param a char that you want to set custom delimeter. eg: getline(cin, str, '*'); //It will read upto '*' and ignores the rest.
+   -- AlphaNumeric ASCII Range: (always Remember)
+      0 - 9  -> 48 to 57
+      A  - Z  -> 65 to 90
+      a - z -> 97 to 122
+   -- iswalnum() : Built-in STL method, Takes char input. and decide if its AlphaNumeric or not. (***V.IMP***)
+   -- stoi(str): Converts a number from string to integer. eg: stoi("123") --> 123. 
+NOTE: It filters out anything that is not number and returns just the number. eg: stoi("123 pass") --> 123.
+      If any char is before numbers then it will throw error.(**V IMP**)
+
+-- String initialization: string str("sourav") or string str = "sourav";
+-- String useful methods:
+   1) getline(cin, str), str.length(), tolower(char), toUpper(char), str.push_back()[NOte: here param should be a char] and pop_back(), str.copy(charArray, len, startIndx) -- returns a character array List.
+   2) str.substr(strt, len), str.append("str")[NOTE: Here param should be a string, add the string at the end], str.compare(str2) --> return 0 is equal.
+   3) str.replace(start, len, s2, substart, subLen) --> can be used to replace a particular char or string at a position.
+   4) str.erase(post, len), str.insert(post, s2, subpos, sublen);
+   5) str.find(s2, post) --> returns the first index where it is found, post --> length of the search str.[NOTE: It returns a post if found else a -1] eg: int found = str.find(s2);
+   6) to_String(int val) --> takes any numerical Value and returns String. **IMP**
+NOTE: push_back works faster than appened.
+
+-- String stores data in the from of a null terminated array but in normal usage it wont allow you to use it.
+-- Diff between Char Array and String:
+   -- String is a class, char array is just an array of char.
+   -- String allocate memory dynamically.
+   -- String Provides lots of inbuilt methods.
+   -- Downside: String are slower, compared to char array.
+NOTE:
+   -- Str doesnot respect any '\0' if it comes in the middle of the string while printing. It will ignore it if cout<<str;
+   -- NOTE: Here '\0' will be considered while calculating length.
+   -- Char array if you have '\0', it will stop printing as soon as it hit '\0'.
+
+String Question Trick:
+-- If you need a freq table, you can use flat alpha freq table. its O(1) since its constant. i.e char lookupChar[26] = {0}; //Always 26 character.
+-- To add the freq of a char ch,eg: lookupChar[char-'a']++; 
+
+****Multi-Dimensions Arrays****
+-- 2-D Array represented as a linear array in memory using the formula: (columnLength)*rowIndex + columnIndex
+-- int arr[][] is not accepted in c++. We have to specify colIndex for mandatory. **IMP** (This identifying the column is difficult, But can be handled.)
+
+***Maths For DSA***
+
+1) Seive of Eratosthenes
+Problem: Find the no. of prime no strictly less that n.
+-- assume all are prime no.
+-- mark all ele that are divisible by current ele as non-prime.
+-- at the end left out numbers are prime.
+
+TC: O(nlog(logn)) -> everytime we remove all the ele divisible by a prime number. thus, it becomes n*HarmonicProgression of prime numbers.
+
+2) Euclid's Algorithm:
+
+GCD: Greatest Common Divisor or Highest common Factor
+-- maximum common factor that divides both the number. that is GCD of those 2 numbers.
+-- As per Euclid's formula: gcd(a, b) = gcd(a-b, b) or gcd(a%b, b) [a%b or a-b will give the same result]
+-- HOw to use this formula:
+   keep on putting the formula until either the first or second parm is becoming zero.
+
+NOTE: Relation between LCM and GCD
+      LCM(a, b) * GCD(a, b) = a* b
+
+3) Modulo Arithmetic:
+-- we know for sure, if a%b then ans always lies between 0 to n-1.
+NOTE:
+In Few questions, its given the ans range should be below 10^9+7 i.e. 100000007.
+-- This means you need to use res%1000000007 everytime you perform any operationto keep the res within 10^9+7 range.
+
+Formulas:
+1) (a+b)%m = a%m + b%m
+2) a%m - b%m = (a-b)%m
+3) a%m * b%m = (a*b)%m
+
+** Fast Exponentiation:
+Why ? -> for finding a^b, Noraml logic of multiplying a btimes take TC: O(b).
+      -> using Fast Exponentiation method it will be O(log b).
+use --> use to fast find the x^n value.
+Formula:
+for a^b --> if b is even then (a^(b/2))^2
+        --> if b is odd then (a^(b/2))^2 * a       
+code Logic: for a^n
+-- if n is even keep on multiplying a, and update as n as n/2.
+-- if n is odd then return res = res * a.
+NOTE: even n starts with even, at the end one time n will be 1 i.e odd, thus it will return the result correct.
+eg: 2^5   a^n
+res = 1
+n= 5 -> odd, res = 1*2 = 2, a = 2*2 = 4, n>>2
+n= 2 --> even, 4*4 = 16, n>>2
+n= 1, res = 32 (ans)
+
+NOTE: 
+Always use bit operations whereever possible, it is faster then binary operands.
+eg: For checking odd/even --> a&1 true--> odd, false--> even.
+    For finding a%2 --> a>>1 , right shifting bit by 1 is same as divide by 2;
+
+
+********Phase - 2 for DSA and NOtes****************
+
+** Pointers in C++ **
+-- symbol Tabler: 
+   Its a DS created and maintained by the Compiler, It stores all the information about the variables and its scope.
+eg: int num = 5; symbol Table will store the mapping of 'num' with the address of 5 in the memory.
+-- '&' --> address of Operator, Fetch the address of a variable. Note: address will be in hexaDecimal format.
+-- '*' --> derefernce operator, It will go fetch the value at the given address.
+-- why pointer ?
+   Its can stores the address of any variable i.e it can holds the hexaDecimal Address value.
+Imp NOTE on Pointers: 
+-- Always Initize your pointer with some value. eg: int *p; --> this will point some garbage memory location.(Never do like this)
+-- Size of Pointer is always 8 irrespective of the dataType. AS it stores just address always.
+-- For Arithmetic only addition and subtraction allowed on pointers.
+-- If we say ptr = ptr + 1 where ptr is a pointer to int type. If ptr was storing 100 address, ptr = ptr+1 will br 104 as int is 4 bytes.
+-- The differenct between the address will be irrespective of the type of the variable.
+eg: arr[] = {2, 3}, address of 2: 100, address of 3 = 104, but address of 3 - address of 2 is 1. (Here the 4-bytes based on int dataType is not considered)
+
+Types of Pointers:
+1) Null pointer: a pointer that points to nothing or Null.
+eg: int *ptr; --> this just points to a garbage memory location.
+int *ptr = NULL OR int *ptr = 0 --> points to a null location. 
+2) Double pointer: A pointer that stores the Address of another pointer.
+eg: int num = 5; 
+int *ptr = &num; int **qtr = &ptr; --> here qtr stores the address of pointer ptr. For accessing the value, **qtr is same as *ptr is same as num.
+3) Void pointer: A generic Pointer, It is a pointer that has type void.
+Main Advantage: It can be used to store any address of a variable of any type i.e it can store address of int or double or char.
+Drawback: cannot be dereferenced and no operation can be performed on void pointers.
+eg: int num=5; void *ptr = &num; --> ptr can stores the address of num.
+4) Wild pointer: A pointer declaration without initialization. Basically it points to some garbage value.
+eg: int *ptr; --> a wild pointer. now if next you do, ptr= &num; now it's no more wild :)
+5) Dangling pointer: Pointer pointed to a location which is free or deleted.
+   Situations:
+   1) Out of SCope situation: If ptr is pointing to something inside the scope and you try to access ptr outside the scope.
+   2) free the pointer: Trying to access a pointer that is already freed.
+   3) in function call: If a fun returning a address of a local static variable. then in main function it wont be able to fetch the address of the same. Reason: call stack of fun would be destroyed.
+
+Pointers & Integer Arrays:
+-- Pointers can be used efficiently for handling arrays. Ref: see the Phase2 PointersBasic.cpp for reference.
+NOTE: (Important)
+-- We cannot update the array name like arr = arr +1; It is now allowed and throw error.
+   If we have array arr points to address 100 (As stored in symbol table), Then it cannot be changed atall.
+   arr = arr + 1; --> this will throw error, as you are trying to update the location of array.
+--Instead of using array name, We can use pointer to move in the array. eg: int *ptr = arr; ptr += 1; --> this is valid.
+
+Pointers & Char Arrays:
+-- In char array, If you give an address of a position from the str, it will print all the element till the end of the array till \0.
+-- name of the array for integer array will print address of the first ele but in char array it will print the entire array.
+-- Never declare String like char *ch = "sourav". It will not stop printing till its gets a null pointer in th memory.
+Important NOte:
+-- If the char array len is fixed and a pointer is pointing to the first char address, Then its okay. It will print the entire char till the end where its hit \0 char.
+-- But if you have a char where you just assign some character. with no len defined and a pointer is pointing towards it, then it will keeps on printing till its hit the \0 char. (Never Recoomended)
+
+Fucntions & pointers:
+-- If we pass a function to a pointer then we can play with the vlaue but not the address.
+-- Array is passed as a pointer to the function.
+Benefit:
+-- We can send a part of arry in the function if we want. eg: getSum(arr+4, n-4); where n is the size of original Array.
+
+*** Static and Dynamic Memory Allocation **
+Refernece Variable:
+-- same memory but we had different name for pointing to the same address.
+How to decalre it ?
+eg: int i=5; int &j = i; //thus i and j both points to same memory location.
+Why need ?
+-- we use it in pass by reference to a function.
+-- basically the same memory location is shared by fn and the main method.
+NOTE:
+Pass BY Value: 
+-- here a copy of the param is sent to the function. and it exists till the fun life cycle.
+-- Original and the copy takes seperate memory location.
+(**IMP**)
+Bad practise:
+-- Never Uses Reference variable as return type of Function. eg: int& fun() {...}
+Reason: Basically here you will be returning a refernce of a local variable from inside the fun. But after fun is done, It memory is cleared from the fun stack.
+-- Same reason if we never use pointer as return type of fucntion.
+-- Declaring arrays like: int arr[n]; Never do like this, declaring size of array at runtime is bad practise.
+Arrat size should always be declared first. then getting assigned at run-time.
+Reason Why ?
+-- When a prog start, it brings 2 types of memory, Stack(samll space, depends upon space required by prog.) and heap(big space). 
+-- sizeOf stack memory << sizeOf heap memory.
+-- If array size is assigned runtime and not enough space in stack memory, then prog will crash.
+
+NOTE:
+-- Allocating memory in stack Memory -> static
+-- Allocating memory in heap Memory -> Dynamic
+
+How to Allocate memory dynamically ?
+-- using new keyword, --> allocates memory under heap and returns the address of it.
+-- pointer is used to catch this address and access this space. 
+eg: int *ptr = new int; //Craeting a int type in heap.
+-- Creating array in heap: 
+   eg: int *arr = new int[n]; //here since this memory is allocated in heap, this is acceptable and can be used.
+
+NOTE: Key difference between static and Dynamic allocation
+-- Staic allocation take fixed space in stack memory, Dynamic allocation takes: data Type space in heap + 8 bytes for pointer in stack.
+-- Static allocation, the memory is auto-released after execution finished in stack memory, But in heap, the memory needed to release manually. 
+
+Very Important to Release The memory in heap:
+-- deleting memory from heap, delete ptr;
+-- deleting array memory from heap, delete[] ptr;
+
+** Dynamic Matrix **
+-- Dynamic matrix can be created like: 
+size: m rows and n columns
+int **arr = new int *[m]; //this will create m Rows that takes address.
+then use a for loop: arr[i] = new int[n]; //this will create n columns for each row.
+-- Releasing memory in matrix, we first release the columns row-wise and then release all the rows.
+
+NOTE: (Very Important Always Remember)
+Whenever, we use any memory in heap, we need to always manually release the memory.
+-- In Stack memory it get automatically release when the execution overs.
+
+*** C++ Keywords ***
+
+Macros:
+-- #include: preprocesser directive, It brings pre-programmed functionality in our code workspace. eg: for cout and cin functionality we need iostream.
+-- #define: we can use it to define macros.
+what macro ?
+A piece of prog in the code that is replaced by value macro. eg: #define PI 3.14 --> Now we can use PI for 3.14 everywhere throughout the program.
+Advantage:
+-- It prevents updation of the value by mistake.
+-- It doesnot occupy any additional memory, thus faster.
+How macro Works ?
+-- Before Even the code is compliled, everywhere in the code the macro item is replaced by its value.
+Types Of Marcro:
+1) Object like macros: It replace some keyword with some value. eg: #define PI 3.14
+2) Chain Macros: Two or macro related to each other
+eg: #define AGE 25
+    #define WEIGHT (Age+25)
+3) fucntion Macros: we can have functions replacing in the code using macros.
+eg: #define AREA(l, b) (l*b)
+4) Multi-line Macros: we can have multi-line macro. NOTE: need to use backslash-endcharacter
+eg: #define ELE 1,/
+                2,/
+                3
+      we can use this maco like: int arr[] = {ELE}; // arr = {1,2,3}
+
+Global Variable:
+Why we need ?
+-- We want to share variable between the functions.
+Ways to do ?
+1) we can use Reference variable to share the variables between the functions. (Recommended)
+2) use global Variable and use scope operator to access to whereever needed in the prog.
+NOTE: Bad Practise to use global variables in the program.
+
+Inline functions:
+What ? -- Used to reduce the fun call overhead.
+NOTE: Only Functions having 1 line in body can be converted to inline. by adding the inline keyword before the function call.
+-- whereEver the function is called, the function call is replaced with the function body.
+
+Default Params:
+-- If the value is passed, it will consider it, if value is not passed it takes the default value.
+NOTE: (**IMP**) 
+-- Always start assigning default values in the params from right to left manner.
+
+**Recurssion** (***VIMP****)
+-- Basically when a function calls it-self.
+3 step in Recurssion:
+1) Base condition: 
+   -- The exit condition, 
+   -- Return is mandatory in this part.
+2) Processing Part:
+   -- ANy processing involved.
+3) Function call part:
+   -- The same function is called itself with some updated paramter.
+-- The Above order is called Tail-Recurssion. If Function call first and then Processing, it's called head recurssion.
+
+Approach for DEaling with Recusrsive problem:
+1) Try to solve only 1 case.
+2) come up with a Recursive Realtion Formule. eg: for fibo its F(n) = F(n-1)+F(n-2);
+3) come up with a base case. NOTE: It must return someting. eg: in fibo, if n==1 return 1 and if n==0 return 0
+4) then write the recursive relation.
+Note: (**IMP**) 
+-- Always try to make the Recursion Tree.
+-- During dry run, always consider the recursive function as f(n), and track the changes and the function stack.
+eg: how we can vizualize the recurssion Tree during dry run ? Like this in case of sum of the arr using Recursion.
+first param -> current start position of the array, 
+second param -> len of the array.
+arr = 4 5 6
+fn(0, 3) -> 4 + fn(1, 2) -> 4 + 11 = 15 (answer)
+fn(1, 2) -> 5 + fb(2, 1) -> 5+ 6 = 11, thus return 11
+fn(2, 1) -> Hit the base case, return 6 since ar[2] is 6 
+
+Real Logic behind Recursion while solving questions ?
+-- Try to find the base case first.
+-- Then try to solve only 1 case related to the problem, Rest Recursion will handle automatically.
+
+
+Sorting Algorithms:
+
+1) Merge Sort:
+logic ?
+-- First step: break the entire array using finding the mid formula, Divide it till you reach at single-single element block. (use Recursion)
+-- Now we will merge all the single-single element block into together in a sorted way.
+-- At the end: You will have an Sorted array.
+
+Why we use Merge Sort ?
+-- It is faster than any other Sorting Algorithm so far. TC: O(nlogn)
+-- It is used to sort Larger dataset faster.
+
+Approach:
+-- You have one big array. Using mid, divide that into 2 array.
+-- using recusrsion sort the 2 halves of the array.
+-- then merge them into one sorted array. (ref: Merge 2 sorted array).
+
+One Freq asked Implementation of merge Sort: (****VIMP***)
+Inversion Count Problem 
+- how far the array is from being sorted ?
+Condition for Inversion: For any i and j, 
+1)  i < j 
+2) Arr[i] > Arr[j].
+Number of such i,j pairs gives the Inversion count.
+Logic:
+-- same logic of sorting using merge sort.
+-- to count inversion, While merging left and right array, if ith ele of left is > jth element of right.
+since the aray is sorted, all the right elements of left Array are bound to be grater than jth element of right array.
+Thus, this gives a count while merging 2 sorted array. 
+-- we need to keep track of this count while Recursion.
+
+2) Quick Sort 
+Logic ?
+1) First choose the first element as pivot element. Then find the correct place for the pivot element i.e pivot index.
+   -- Iterate the Array, Counts ele smaller than the pivot element. then currentPost + count gives the pivot element index.
+   -- Put the pivot ele at pivot index and then make sure for element left of pivot <= pviot element.
+   -- All element on right of pivot must be > pivot element.
+   -- return pivot index.
+2) Use Recursion to solve the left side of pivot element, then right side of the pivot element.
+  
+Time Comlexity Analysis: 
+-- Toataly based on Which one you choosing as pivot element.
+-- We consider the TC of Sorting around the pivot element as O(n).
+Worst Case: When the pivot ele is choosen as the start or end index, Then TC is O(n^2). --> Recursive call and Sorting.
+Average Case: When the pivot element is chosen as mid element. TC: O(nlogn) --> The array breaks in half around pivot.
+Best Case: TC: O(nlogn) --> Any other method of choosing pivot element. 
+
+NOTE: 
+-- Quick Sort is not a stable sort (Order of the keys with same val might change during swaping)
+-- Quick Sort is in-place. (only Recursive call takes space in memory as in for variables no extra space.)
+
+NOTE: (very Important)
+Two Ways of implementing and choosing the pivot element and make sure for all ele on left <= pivot and all ele on right > pivot ?
+1) Hoare's Partiion Algo: (Preferred)
+  -- Two Pointers i and j, one at the start and another at the end, Both comes toward pivotIndex.
+  -- and then swap it accordingly to satisfy the condition. all ele before pivot <= pivot and all ele after pivot > pivot.
+2) Lomuto partition Algo:
+  -- When pivot element is choose as the last element.
+  -- We use a two pointer, i and j both are at the first element.
+  -- As we move right using j pointer till 2nd last element, if arr[j]<pivot, we swap with ith index and increment ith.
+  -- At the end, swap 2nd last element with the i+1th element, Thus you have your pivot index as i+1th index.
+
+NOTE: (**very very Important**)
+Why Merge Sort is Preferred for LinkedList and Quick Sort is Preferred for Arrays ?
+Reason:
+-- Random access is possible in Arrays i.e I can get arr[5] in O(1) time. But in LinkedList random access take O(n), if you try to access nth element.
+-- On the other hand, In LinkedList, Insertion take O(1) time.
+Thus,
+In Merge Sort, By logic we break the array from mid and then create a Sorted array, Thus For Linked List this is best.
+In Quick Sort, By Logic we are swapping a lot. Since Random access takes less time for array, For Array this is preferred.
+
+NOTE: [Important]
+-- While Handling the Variables in Recursion logic, Never pass var++ to recursive function. instead use var + 1. 
+-- If we use unitary increment or decrement, it going to stuck in a infinite loop.
+
+[IMP]
+** Common Pattern in solving Recursion questions like:
+   powerSets, subSequences and keypad problems [Important]...
+You break the Problem using recursion, you use 4 main params in the recursion function.
+   input -> passed to the function from main.
+   output -> stores the result till a recurcive function reaches base-case.
+   index -> Each stage of recursion, we increment it by 1 on the input.
+   ans -> when it reach base-case, we store the data from ouput into ans. NOTE: this param we pass it by reference as we need to return this from main function.
+
+** Basic Backtracking logic of Letter of Combination Keypad problem:
+Baically, at a particular stage in the Recursion,
+   -- we added a character to output String.
+   -- Then we call the recurcive fucntion with the updated output.
+   -- After this call is done, We removed the character that was added.
+Thus, the output is back-tracked to the previous value before adding the character. [This is called backtracking]
+   -- In the Next Recursive Iteration, we have the original Value of ouput
+   -- A new charater is added and Recursive fun is called.
+   -- After this is done, we are poping again the character that is added. [Backtracking]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
