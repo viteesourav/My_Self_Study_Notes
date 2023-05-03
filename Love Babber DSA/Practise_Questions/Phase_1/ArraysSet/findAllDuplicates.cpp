@@ -1,3 +1,6 @@
+/*
+Link: https://leetcode.com/problems/find-all-duplicates-in-an-array/
+*/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -28,3 +31,13 @@ public:
         return ans;
     }
 };
+
+/*
+Logic:
+condition: This tech can be used only if all eles are between 1 to n
+Flip Switch tech Approach:
+    -- loop throung the array with index.
+    -- go to the position at arr[index]-1 and check,
+       If it is nagative: means someone else flipped it already, thus duplicated. [Found your duplicates elements]
+       If ot is Positive: flip it. i.e make it nagative.
+*/

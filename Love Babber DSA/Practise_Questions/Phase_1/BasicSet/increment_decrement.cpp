@@ -12,9 +12,16 @@ int main()
     cout << (x + y) << endl; // output is 12
 
     i = 5;
-    a = (++i) + (i++); // output is 13
+    a = (++i) + (++i);
+    cout << a << " " << i << endl; // output is 14 7
 
-    cout << a << " " << i << endl;
+    i = 5;
+    a = (i++) + (++i);
+    cout << a << " " << i << endl; // output is 12 7
+
+    i = 5;
+    a = (++i) + (i++);
+    cout << a << " " << i << endl; // output is 13 7
 
     return 0;
 }

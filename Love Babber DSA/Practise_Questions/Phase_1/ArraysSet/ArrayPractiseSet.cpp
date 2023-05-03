@@ -8,6 +8,7 @@ void printarr(int arr[], int n)
     cout << endl;
 }
 
+// adjacent Elements should be swapped...
 void swapAlternate(int arr[], int n)
 {
     for (int i = 0; i < n - 1; i = i + 2)
@@ -16,6 +17,8 @@ void swapAlternate(int arr[], int n)
     }
 }
 
+// find the unique element in the given array. --> XOR logic
+// consition: Array has only 1 unique element.
 int findUnique(int arr[], int n)
 {
     int res = arr[0];
@@ -26,7 +29,7 @@ int findUnique(int arr[], int n)
     return res;
 }
 
-// NOte: here arr[] contains ele from 1 to n-1 and one element is repeated.
+// NOte: here arr[] contains ele from 1 to n-1 and one element is repeated.[**IMP**]
 int findDuplicate(int arr[], int n)
 {
     // XOR all elements of the array
@@ -43,8 +46,16 @@ int findDuplicate(int arr[], int n)
     }
     return ans;
 }
+/*
+Logic:
+consition: If Array has n elements form [1, n-1] and one is repeated.
+logic: XOR all elements of the array with all the indexes form 1 to n-1.
+eg: (5^1^2^3^4^5) ^  (1^2^3^4^5) ->  5 [this is the duplicate element]
+      given arr     index 1 to n-1
+*/
 
 // Note Same, here also the arr n has all elements from n to n-1 with one duplicate.
+// Logic: using n(n+1)/2-sum of n elements from array logic
 int findDuplicatesMethod2(int arr[], int n)
 {
     int sum = 0;
@@ -54,7 +65,8 @@ int findDuplicatesMethod2(int arr[], int n)
     return n - diff;
 }
 
-// using 2-pointer approach
+// using 2-pointer approach -> Provide all the common elements form arr and brr
+// NOTE: arr and brr have sorted elements.
 void intersectionArr(int arr[], int brr[], int n1, int n2)
 {
     vector<int> ans;
@@ -73,6 +85,7 @@ void intersectionArr(int arr[], int brr[], int n1, int n2)
             j++;
     }
 
+    // Printing the common elements from arr and brr...
     if (ans.size() == 0)
         cout << "-1" << endl;
     else
@@ -85,6 +98,7 @@ void intersectionArr(int arr[], int brr[], int n1, int n2)
     }
 }
 
+// Task: To find all the pair elements in arr, whose sum is checkSum
 void pairSum(int arr[], int n, int checkSum)
 {
 
@@ -106,8 +120,16 @@ void pairSum(int arr[], int n, int checkSum)
             j--;
     }
 }
+/*
+Logic:
+    -- First sort the given array.
+    -- i at first and j at last.
+    -- check the sum, if matched -> found,
+       if > targetSum -> j--
+       if < targetSun -> i++
+*/
 
-// use 2-pointer tech to i for zeros and j for ones
+// use 2-pointer tech to i for zeros and j for ones [Imp]
 void sortZeroOnes(int arr[], int n)
 {
     int i = 0, j = n - 1;
@@ -126,25 +148,30 @@ void sortZeroOnes(int arr[], int n)
 
     printarr(arr, n);
 }
+/*
+Approach:
+    -- i at starting and j at the end. [2-pointers]
+    -- till i < j, if at ith we have 1, then swap with jth place and j--.
+                   if at ith we have 0, then just i++
+*/
 
-// using the 3-pointer tech to sort zeros, ones and twos.
+// using the 3-pointer tech to sort zeros, ones and twos.[imp]
 void sortZeroOneTwo(int arr[], int n)
 {
-
+    // here i tracks 0, j tracks 2 and k tracks 1.
     int i = 0, k = n - 2, j = n - 1;
-
     while (i <= k)
     {
         if (arr[i] == 2)
         {
             swap(arr[i], arr[j]);
-            if (k == j - 1)
+            if (k == j - 1) // if j and k are adjacent, both will shift left.
             {
                 k--;
                 j--;
             }
             else
-                j--;
+                j--; // If not adjacent then only j can shift left
         }
         else if (arr[i] == 1)
         {
@@ -158,6 +185,14 @@ void sortZeroOneTwo(int arr[], int n)
     }
     printarr(arr, n);
 }
+/*
+Approach:
+    -- 3 pointers, i, j and k. i at begining tracks 0, j at end tracks 2 and k tracks 1.
+    -- till i < k,
+       if ith place -> 2, swap with j, move k and j to right(If adjacent) else only move j to right. [IMP]
+       if ith palce -> 1, swap with k, move k to left.
+       if ith place -> 0, just do i++.
+*/
 
 int main()
 {

@@ -28,3 +28,10 @@ int main()
 
     return 0;
 }
+
+/*
+Notice:
+-- here we are not using break in any of the above cases.
+-- So, all the cases runs from top to bottom one by one.
+
+*/

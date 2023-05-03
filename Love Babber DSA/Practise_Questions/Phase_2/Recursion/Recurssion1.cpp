@@ -6,7 +6,7 @@ long long findPower(int n)
     if (n == 0)
         return 1;
     // breaking it into recurssive functions r
-    eturn findPower(n - 1) * 2;
+    return findPower(n - 1) * 2;
 }
 long long findFactorail(int n)
 {

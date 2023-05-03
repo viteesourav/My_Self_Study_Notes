@@ -45,6 +45,7 @@ void mergeSortedArr(int arr1[], int arr2[], int n1, int n2)
             j++;
         }
     }
+    // manage the left over elements from either of the given arrays...
     while (i < n1)
     {
         v.push_back(arr1[i]);
@@ -62,7 +63,7 @@ void mergeSortedArr(int arr1[], int arr2[], int n1, int n2)
     cout << endl;
 }
 
-// move all zeros to right... **interesting question***
+// move all zeros to right... **interesting question*** [IMP]
 void moveZeroes(int nums[], int n)
 {
 
@@ -85,7 +86,10 @@ void moveZeroes(int nums[], int n)
     }
     printArr(nums, k);
 }
-
+/*
+Link: https://leetcode.com/problems/rotate-array/description/
+*/
+// Given an Array and an index, rotate the array about that index.
 void rotateArr(int arr[], int n, int k)
 {
     vector<int> temp(n);
@@ -101,7 +105,16 @@ void rotateArr(int arr[], int n, int k)
     }
     printArr(arr, p);
 }
+/*
+Logic:
+   -- Baiscally strat a for loop from 0 to n-1, take a temp array.
+   -- now use the logic of index % len -> will always lies between 0 to len.
+   -- temp[(i+k)%n] = arr[i] -> temp will be rotated about the kth index.
+*/
 
+/*
+Link: https://leetcode.com/problems/check-if-array-is-sorted-and-rotated/
+*/
 // check if the array is sorted and rotated..
 bool check(vector<int> &nums)
 {
@@ -144,7 +157,7 @@ vector<int> findArraySum(vector<int> &a, int n, vector<int> &b, int m)
         i--;
         j--;
     }
-    // remaining...
+    // for remaining elements in either arr or brr...
     while (i >= 0)
     {
         int sum = a[i] + carry;
@@ -169,6 +182,20 @@ vector<int> findArraySum(vector<int> &a, int n, vector<int> &b, int m)
 
     return reverse(ans); // calling the above function to flip the ans array..
 }
+/*
+Approach:
+  -- We will mimic how we do noraml addition using carray.
+eg:              i
+    arr  ->  6 5 6
+    brr  ->  2 7 7
+                 j
+    -- i and j will run from end till first, intialize carry with 0.
+    -- sum = arr[i]+arr[j]+carry.
+    -- store sum%10 (fetch the unit place digit), update carry -> sum/10.
+    -- Do this untill we traverse both the array and either of the remaining array elements.
+    -- NOTE: Cehck is carry is 0, if not, add it to the result array.
+    -- Now reverse the result array.
+*/
 
 int main()
 {

@@ -2,7 +2,47 @@ Notes Or Some Important points:
 
 *****Phase - I Of DSA Concepts and Notes*****
 
-Note: This practise am starting after lec 8 and onwards, before that go through the notes and add imp here...
+Why #include ?
+-- preprocesser directory, This runs even before the code is complied. It imports the files required by our code to execte successfully.
+
+Data Types:
+-- 1 byte = 8 bits, Each bit can be 0 or 1.
+eg: 4 bytes = 32 bits, Range:  2^32 to 2^32-1. 
+-- Premitive Data Type: int(4 bytes), char(1 bytes), boolean(1 bytes), float(4 bytes), double(8 bytes), long(4 bytes).
+-- boolean, 1 -> true, 0 -> false.
+
+TypeCasting:
+-- implicit TypeCasting: int a = 'a'; or char ch = 65;  Here char and int can be converted automatically.
+NOTE: if large number is type casted to char i.e 4 bytes(int) is casted to 1 byte(char), then only the last 1 byte will be converted to char equivalent.
+
+How negative Number stored in memory ?
+-- The first bit(called most significant bit), if 0 -> positive, 1 -> negative.
+-- only negative numbers are stored and retrived from memory using 2's compliment.
+NOTe: If negative number is stored as unsigned int (only allow positive numbers), then stroing with 2's compliment, but for retrival no 2's compliment. Thus a big number will come.
+
+Note:
+-- During operation, the result data type will be the higher data type among the operands.
+eg: int/flaot or float/int -> float, datatype of the result.
+-- cin, handles input to the program. It ignores whitespace characters('\n', '\t', ' ')
+   means, if 2 inputs are seperated by newLine, space or tab, they will be considered as 2 different input with cin.
+-- cin.get(), handles the whitespace characters. It accepts the whole input.
+
+Rules of Binary Addition:
+-- 0 + 0 -> 0
+-- 1 + 0 or 0 + 1 -> 1
+-- 1 + 1 -> 0 and carry 1.
+-- 1 + 1 + 1 -> 1 and carry 1.
+
+Role of <<(left shift) and >> (right Shift)
+left Shift (<<)
+  -- All the bits will shift towards left side i.e The number will be multipled by 2 for each shift.
+  -- Preferred for small numbers, for Large numbers it becomes uncertain.
+eg: 3 << 2 -> 011<<2 -> 1100 -> 12 or 3 * 2^2 -> 12.
+
+Right Shift(>>)
+  -- All the bits will shift to right side. i.e the number will be divided by 2 for each shift.
+  -- Preferred only for positive numbers. Tailing will be zeros, For negative numbers, tailings will be complier dependent.
+eg: 5>>1 -> 101 >>1 -> 010 -> 2 or 5/2 -> 2.
 
 Reason for using namespace std ?
 -- Here std is used in front of cin and cout along with scope resolution operator, 
@@ -12,19 +52,21 @@ Reason for using namespace std ?
 -- bool type of function, return 0 means false and 1 means true.
 -- One way to find out if num is odd or even, num&1 if true odd else even. (Bitwise And)
 -- In Switch statements, you can just switch an int or char that's all.
--- In an array initialization,
+
+In an array initialization,
    int arr[5] = {0} -> Initize all values to zero.
    int arr[5] = {1} --> {1, 0, 0, 0, 0} only first value will be non-zero, rest will be zero.
    int arr[5]; std::fill_n(arr, 5, 1); --> it will Initize all values with 1, Any non-zero value you can Initize the array with.
--- why function handling arr expect size ?
+why function handling arr expect size ?
    Because we have situation where arr[10] = {1, 2}, here totalSize is 10 but the size we expect is 2. That's why always send it as param to function.
--- NOTE: int arr[size], where size is a variable -> Bad practise.
+NOTE: int arr[size], where size is a variable -> Bad practise.
 -- Inside For loop, inputs can be passed in a single line space seperated.
 -- Arrays are passed by reference, So no copy is made when passed to function. Any update of arr in function will be reflected. 
 -- XOR, use, finding unique elements among all duplicates.
    a^a = 0, 0^a = a;
    eg: 2, 3, 1, 3, 2 --> 2^3^1^3^2 -(XOR is commutative)->2^2^3^3^1 --> 0^0^1 --> 1(Unique Element).
--- Time Complexity Order:
+
+Time Complexity Order:
   O(1) < O(logn) < O(n) < O(nlogn) < O(n^2) < O(n^3) < O(2^n) < O(n!)
 -- 10^8 Operation Rule --> Today's Mordern Machine can do 10^8 Operations/Second.
    use ? 
@@ -599,7 +641,7 @@ You break the Problem using recursion, you use 4 main params in the recursion fu
    index -> Each stage of recursion, we increment it by 1 on the input.
    ans -> when it reach base-case, we store the data from ouput into ans. NOTE: this param we pass it by reference as we need to return this from main function.
 
-** Basic Backtracking logic of Letter of Combination Keypad problem:
+** Basic Backtracking logic of Letter of Combination(Keypad problem):
 Baically, at a particular stage in the Recursion,
    -- we added a character to output String.
    -- Then we call the recurcive fucntion with the updated output.
@@ -609,7 +651,66 @@ Thus, the output is back-tracked to the previous value before adding the charact
    -- A new charater is added and Recursive fun is called.
    -- After this is done, we are poping again the character that is added. [Backtracking]
 
+NOTE: Pattern while solving Questions with Backtracking..
+  -- It is the normal logic where you do Recursion. and moves down the recursion Tree.
+  -- Catch is, When you return, and move up in the Recursion Tree, you want to return to the same state as it was before moving Down the tree. [ This is backTracking]
+  -- so, after the Recursion call, you do some logic, to return to the same state as it was before.
 
+Time Complexity in case of Recursive Function:
+2 ways of Finding TC for Recursive Functions:
+  1) By using the Recursive Relation Function --> Analysis the functions as a function of the len of array given. Frame Time Equation and solve.
+      -- First of all try to frame a Recursive realtion for the algorithm. eg: F(n) = n * f(n-1) + K;  K is for base case and Recursive call goes for next n-1. 
+      -- use that to get a Time Relations i.e T(n) = K + T(n-1), K time for some operations and baseCase, T(n-1) time for solving the next n-1.
+      -- then furthur break it down and solve it to get the Time Complexity.
+      NOTE: How to solve this T(n) functions ?
+      -- Just write all the realtions from T(n) to T(1), then add all of them, to get the final time complexity of the algorithm.
+ 2) By judging seeing the Recursive Tree of the function. 
+      -- Analaysis any pattern from the Recursive tree. Get the Time Complexity.
+
+TC of some Recursive alogortithm:
+  1) Factorial: T(n) = n*T(n-1),  TC = O(n)
+  2) Binary Search: T(n) = K + T(n/2),  TC = O(logn) --> T(n/2 because Recursive calls goes to the half of n).
+  3) Merge Sort: T(n) = K + T(n/2) + T(n/2) + T(n),  TC = O(nlogn)
+NOTE: here, K is time for base case and finding mid, T(n/2) -> recursive call to Left, T(n/2) -> recursive call to right, T(n) -> for merging 2 sorted array in one.
+  4) Fibonacci Series:  T(n) = T(n-1) + T(n-2), solving this is difficult.
+Note: here, Let assume each node f(n) has 2 nodes, one for f(n-1) and f(n-2). [By judging from REcursion Tree].
+   then for next node we will have 2 nodes of f(n-1) and f(n-2) has 2 nodes, total 4 nodes. and so on...
+   Thus, From the pattern, TC -> (2^n) [Worst in Time complexity].
+
+Space Complexity of Recursive Function:
+2 steps to Judge:
+1) Find the Recursion Dept of the function.
+   -- Recursion dept, How many times the function is called recursively. same number of functions will be there in the callStack.
+   -- Each Call, consumes how many Space ? 
+   NOTE: HEre even if some constant Space is used, If the dept is n function calls, then Total Space consumed is O(n).
+2) Check if any additional Space is used in Each of the call Stack ?
+   -- If additional space is used, Since the function is called Recursively, n times of that space will come in the final Space complexity.
+
+How to get Recursive DEpt ?
+  -- Get it by analysising the Recursion Tree of the function.
+
+NOTE: [IMP]
+-- TC of an algorthm is well defined i.e we have O(n), O(logn), O(n2) and so on. Basically can be represnted in a graph and functions.
+-- Space Complexity of algorithm in case of REcursion is very uncertain and cannot be defined using any funciton.
+   Thus, In the Complete execution time of the function, the maximum space it has taken in the callStack is considered as Space complexity.
+
+Space complexity of some Recursive alogortithm:
+  1) Factorial: F(n) = n*F(n-1),  
+     The Function is called n times, Thus, Recursion Dept is n and each Fucntion assumed to take some constant, k space,
+   SC: O(n).
+  2) Binary Search: F(n) = K + F(n/2)
+     The Recursive Dept will be called log n times, Each time it takes constant, K space, 
+   SC: O(logn) 
+  3) Merge Sort: F(n) = K + F(n/2) + F(n/2) + F(n),  
+     -- This function will be called log n times, Since every time the function is dividing the array from mid.
+     -- Now To solve each part, WE are calling merge function to merge 2 sorted array. Here we are taking n space(at the maximum), we visit all the ele atleast once.
+   SC : log n + O(n) or O(n) [space complixity of merge sort] (since logn <<<<< n, we can ignore logn)
+  4) Fibonacci Series:  F(n) = F(n-1) + F(n-2)
+     -- Here, The Recursive dept will be n(at maximum, on the left side of the recursion tree), 
+     -- In each some costant space k is taken. 
+   SC: O(n)
+
+  
 
 
 

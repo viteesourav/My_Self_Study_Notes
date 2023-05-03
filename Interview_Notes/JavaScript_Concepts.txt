@@ -202,17 +202,17 @@ newFun();
 
 Why we needed bind ?
 1) To manage the scope of 'this' when handling with callbacks.
--- you have one myObj, with method sayHello() {console.log(this)};  Here this point to myObj.
--- now you took refernece to this method: const newFun = myObj.sayHello;
--- When you pass newFun to any callback, 'this' points to global scope thus a problem.
--- solution: bind the method with obj before passing. const newFun = sayHello.bind(myObj); Thus the 'this' still points to myObj.
+  -- you have one myObj, with method sayHello() {console.log(this)};  Here this point to myObj.
+  -- now you took refernece to this method: const newFun = myObj.sayHello;
+  -- When you pass newFun to any callback, 'this' points to global scope thus a problem.
+  -- solution: bind the method with obj before passing. const newFun = sayHello.bind(myObj); Thus the 'this' still points to myObj.
 
 2) To Borrow fun from other methods.
--- you have obj1 with fly() and obj2 with run().
--- If you want obj2 also to have run() eg: const newFly = obj1.fly.bind(obj2); newFly();
+  -- you have obj1 with fly() and obj2 with run().
+  -- If you want obj2 also to have run() eg: const newFly = obj1.fly.bind(obj2); newFly();
 
 exec() vs test()
--- Both are RegExp methods in JS.
+  -- Both are RegExp methods in JS.
 exec() -> Test against the match. Returns the index of First matched char. If not matched return null.
 test() -> Test against the match. Return boolean. True/False. 
 eg: text = 'sourav is good'; 
@@ -220,9 +220,9 @@ const res = /good/.exec(text);  //['good', index: 10] NOTE: Index of the first c
 const res = /good/.test(text);  //return true.
 
 Currying in JS ?
--- advanced tech to convert functions with n params to n functions with one or more param.
--- basically Converts fun(a,b) to fun(a)(b);
--- Functionality Remain same but the way it's invoke is different.
+  -- advanced tech to convert functions with n params to n functions with one or more param.
+  -- basically Converts fun(a,b) to fun(a)(b);
+  -- Functionality Remain same but the way it's invoke is different.
 eg: Modifying noraml sum function into currySum:
 const currySum = function(a) {
     return function(b) {
@@ -232,22 +232,171 @@ const currySum = function(a) {
 currySum(5)(4);  //returns 9.
     
 SCope and Scope chains ? 
+  -- Role of scope: DEfines boundaries for variables and functions.
+3 types: 
+  1) Global  --> accessable to all functions. 
+  2) local or Function Scope --> local to the function where it is defined.
+  3) block Scope -> variable defined with { and } brases.
 
--- Role of scope: DEfines boundaries for variables and functions.
--- 3 types: 
-1) Global  --> accessable to all functions. 
-2) local or Function Scope --> local to the function where it is defined.
-3) block Scope -> variable defined with { and } brases.
-
-SCope Chaining: (***Very important***)
--- JS engine Follow a method to find the variable, not declared in the scope.
--- If x used in nested function, but not declared.
-then, It will look for x in parent function. If not found
-then, it will go to global scope to find the declaration for the variable x.
+Scope Chaining: (***Very important***)
+  -- JS engine Follow a method to find the variable, not declared in the scope.
+  -- If x used in nested function, but not declared.
+     then, It will look for x in parent function. If not found
+     then, it will go to global scope to find the declaration for the variable x.
 If still not found in the global scope, It throws refernce error, means it not able to identify x.
 
 closure in JS ? (***V.IMP***)
+  -- Ability of a fucntion to Remeber any variables declared in it's Outer scope.
+  -- Basically, From a funA, when you retrun a function using the local Variable of function A.
+  -- After funA completes, It gets destroyed but the local Variable data is saved in memory for further use. [This is closure]
+NOTE:
+  -- Closure is implemented when a func returns a function with a local variable, Thus, That local variable is accessable outside the scope.
+  -- Closure logic is used while caching the data, in Memorization tech.
+eg:
+const myFun = () => {
+    let obj1 = {
+        name: "sourav",
+        age: 25
+    }
+    return function() {
+        console.log(obj1);
+    }
+}
 
+const newFun = myFun();
+console.log(obj1);  //This will fail, 
+newFun(); //This has still access to obj1
+
+Object Prototypes ?
+  -- This are basically Blueprint of any Object in JavaScript.
+  -- we have Object.prototype, That has property and methods for all the Prototypes supported in JS.
+eg of few Prototypes, Date prototype, Math prototype, Array prototype, Object prototype.
+Why we need it ?
+  -- It gives access to a wide range of methods on an Object, Even if that Object doesn't contains the declaration of that method.
+  -- Code reusability.
+  -- As we declare our data-Type, Js Engine will attach proper prototype based on the type of Data defined.
+NOTE:
+When you call a method for an Object,
+  -- First it checks if method declared in the Object declaration ? If NOt...
+  -- Then it looks for the defination in its protoype ? If not..
+  -- then it looks into Object's prototype ? If not..
+  -- then it throws error.
+
+Callbacks in JavaScript ?
+  -- Functions that are used as arguments to another funtions are called as callbacks.
+use ? 
+  -- They are used in nested synchronous function structure, It will be executed after another function done executed.
+eg:
+const productNum = (a, b) => a*b;
+const findSumProd = (x,y, callBack)=>{
+    let sum = x+y;
+    return callBack(sum, 6);
+}
+
+const ans = findSumProd(5,6, productNum);
+console.log(ans);
+
+Types of Error in JS ?
+1) Syntax Error
+  -- Cause the Program to crash. Mainly due to misspelling of keywords and identifiers.
+2) Logical Error
+  -- All Syntax is proper, but the logic of Prog is incorrect.
+
+Memorizations ?
+  -- Caching Technique, If parameter passed doesnot change then the value is returned form cache instead of computing all over again.
+  -- This makes processing faster for time-consuming functions.
+NOTE: This tech is only used for expensive fun calls, expensive -> funs that consumes lot of time in processing.
+How to Do ?
+  -- Define a Object, cache, use the closure logic to make cache accessable outside the function.
+  -- Inside the function, Check if the cache all ready have the value for the param passed ? IF yes, return from cache.
+  -- If not ? Store in cache and return it.
+Drawback of Caching ?
+  -- It saves time in expensive function, but it consumes extra space.
+eg:
+const increment = () => {
+    let cache = {};
+    
+    return function(data) {
+        for(let keys in cache) {
+            if(keys == data) {
+                console.log('returning from Cache date');
+                return cache[data];
+            }
+        }
+        cache[data] = data+10;
+        console.log('Not from the cache');
+        return cache[data];
+    }
+}
+
+const fun1 = increment();
+console.log(fun1(10));  //this will return not from the cache data.
+console.log(fun1(10));  //this will return from the cache data.
+
+Recursion in JS ?
+  -- A function calling itself. [Recursion]
+  -- Always includes one baseCase or exist condition.
+eg:
+const findArrSum = function (arr, index=0) {
+    //basecondition
+    if(index == arr.length-1) return arr[index];
+    
+    return arr[index] + findArrSum(arr, index+1);
+}
+
+console.log(findArrSum([1,2,3,4,5,6]));
+
+*********************************************************************
+NOTE: While submitting code in Compiler during problem Solving...
+1) To accept the input from the user, const input = parseInt(readLine());
+2) then write the function. fn(param) {...}
+3) To print the ouput for the give input, console.log(fn(input));
+*********************************************************************
+
+Constructors in JS ?
+  -- This are invokes when a object is created using new keyword.
+  -- Constructor Should always starts with Caps.
+  -- If defined inside a class, Both names should match.
+eg:
+const MyInfo = function(name, age, place) {
+    this.name = name;
+    this.age = age;
+    this.place = place;
+}
+
+const newObj = new MyInfo('souav', 34, 'chennai'); // we can create many Objects using the constructor.
+console.log(newObj);
+console.log('My name is: ',newObj.name);
+const newObj2 = new MyInfo('bob', 23, 'UK'); //new object is create using constructor.
+
+Client Side JS Vs Server Side JS ?
+
+Client Side JS
+    -- Have access to Special Objects like DOM -> Access to all the webpage elements.
+    -- Have access to Browser Object Model(BOM) i.e windows object. --> provide functionality like setTimeInterval, prompt etc.
+    -- Runs on the Browser Engine, Is designed to handle the Client side web-page Animations and manipulation.
+Server-side JS:
+    -- Node Js -> Js platform runs outside browser.
+    -- Independent of any browser platform. Runs outside of browser.
+    -- No access to Windows or dom elements.
+    -- Have access to npm packages, That manage various open-source package for server side development and database integration. eg: express and mongoose.
+    -- Mostly focused on REST API Creatio and managing server-side scripting.
+
+DOM ?
+  -- Document Object Model. A programming interface to HTML and XML documents.
+  -- brower creates DOM Objects when it trys to Render the HTML files.
+  -- In the browser, DOM enables to manipulate HTML Pages using Js.
+Also, Provides DOM events, That can trigger the code listener function, when a particular action is performed with HTML elements.
+NOTE: Most of the animations in the client side, includes DOM that binds HTML with JS.
+
+BOM ?
+  -- Browser Object Model. i.e The Window Object available in the browser.
+  -- a huge list of property and methods for the current page.
+  -- Contains tones of functionality for browser related work, has access to methods like setTimeOut, propmpt and many more.
+  -- document, screen, naviagator, location and other attributes are avialble in BOM.
+
+
+**Experience Knowledge on JS**
 
 
 
