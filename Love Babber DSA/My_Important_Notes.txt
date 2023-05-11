@@ -710,15 +710,189 @@ Space complexity of some Recursive alogortithm:
      -- In each some costant space k is taken. 
    SC: O(n)
 
+
+*** OOPs Concept ***  Ref: https://www.codingninjas.com/codestudio/guided-paths/basics-of-c/content/118817/offering/1381799
+
+Love babber OOPs RoadMap: https://whimsical.com/object-oriented-programming-cheatsheet-by-love-babbar-YbSgLatbWQ4R5paV7EgqFw
+
+Objects 
+  -- Entity which have 2 things, Properties and some behaviour.
+  -- Instance of a Class
+Class -> Its a User defined data-type.
+-- Size of class is the total space the property of the class occupyies.
+NOTE:
+  -- Size of Class with no Property is 1 byte.
+
+How to access Class from a seperate file in the program ?
+  -- You need to add the File in the header. eg: #include "ClassFileName.cpp"
+  -- After including this, you can directly use the class in the Program.
+
+Access Modifiers ?
+NOTE: By default, Class properties and methods are private
+1) Public: Everywhere in the WorkSpace.
+2) Private: Only inside the class, used my method functions
+3) Protected: Accessable by the child class methods
+
+Getters & Setters ?
+  -- Methods inside the function, They are public and can access the private property of the class.
+
+Padding and Greedy Alignment of memory ?
+ -- Size of Class or struct with different types of data-types might differ because of padding and greedy alignment of memory by the compiler.
+ eg: If Struct contains data Types of int, int*, char and int* -> Total size expected -> 4+8+1+8 = 21, But Size will be 32.
+   Reason ?
+   -- Comipler add padding for int and char type and try to match with int* size, 
+      Thus size of int -> 4+4(padding added), size of char -> 1 + 7(padding addde). and int* will be 8 bytes. so total -> 32.
+ NOTE:
+   -- THis padding depends upon the order of the Property defined. Here it will greedyily align them the memory. [IMP]
+   eg: If the order of the data types changes, int*, int, char, int*  -> Total size will be -> 24.
+   Reason ?
+   -- [int*] -> 8 bytes 
+   -- [int,char and padding] -> 4+1+3 (Compiler greedyily adds padding and accomodate int and char and  make it equal to 8]), 
+   -- [int*] -> 8 bytes, 
+   Total -> 24 bytes.
+   
+   Conclusion: [V.IMP]
+     -- space allocated to class or Struct, It depends upon what type of data-types it holds and in what order and based on the compiler how it will arrange them.
+     -- One thing Observed,
+     If we defined data-type with more space first, It trys to greedyly arrange multiple data-type of lower space after it within the range of higher data-type space.
+     eg: if data-type order is --> int, long, char -> (4+4[padding]) + 8[long] + (1+7[padding]) -> 24
+         but if we rearrange  --> long, int, char -> 8[long] + (4[int]+1[char]+3[padding]) = 8+8 -> 16. [Class/struct takes less space]
+
+Creation of Object for class:
+   Static way: Car c1;
+   Dynamic way: Car *c2 = new Car(); OR Car *c2 = new Car;
+
+Constructors:
+  -- Invoked Whenever the object is Created.
+this keyword in Class:
+  -- 'this' is a pointer to the current Object of the class.[NOTE: this is pointer type, eg: this->ObjProperty]
+  -- It basically stores the address of the current class's Object.
+
+NOTE: [V.Imp] 
+  -- Whenever you defined any constructor in a class, The default constructor is removed my the compiler for that Object.
+      eg: You created a class, you created an Object. eg: Demo d1; -> [Default Constructor by the complier is called]
+      now, you defined a parametrised Constructor. eg: Demo d2(23, 34) [Parameterised Constructor created by you is called] [NOTE: the default constructor by compiler is destoryed]
+      now, you try to call the default constructor. eg: Demo d3. [NO Constructor Found --> Error by the complier]
+  -- If any of the constructor is defined, Then defualt constructors will be removed.
+     -- If you define just parametrized constructor, and you want to use default constructor ? It will not be availble.
+     Solution: You need to explictly define a deafult constructor, now Demo d3, will work.
+
+Copy Constructor:
+  -- It is automatically generated when the Class is created.
+  -- It Copies One Object to another Object for the same class.
+  -- The Object passed as Param to Copy constructor will be always passed by Reference [VV.IMP]
+  Reason:
+     -- If passed by Value, It bassically copies the data, So copy constructor is needed, Thus it's stuck in a loop. [NOt used]
+     -- If passed by Reference, It is basically points to the same location with a different name. -> same Object is passed to Copy constructor param with a different name.[Perfect]
+
+  shallow and deep Copy ?
+  -- This Method is genrally deals with copy of value in case of Pointer class properties.
+  g: A class, has obj1 Object that has one Property char *ch[strores address of a char array]. We will try to create obj2 by copy data from obj1.
+  1) Shallow Copy:
+     -- Default Constructor follows Shallow Copy. 
+     -- when we copy obj1 to obj2, both will store the same address location, what ch is holding.
+     Thus, Any change in ch will refelect in both obj1 and obj2.
   
+  2) Deep Copy:
+     -- Overwrite the default copy Constructor.
+     -- BAsically we will create a new pointer and copy the data of ch from obj1 into this.
+     -- assign this to the current Object ch eg: this->ch, and Thus, you now have ch pointing a different memory location for Obj2.
 
+   NOTE:
+   -- Both Default and Copy constructor are created by the compiler by default when Object is created.
+   -- Unless you try to overwrite it, For the new Object created afterward, the default constructors by complier will be overwritten. 
 
+   Copy Assignment Operator:
+   -- You have 2 Objects, obj1 and obj2, 
+   -- obj1 = obj2, It will copy All the properties from obj2 to obj1.
 
+Destructor:
+  -- Used for memory deallocate for the allocated space for the class.
+  -- invoked when the Object is getting out of scope.
+  -- Takes no Parameter, no Return Type.
+  NOTE[VV.IMP]:
+    -- Objects which are created static way, For them destructor will be called automatically.
+    -- Objects Dynamically created, Destructed needed to be called manually.
+    eg: delete obj1; --> this will trigger the destructor.
 
+Static Keyword in Class
+  -- Any method or property defined as static, Belongs directly to the class.
+  -- static methods dont have access to this.
+  -- Objects can access it, but not Recommended. It's basically a class property.
+  eg: static int num1; static void tesFun() {...}; [NOTE: Static member functions can only access static property]
+  How to use this static Propertires ?
+  int ClassName::num1;  -->  we use the scope resolution Operator (::)
 
+*** OOPs 4 Pillars/Concepts ***
 
+1) Encapculation [Information hiding/ Data hiding]
+   
+   Defination:  wrapping up of data members(class properties) and functions(class methods).
+   -- Fully encapsulated class:  All Data members should be private scoped.
+   Why ?
+   -- It helps us achieve Data Hiding feature -> More security.
+   -- We can make read-only Class. 
+      HOW? 
+      --> All members are private and assume we only have getter methods.
+   -- Unit Testing is easy.
 
+2) Inheritance
+   
+   -- child Class(sub class) inherits the properties of all the parent class(super class).
+   -- Mode of Inheritance: child class can specify the mode in which it wants to access the parent class. eg: Class child: public/private/protected Parent {...};
+   -- Private properties from  parent/Super class cannot be inherted
+   NOTE: 
+   1) If mode is Public: All inherited methods OR properties will be consided as same mode as it is defined for parent class.
+   2) If mode is protected: All inherited methods OR properties will be considered as protected.
+   3) If mode is Private: All inherited methods will be private to the child class.
+   
+   ** Protected Access specifers:
+   -- It cannot be access outside the class, Only can be accessed inside by the methods.
+   Private Vs Protected ?
+   -- Protected properties can be accessed by the child class vs Privtate properties are accessable to no one.
+   
+   Types Of Inheritance:
+   1) Single Inheritance:  class A  -> class B
+   2) Multiple Inheritance:  class A, class B  -> class C
+   3) Hirarchical Inheritance: Class A -> Class B, Class C 
+   4) MultiLevel Inheritance: Class A -> Class B -> Class C 
+   5) Hybrid Inheritance: Mix and Match of the above mentioned Inheritance logic.      
 
+   Inheritance Ambiguity ?
+   -- If class A has fun1(), class B has fun1(),
+   -- Class C inherite Class A and Class B, fun1() of which class it will call ?
+   Solution: We use (::) Operator to resolve the ambiguity.
+             eg: C obj1; obj1::A.fun1() -> This will call fun1 of class A.
+                         obj1::B.fun1() -> This will call fun1 of class B.
+
+3) Polymorphism: 
+2 Types: 
+   1) Compile-Time
+      1) Function Overloading:
+         -- In a class, function having same name but different number or type of params.
+         NOTE: Functions with exactly same name and same param but different return type is not considered to be Overloaded. [Imp] 
+      2) Operator Overloading:
+         -- We can Overload an Operator to do custom Task, syntax: returnType operator+(input) [input should be passed by reference in case of binary Operators]
+         NOTE: There are few Operators which cannot be overloaded --> :: , .*  , .  , ?: 
+         -- eg: Addition of two complex numbers, using the '+' operator.
+   
+   2) Run-Time:
+      -- Method Overloading. [Mostly happend in Inheritance Case]
+      -- Class A has method dowork(),
+         Class B inherits Class A, and define it's own method doWork().
+         In this case, The Inherited method doWork is overwritten by class B. [Very useful in practical Situations]
+
+4) Abstraction: 
+   -- Basically Implementation hiding from the User.
+   eg: Class have access modifiers like private, Thats hides and protect data of the class.
+
+Observations from Inheritance:
+   -- Protected class properties or Functions cannot be accessed by obj outside the class.
+   -- Memeber Functions of a class should always be under the public Access specifers.
+   -- Inheritance Ambiguity --> Related to Multiple inheritance -> solution: use (::) class name then method to call the specific method.
+   -- Run time Polymorphism, Method Overloading --> Can be found during inheritance, When parent and child class have same method name.
+      By default, Child object can access it's own function. If not defined, then it will call the inherited function from parent class.
+   
 
 
 
