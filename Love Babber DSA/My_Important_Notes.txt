@@ -156,6 +156,7 @@ Containers STL:
    -- It is implemented using doubly linked List.
    -- Direct access of the element eg: v.at(1) or V[1] is not possible here. (**Main**)
    -- Since direct access is not there, erase(post) --> time complexity will be O(n); Note: post has to be an iterator.
+NOTE: For Singly Linked list we use: forward_list
    
 * Container Adapters:
 1) Stacks:
@@ -710,6 +711,12 @@ Space complexity of some Recursive alogortithm:
      -- In each some costant space k is taken. 
    SC: O(n)
 
+NOTE: Solving Questions using the Recursion Tech [VIMP]
+   Everytime we solve a question using Recursion, Always remember:
+   -- There has to be a base case or the REcursion logic should be inside a if block, To stop the recursive function call.
+   -- YOu need to solve just one case, The rest you assume, Recusion already have handled it. [For logic formation]
+   -- Do a dry Run, for the approach, using the Recursion tree or Fun call stack.
+   -- Space Complexity of a Recursive Function, depends upon the how many times the Function is calling itself i.e Recursive dept.
 
 *** OOPs Concept ***  Ref: https://www.codingninjas.com/codestudio/guided-paths/basics-of-c/content/118817/offering/1381799
 
@@ -892,10 +899,87 @@ Observations from Inheritance:
    -- Inheritance Ambiguity --> Related to Multiple inheritance -> solution: use (::) class name then method to call the specific method.
    -- Run time Polymorphism, Method Overloading --> Can be found during inheritance, When parent and child class have same method name.
       By default, Child object can access it's own function. If not defined, then it will call the inherited function from parent class.
-   
 
 
+*** Linked List ***  [Ref: https://www.codingninjas.com/codestudio/guided-paths/data-structures-algorithms?source=youtube&campaign=YouTube_CodestudioLovebabbar23rdJan&utm_source=youtube&utm_medium=affiliate&utm_campaign=YouTube_CodestudioLovebabbar23rdJan]
 
+   -- Linear Collections of Nodes. Nodes -> capsule that conains data and address of next node.
+   -- It allocates Memeory in Random fasion, No continious memory allocation.
+Why ?
+   -- Arrays are rigid DS. During Run-time, The size cannot be increased.
+  NOTE: 
+      In vectors, When Size exceeds, a new vector is created with more size and all datas are copied from old vector to this. [**not optimal case**]   
+Importance ?
+   -- Dynamic DS, Size is adjustable during Run-Time, no memory wastage.
+   -- Insertion/Deletion in the middle is Faster and invloves no shifting of elements.   
+
+Types: 
+   1) Singly Linked List: Node contains data and one Address pointer, next.
+   2) Doubly Linked List: Node contains data and 2 Address pointers, next and prev
+   3) Circular Linked List: The Tail points back to head. [NOte: Here we use just tail pointer OR head pointer any one is fine]
+   4) Circular Doubly Linked List: Tail points to head.
+
+Working with Node:
+   -- Consider creating node in the heap Memory, using new keyword. [heap memory allocation is prefered for node]
+   -- Also passing nodes to methods, Pass it by reference. [VIMP]
+   Reason ? -> we will update head, So if we dont use by reference, Head update will not reflect outside the function.
+
+
+NOTE: Important Concepts on Linked Lists Questions.
+
+** Detecting If a LinkedList is Circular or not ?
+
+1) Iterative Method: 
+   -- Start ahead of head Node and keep on traverseing.
+   -- till you find the end or come back to head Node Again. If reached head again -> circular else Not.
+
+2) Using Map as a lookup for Visted Node.
+   -- Use Map to Store the Node Address as key and a bool flag to denote if the node is Visted or not.
+   -- If Visited already, The Linked List is either having a loop or Its Circular in Nature.
+
+*************** Important Concept Of loop Detection and Handling in LinkedList ***************
+
+NOTE: In Case we our Linked List has Loops, Then The above Iterative Method will break, the temp pointer will stuck in an infinity loop.
+
+Possible Concepts That we can Expect from a Looped LinkedList:
+
+   1) Detect if there is a cycle present in the given LinkedList or not ? [using Map Loopkup or Floyd's Loop detection Algo]
+   2) Find the Node where the Loop is starting ? [using Floyd's Loop Detection Algo]
+   3) Remove the Loop From the Looped Linked List. [Find the start of the Loop, Then REmove the loop]
+
+** Loop Detection **
+Approach:
+   1) Using Map as a lookup for Visted Node.
+      -- a Lookup Map that stores key as Node Address and value as a bool flag that if the node is visited or not.
+      -- Same Logic as mentioned Above.
+
+   2) Floyd's Loop Detection Tech: [VIMP]
+      -- Take 2 pointers, Fast pointer[moves 2 nodes at a time] and slow pointer[moves 1 node at a time].
+      -- Travese till the fast becomes NULL, 
+         IF anytime Fast and slow pointer meets, The Linked List having a loop.
+      -- If not then, The Linked List dont have a loop.
+
+** Loop Starting Node for Looped Linked List **
+Approach:
+   -- use Floyd's Algo to find the Point of Intersection of fast and slow Pointer.
+   -- move slow pointer back to head.
+   -- increment slow and intersection point 1 node at a time untill they intersect. [This gives the begining of the loop]
+NOTE: For Proof Why this approach works ?  Look in LB Notes -> phase2 -> LinkedList4.pdf
+
+** Removal of Loop for Looped Linked List **
+Approach:
+   -- Use Floyd's Method to find the start of the loop,
+   -- Since its a loop, use iterative way to traverse loop nodes and remove the loop.
+
+Important Concepts on LinkedLists:
+
+* Finding mid Node in Linked List, using Fast and slow Pointer method: TC: O(n) SC: O(1)
+Appraoch:
+   -- Handle edge case is Head is null or only 1 Node is there.
+   -- First declare 2 Node Pointers, slow on head and fast on the next element of head.
+   -- Now Run a loop, till either fast becomes NULL or fast->next becomes NULL i.e Fast reaches the tail Node.
+   -- Move slow 1 Node at a time, and fast 2 Node at a time.
+   -- AS fast reaches the end Node, Slow gives the mid Node.
 
 
 
