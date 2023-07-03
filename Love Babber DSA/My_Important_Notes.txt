@@ -201,6 +201,19 @@ NOTE: For Singly Linked list we use: forward_list
    -- This is implemented using hashTable.(**main**)
    Benefit: TC of search is O(1)
 
+3) Pair:
+   -- Used to Store 2 heterogenous data together. eg: pair<int, char> P1.
+   -- How to Store Data ?
+      -- P1.first = 5; P1.second = 'A';
+      -- Pair P2(5, 'A');
+      -- P2 = make_pair(5, 'A') -> This also make a pair using the make_pair method.
+      -- P2 = {5, 'A'}
+   -- Copy One Pair to another Pair ?
+      Pair<int, int> P2; P2(P1)
+   -- NOTE: If the pair elements are not initialized, then it defaults to 0.
+   -- Swaping pairs ?
+      P2.swap(P1); -> swap the elements of P1 and P2. [data types of elements should match]
+
 Algorithms in STL:
 Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It includes all headers**)
 1) BinarySearch:
@@ -824,11 +837,16 @@ Destructor:
 
 Static Keyword in Class
   -- Any method or property defined as static, Belongs directly to the class.
-  -- static methods dont have access to this.
+  --Class methods dont have access to this.
   -- Objects can access it, but not Recommended. It's basically a class property.
   eg: static int num1; static void tesFun() {...}; [NOTE: Static member functions can only access static property]
   How to use this static Propertires ?
   int ClassName::num1;  -->  we use the scope resolution Operator (::)
+
+NOTE On Class and Constructors: [V.IMP]
+   -- Never initialize any Class peroperties. -> You Just declare the properties.
+   -- Use Constructor to initialize the properties during Object Creation.
+If Not follwed, It will show segmentation Error.
 
 *** OOPs 4 Pillars/Concepts ***
 
@@ -981,15 +999,27 @@ Appraoch:
    -- Move slow 1 Node at a time, and fast 2 Node at a time.
    -- AS fast reaches the end Node, Slow gives the mid Node.
 
+*** Stacks ***
 
+-- Data Structure that follows: LIFO [Last In First Out]
 
+Implementation: All operations: TC: O(1)
 
+1) Using STL:  stack<dataType> s; [Operations: s.push(), s.pop(), s.top(), s.empty(), s.size()]
+2) Using Class: 
+   -- Stack can be represented in class using 2 DS: Arrays OR LinkedList.
+   -- Mandatory Class Properties For Stack using Array: A dynamic Array[constructor will take care], Array_size, top_index.
 
+Important Questions From Stack: [Level: Hard][Very Important]
+-- Largest Rectangle in Histogram
+-- Celebrity problem [Very Important]
+-- Find the Largest Rectangle in a Binary matrix. [Logic: Use Largest Area in Histogram]
+-- N Stacks in an Array [Logic: Use topIndex[] and nextFreeSpace[] and freeSpotIndex For managing stacks]
+-- Design a MinStack Class with TC: O(1) SC: O(1) [Logic: use pair to store element in Stack, OR Computaion of previous and current minVal]
 
-
-
-
-
+NOTE: 
+   -- To Fill all the elements of the array with a particular value, use:  memset(arr, 1, sizeOf(arr));
+   -- This will fill all elements of the arr with 1.
 
 
 
