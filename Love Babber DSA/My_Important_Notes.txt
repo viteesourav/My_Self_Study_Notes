@@ -1018,11 +1018,53 @@ Important Questions From Stack: [Level: Hard][Very Important]
 -- Design a MinStack Class with TC: O(1) SC: O(1) [Logic: use pair to store element in Stack, OR Computaion of previous and current minVal]
 
 NOTE: 
-   -- To Fill all the elements of the array with a particular value, use:  memset(arr, 1, sizeOf(arr));
-   -- This will fill all elements of the arr with 1.
+   -- To Fill all the elements of the array with a particular value, use:  memset(arr, 1, sizeOf(arr)) [This will fill all elements of the arr with 1]
 
+*** Queues ***
 
+-- Logic used in Queue: FIFO [First In First Out]
+-- Iterator used in Queue: front[keep tracks of front queue element] and back [keep tracks of queue back element]
 
+STL Queue Operations: queue<int> q;
+Operations: 
+ -- q.push(x) , q.pop(), q.size(), q.front(), q.back(), q.empty() [TC: O(1)]
+
+NOTE: pop here in q returns nothing. Use q.front() to get the data before poping.
+
+[VIMP]
+For Implementaion of Normal Queue and cyclic Queue and DEque [Remember the Conditions For Push and Pop Operations]
+  -- Majorly 3 conditions you should check before moving front and raer...
+     1) check if the Queue is Full or empty based on the front and rear.
+     2) Rest front and rear if only 1 element we are inserting or poping out.
+     3) update the front or rear to maintain the cyclic condtion.
+     4) Noraml increment/decrement of the front and rear.
+
+Input Restricted Queue ?
+  -- Push Operation is allowed only at rear. [push_back Operation]
+  -- Pop Operation is allowed at both front and rear. [pop_front and pop_back Operation]
+
+Output Restricted Queue ?
+  -- Push Operation is allowed at both front and rear. [push_back and push_front Operation]
+  -- Pop Operation is allowed at front. [pop Operation]
+
+DoublyEnded Queue ?
+  -- Push Operation is allowed at both front and rear. [push_back and push_front Operation]
+  -- Pop Operation is allowed at both front and rear. [pop_front and pop_back Operation]
+
+** Uses of DoublyEnded Queue ? -> Can be used to implement stack as well as a Queue.
+** Practical Use of Queue -> CPU Scheduling, Process Scheduling Operation [OS]
+
+STL DoublyEnded Queue Operations: deque<int> q;
+Operations: 
+ -- q.push_back(x), q.push_front(x) , q.pop_back(), q.pop_front(), q.size(), q.front(), q.back(), q.empty() [TC: O(1)]
+
+Important Questions of Queue..
+   -- First Negative Number in Window of K
+   -- First non-repeating Character from a stream.
+   -- Circular tour [VVImp]
+   -- Interleave first half of queue with second half [stack approach and queue appraoch]
+   -- Implement N Queues in Array. [same as Implementing N stack in Array] [Vimp]
+   -- Sum of minimum and maximum elements of all subarrays of size “K” [Vimp, Hard]
 
 
 
