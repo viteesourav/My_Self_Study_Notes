@@ -1066,11 +1066,76 @@ Important Questions of Queue..
    -- Implement N Queues in Array. [same as Implementing N stack in Array] [Vimp]
    -- Sum of minimum and maximum elements of all subarrays of size “K” [Vimp, Hard]
 
+*** Binary Tree ***
+ -- non-Linear Data Structure [One Node may connect to multiple Nodes]
+ -- BinaryTree: Each Node may have <= 2 childs
+ Imporant Terms:
+ -- Node: Each Element is called Node, that holds the data and pointer to the next Node.
+ -- Root: Top Node is Root Node.
+ -- Parent and Children Nodes.
+ -- siblings: Node at same level For a parent.
+ -- Ancestor and Descendent: For Node, Look 2 level up or down.
+ -- Leaf Nodes: Nodes with No children.
 
+Creation of basic BTree: 
+   1) Using REcursion we can create.
+   2) If we have the levelOrder Data, we can crate a Btree.
 
+Travarsal in Binary Tree:
+   -- LevelOrder traversal [Queue is used]
+   -- Reverse level order traversal [same method as above, use stack to reverse the content of Queue.]
+   -- InOrder traversal [Left Node Right, Recursive]
+   -- PreOrder traversal [Node Left Right, Recursive]
+   -- PostOrder traversal.[Left Right Node, Recursive]
+   -- Morris Traversal [Based on creation and deletion of temp Links] SC: O(1) [VIMP]
 
+NOTE: 
+   -- The whole Advantage of Morris Traversal is, It can iterate a BTree in TC: O(N) and SC: O(1). While all other algo use Recursion or Queues. TC: O(N) and SC: O(N)
 
+Important Questions from Trees:
 
+BASIC: [Pattern: Use Recursion + pair, TC: O(n)] [Instead of calling height for each NODe, Use Pair to calculate height at each node]
+   
+   1) Height of binary tree / find the max dept of a given Tree. [Use Recursion]
+   2) Diameter of a BTree. [VIMP, use pair<Diameter, height>]
+   3) Check for balance Tree. [VIMP, use pair<isBalanced, height>]
+   4) Check if 2 trees are identical [use Recursion]
+   5) Sum Tree [VIMP, use pair<isSumTree, Nodedata>]
+
+Traversal Questions: [Pattern: In BTree, LevelOrder Travesal and horizontal Distance of Nodes and Map]
+
+   1) Zig-Zag/Spiral Traveral. [Queue + Processing level Order with tempArr + alterantingFlag]
+   2) Boundary Traversal. [leftTraverse + leafNodes + rightTravese]
+   3) Vertical Traversal. [VVIMP, horizontal Distance(hd), + MAP + LevelORderTraversal] [Hard]
+   4) Top View Of BTree. [Vertical Traversal Logic + map stores HD and firstNodeVal ]
+   5) Bottom View Of BTree. [Same as top View, map stores HD and LatestNodeVal]
+   6) LEft View of BTree. [Level Order Traversal, map stores nodeLvel and firstNodeVal>] / [Rcursion + LevelTracking]
+   7) Right View of BTree. [Level Order Traversal, map stores nodeLvel and LatestNodeVal>] / [Rcursion + LevelTracking]
+   8) Diagonal View of BTree. [Level Order Travesal, map stores diag and List of all Nodes] / [Recursion + diagonal Tracking, using map]
+
+NOTE: [**VIMP**]
+   -- Recursive way is always faster than Level order Traversal. [Map Operations adds to TC, makes it O(nlong)]
+   -- In REcursion, If want to track something as you REcursivly call, REmember to pass the data by reference.
+      Else, When Recursion backtrack, The value will change as it was from where it is called. [As callstack moves down, Values gets updated, Only by reference passed variables maintains there value]
+   -- For look_up freq table or map used for lookup, Always go for unordered_map.
+      1) unordered_map stores data in a unordered way so, insertion and fetching data is faster. 
+         -- implemneted using: Self-balancing BST Tree. eg: Red-black Tree. 
+         -- TC of search, insertion and deletion: Average Case: O(1), WorstCase: O(n)
+      2) map stores the data in a sorted way, so inserting and fetching data is slower. 
+         -- implement using: hashTable 
+         -- C of search, insertion and deletion: WorstCase: O(logn)
+
+Important Questions:
+
+   1) Longest Path from Root to Leaf Sum [Recursion/ Level order traversal]
+   2) Lowest common Ancestor (LCA) of Btree [Recursion] [**VIMP**]
+   3) Sum of K Nodes [IMP, Recursion + vector to store Node path values]
+   4) Kth Ancestor Of a Ndoes. [Recursion] [**IMP**]
+   5) Find the max Non-ADjacent Node Sum. [Recursion + pairs<Sum including curr Node, Sum excluding the curr Node>]
+   6) Construct Binary Tree From Inorder and preOrder. [Recursion + iterate preOrder from left to right]
+   7) Construct Binary Tree From Inorder and postOrder. [Recursion + iterate postOrder from right to left]
+   8) Min Time to Burn Binary Tree. [ParentNodeMapping + VistiedNodeMap and Queue] [***VIMP**]
+   9) Flattern a Binary Tree into LinkedList. [Morris Traversal, SC: O(1)] [**VImp**]
 
 
 
