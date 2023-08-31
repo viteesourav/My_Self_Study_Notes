@@ -1068,7 +1068,8 @@ Important Questions of Queue..
 
 *** Binary Tree ***
  -- non-Linear Data Structure [One Node may connect to multiple Nodes]
- -- BinaryTree: Each Node may have <= 2 childs
+ -- BinaryTree: Each Node may have <= 2 childs [at max 2 childs]
+ 
  Imporant Terms:
  -- Node: Each Element is called Node, that holds the data and pointer to the next Node.
  -- Root: Top Node is Root Node.
@@ -1137,10 +1138,58 @@ Important Questions:
    8) Min Time to Burn Binary Tree. [ParentNodeMapping + VistiedNodeMap and Queue] [***VIMP**]
    9) Flattern a Binary Tree into LinkedList. [Morris Traversal, SC: O(1)] [**VImp**]
 
+** Binary Search Tree ** [Mostly asked Topic]
+   -- A BTree, with Strict 2 Conditions: 
+   For any Node,   
+      1) The left Child should be smaller i.e currNode->left->data < currNode->data
+      2) The Right Child Should be greater i.e currNode->right->data > currNode->data
+   
+   -- TC of insertion of a new Node in BST: O(logn) [As based on the value we either traverse left or right]
 
+NOTE: 
+   -- Inorder Traversal [LNR] of BST is always sorted. [**VVIMP**, Used at multiple logics]
+   -- Min in the whole BST is at the left-most Node. Max in the whole BST in at the right-most Node.
+   -- Inorder Predecessor and InOrder Succesor [**VIMP**]
+      In a BST, at a particular Node:
+      1) Predecessor: The max element from the left tree of the currNode.
+      1) Sucessor: The min element from the right tree of the currNode.
 
+Basic BST:
+   1) Creation of BST [TC: O(logn), Use Recursion]
+   2) Seraching in BST [Use Recursion, TC: avergaeCase: O(logn), worstCase: O(n)[In case of skew BST]]
+      NOTE: Recursion taking SC: O(N), Use Iterative way to do in SC: O(1)
+   3) Deletion in BST. [Recursion, SearchingNode + DeleteNode Conditions ] [**VVIMP**]
 
+Important:
+   1) Validate a BST [Recursion, Check for BST cond for each Node, should fall under the range]
+   2) Kth Smallest/largest Element in BST.[inorder Recursion, Morris Traversal [Faster Algo]]
+   3) Inorder Predecessor and Succesor of a Node in BST. [maxNode from LeftTree[predecessor], minNode from rightTree[Succesor]]
+   4) LCA[Lowest common Ancestor] of a BST. [Compare the Root val with nodes]
 
+   5) Two Sum in BST [Inroder BST traversal + 2-pointer approach]
+   6) Falttern a BST to sorted LinkedList [Inorder BST Traversal + Node Link Manipulation]
+   7) BST to Balanced BST [Inorder BST + Create new BST from mid Node using Recursion]
+   8) PreOrder to BST [use the Range Logic + Recursion to Find the place to put the Nodes] [**IMP**]
+
+NOTE: While using REcursion with vector Traversal: [**VVIMP**]
+   -- If you using say index to iterate each element of the vector in a Recusrion Appraoch,
+      1) index should be defined as pass by refernece.
+      2) If you are passing index+1 in the recursion call, It will throw error. [reference error]
+   Solution:
+      -- Update the index first and then pass the updated value in the recursion call.
+      -- Make sure any var you passing as reference, You cannot update it directly in REcusion call, You need to update value first and then use that updated value..
+
+** VVIMP Questions:
+   9) Merge 2 sorted BST [InorderTraversal + Vector/LinkedList + contructBST]
+      ** Approach1:    
+         -- InorderNodes Array from BST
+         -- Merge 2 sorted Array 
+         -- InorderNodes Array to Balanced BST
+      ** Approach 2: [Space efficent than approach1]
+         -- Convert BST to Inorder doubleLinkedList. [**IMP**]
+         -- Merge 2 Double LinkedList
+         -- Inorder Linked List to Balanced BST. [**IMP**]
+   10) Largest BST in a Binary Tree [using Recursion + class with 4 info for each Node]
 
 
 
