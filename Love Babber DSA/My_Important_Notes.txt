@@ -234,6 +234,7 @@ Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It inc
 4) Sort: 
    -- It sorts the array between the given positions.
    -- It is based on Intro sort that include: insertion, quick and heap sort. 
+   -- Worst Case: TC: O(nlogn) SC: O(n2)
 
 
 
@@ -1191,6 +1192,96 @@ NOTE: While using REcursion with vector Traversal: [**VVIMP**]
          -- Inorder Linked List to Balanced BST. [**IMP**]
    10) Largest BST in a Binary Tree [using Recursion + class with 4 info for each Node]
 
+NOTE: 
+   -- 10th question shows how to handle/hold multiple data using class [or we can use struct also] during recursion.
+   -- If only 2 data you need to handle/hold, then go with pairs, If more than 2, use struct or class to hold as data-members.
+
+** Heaps **
+
+What are Heaps ?
+   -- Heaps are Complete BinaryTree with heap Order Property.
+
+1) What is complete Binary Tree (CBT): 
+   A Binary Tree that satisfy 2 conditions: 
+      -- All Nodes must have 2 Children except the last Level.
+      -- At any level of the Binary tree, The Node should be filled from left to right order.
+2) Heap Order Property:
+      -- Max Heap: At any Node, The Node val strictly greater than it's children. 
+      -- Min Heap: At any Node, The Node val Strictly smaller than it's children.
+
+How to implement Heap ?
+   -- Heap can be implemented using a normal Array, Filling the Node value level wise from 1st index onwards. [**IMP**]
+   -- If Parent Node index is i.
+      -- Left child index: 2i [1-based index i.e 0th postion of array we wont consider]
+      -- Right child index: 2i+1 [1-based index]
+
+NOTE: [** VIMP **]
+   -- For 0-based index i.e If the 0th position we are considering...
+      -- left Child index: 2i+1
+      -- right CHild index: 2i+2
+   -- For 0-based Index,
+      -- n/2 to n-1 are all leaf Nodes and n/2-1 to >=0, we need to heapify for building heap.
+   -- for 1-based Index,
+      -- n/2+1 to n are all leaf Nodes and n/2 to > 0, we need to heapify for building heap.
+
+Operations Supported with Heap:
+   1) Insertion in Heap [TC: O(log n)]
+   2) Deletion in Heap [TC: O(log n)]
+   
+   3) Build Heap and heapify [ **VIMP** ]
+      -- Heapify TC: [O(log n)] -> Taking a Node to it's correct Position in the heap down the Complete binary Tree.
+      -- Building a Heap, TC: O(n) -> From arr to heap, using heapify.
+   
+   4) heap Sort [TC: O(nlogn)]  [**IMP** ]
+      -- Given a Heap Nodes, Sort it.
+
+NOTE: 
+   -- Important Property of Complete Binary Tree:
+      -- If we represnet CBT in array[1-based] of size n, then all element from n/2 + 1 to n are leaf Nodes.   
+      -- If we represnet CBT in array[0-based] of size n, then all element from n/2 to n-1 are leaf Nodes.   
+
+**** using the Comparator function in minHeap **** [**IMP**]
+   -- So maxHeap implementation is pretty straigt: prioirty_queue<int> max_heap;
+   -- For minHeap, it takes 3rd param as a comparator: priotity_queue<int, vector<int>, greater<int> > min_heap;
+      Senario: If we are using priotity_queue for any other dataType other than int we cannot use greater<int>.
+      eg: If we want to store pair in the priority_queue and sort based on 2nd Value:
+   eg:
+      //Create a comapartor Class for the same...
+      Class Compare {
+      public:
+         bool operator()(const pair<int, int> &p1, const pair<int, int> &p2) {
+            return p1.second - p2.second;
+         }
+      }
+      
+      priority_queue<pair<int, int>, vector<pair<int, int>>, comapare> min_heap;
+
+NOTE: Basically, we create a Compare Class and overload the Operator method, with 2 params that we are expecting...
+      Now it can return 3 things: -1 [Then the comapre put this value in front], 0 [it will not touch the value] or 1 [It will put the value at the end]
 
 
+Implementing Heap using STLs:
+   -- We need to include: #include<queue>
+   -- Max Heap: priority_queue<int> pq_max 
+   -- Min Heap: priority_queue<int, vector<int>, greater<int>> pq_min
+   -- Operations: pq.push(x), pq.top(), pq.pop(), pq.size(), pq.empty() etc..
+NOTE: 
+   -- pq.top() and pq.pop() in case of max Heap points to the maximum element and in case of min Heap points to the minimum element.
 
+** Basic Questions:
+   1) Find the kth smallest/largest Element in Array [max/min Heap]
+   2) Is The Given Binary Tree is a heap [Check if CBT and check heapify Condition]
+   3) Merge 2 Heaps [Combine Both heaps + heapify]
+   4) Min Cost to connect Rope [use min Heap]
+   5) Convert BST to Heap [Inorder + Pre-Order Node Replacement [For minHeap] OR Post-Order for MaxHeap] [**IMP**]
+
+** Imporant Questions:
+   1) Find Kth Largest Sum SubArray [Find all Pairs + MinHeap for kth largest]
+   2) Merge K sorted Arrays. [use minHeap + Insert First Elements Appraoch] [** VVIMP **]
+   3) Merge k sorted Linked List [use minHeap] [Same Appraoch as Arrays]
+
+** Hard Questions: [VeryImp]
+   1) Find the Smallest Range in Given K sorted Arrays [use MinHeap + Insert First element Approach]
+   2) Find the Median in a Stream [MaxHeap-Median-MinHeap Algo] [**VVVIMP**]
+   3) ReArrange a Given String such that no 2 adjacent characters are same. [charFreq + maxHeap] [Imp]
+   
