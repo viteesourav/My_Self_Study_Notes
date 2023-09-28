@@ -191,15 +191,15 @@ NOTE: For Singly Linked list we use: forward_list
 
 2) map:
    -- key-value pairs, all keys are unique.
-   -- It is implemented using red-black tree or balanced tree.
+   -- It is implemented using red-black tree or balanced tree/ Binary Search Tree.
    -- just map, stores all the keys in sorted order..
-   -- TC of insert(), find(), erase(), count() --> O(logn)
+   -- TC of insert(), find(), erase(), count() --> O(logn) [strictly for ordered Map]
   Note:
   unordered_map:
    -- It is faster.
    -- It stoes the keys in random order.
    -- This is implemented using hashTable.(**main**)
-   Benefit: TC of search is O(1)
+   Benefit: TC of insert, delete, search is O(1) [Way Faster than any other DS]
 
 3) Pair:
    -- Used to Store 2 heterogenous data together. eg: pair<int, char> P1.
@@ -1238,7 +1238,12 @@ Operations Supported with Heap:
 NOTE: 
    -- Important Property of Complete Binary Tree:
       -- If we represnet CBT in array[1-based] of size n, then all element from n/2 + 1 to n are leaf Nodes.   
-      -- If we represnet CBT in array[0-based] of size n, then all element from n/2 to n-1 are leaf Nodes.   
+      -- If we represnet CBT in array[0-based] of size n, then all element from n/2 to n-1 are leaf Nodes. 
+
+NOTE: 
+   -- Suppose you using a maxHeap that stored elements as: pair<int, int> eg: priority_queue<pair<int, int>> max_heap;
+   -- So based on which int, It would arrange the elements in heap ?
+      -- Whatever is the first int in pair, based on that the whole heap will be updated. [Since we dont pass a seperate compare in maxHeap]
 
 **** using the Comparator function in minHeap **** [**IMP**]
    -- So maxHeap implementation is pretty straigt: prioirty_queue<int> max_heap;
@@ -1284,4 +1289,168 @@ NOTE:
    1) Find the Smallest Range in Given K sorted Arrays [use MinHeap + Insert First element Approach]
    2) Find the Median in a Stream [MaxHeap-Median-MinHeap Algo] [**VVVIMP**]
    3) ReArrange a Given String such that no 2 adjacent characters are same. [charFreq + maxHeap] [Imp]
+
+** Hash Maps **
+
+Why needed ?
+   1) Major Advantage of using HashMaps -> The Complexity of insertion, deletion and others are better in hashMap
+   2) When we need to store data in a form of key-value pair, we use HashMap.
+
+Implementation:
+   1) ordered_map: [The data is stored in sorted way based on key]
+      -- Implemented using BST.
+      -- TC for insert/delete/search -> O(logn)
+
+   2) unordered_map: [The data is stored in random fasion]
+      -- Implemented using HashTables.
+      -- TC for insert/delete/serach -> O(1)
+
+-- Basic Operations with HashMap:
+   1) Insertion:
+      -- Map Stores the element in form of key,value pair -> Thus, We can insert a pair directly.
+         eg: map.insert(make_pair("key1", value1));
+      -- You can insert directly also:
+         eg: map["key1"] = value; //Adds a new pair to the DS.
+   2) Search:
+      1) map.at(key)  -> Returns the value corresponding to the key...
+         Problem: If the key dont exist, It will throw error, thus, this is least preffered way to Search.
+      2) map[key1] -> Returns the value for the key1.
+         Solution: If the key don't exist, It will return 0. [Best way to search/extract Key out of Map]
+      NOTE: map[key1] if key1 dont exist, It adds a entry in the map with default value 0. [**VIMP**]
+   3) count:
+      -- map.count(key) -> Return either 0 or 1.
+      -- Checks if the given key is present in the map ot not.
+   4) erase:
+      -- map.erase(key)
+      -- Removes the key from the Map.
+      -- If the key is Found and removed, It returns 1.
+      -- If the key is not Found and unable to remove, It returns 0.
+   5) Traversal:
+      1) using auto keyword 
+         -- each key,value pair is extracted as a pair Data Structure.
+         -- Each element can be accessed using element.first and element.second
+      2) using iterator 
+         -- Declare the iterator for the map DS and initialize it from map.begin()
+         -- Iterate till you reach the map.end() and For each, You get a pair Data Structure.
+      NOTE: Iterator is pointer i.e Points to the begin and end of the MAP, You access the value, need to use `->` like pointer.
+
+[**IMP**]
+** Implementation of Map using Bucket Array [using Hashing Techniques] [Implementation behind unordered_map]
+   -- One biggest Advantage of unorder_map is Insertion/Searching/deletion: O(1)
+   -- Bucket Array 
+      -- A normal Array, Where the Value is stored in the Array and Key is mapped to Index.
+      -- Key is mapped to index based on hash function.
+
+** Hashing Function -> HashCode + Compresion Function.
+   1) HashCode -> Job is take the key and  Return a unique integer.
+   2) Compresion Function 
+      -- It makes sure the integer returned by the HashCode stays inbound with Array Lenght.
+      -- eg: If HashCode returned x, then Compresion Function converts to x%sizeOFArray. [For Better Result SizeofArray is taken prime]
+
+**  HashCode Functions and Collosion and Collosion handling Functions.
+   HashCode:
+      -- It can be a identify Function. i.e It returns the input as output without any modificiation.
+      -- Also, Possible You gave input a String and it returned an interger.
+         -- It can get the output by adding the ASCII code of all char or any other algorithm.
+      -- Thus this is how HashCode converts the given Input.
+
+   NOTE: In general, HashCodes are functions which ensures uniform distribution. It also ensure consistence.
+      -- The Same input will only return a particular Output eveytime and Also reduce the chances of any possible collision.
+
+   Collision:
+      -- It is highly posible, For 2 different input, HashCode is returning the same output.
+      -- This is called Collision.
    
+   Collision Handling Techniques:
+      1) Open Hashing
+         -- Very Popular and also known as seperate chaining [**IMP**]
+         -- Basically, If For 2 different inputs we are getting the same result, We Maintain a list at that position in bucket array.
+         -- Everytime, we get a result at the same location, we just add it to the list.
+         -- It works very fast by this method. 
+
+      2) Closed Addressing
+         -- Baically, here, If 2 diff inputs are giving the same index.
+         -- Simple push the first one at the result position. The next one for the same result put at the next free location.
+         -- The next free space is given by a function. Hi(a) = H(a) + fi(a)
+            here fi(a) is a probing function, and i is attempt for accessing the index.
+            Types: 
+            1) Linear, fi(a) -> i
+                  -- For first attemp say you pushed at 7th index in bucket array.
+                  -- For secong attemp at 7th index, As per fucntion Hi(a) = H(a) + i  = 7 + 7 = 14.
+                  -- So, Inserting at 14th Position.
+            2) Quadratic, fi(a) -> i^2
+                  -- For first attemp say you pushed at 7th index in bucket array.
+                  -- For secong attemp at 7th index, As per fucntion Hi(a) = H(a) + i  = 7 + 7^2 = 56.
+                  -- So, Inserting at 56th Position.
+            and so on...
+
+** how It is faster in Case of Open Hasing ? [**IMP**]
+   -- N -> Total No of Entries in the Map.
+      b -> Numbers of buckets avaible in the Bucket Array.
+   -- Then For better hashing, we maintain:  N/b < 0.7  [N/b is called Load Factor]
+   -- If N increases, then b also should increases in order mainatin the condition.
+      -- This is called reHashing, It increases the bucket Size.
+
+** Tries **
+   -- It is type of Data structure. useCase eg: It can be used to Implement a Dictionary [Keep track of words insertion/searching/deletion].
+   -- It can keep tracks of Words inserted, can search a Word and also delete a particular word.
+   
+Drawback of using HashMap:
+   -- HashMap can be used to keep track of words, But it can give TC: O(1) only in avergae case.
+   -- In Worst Case, HashMap TC: O(l), l-> length of each word
+
+Implementation of Tries:
+   -- Tries looks like a tree. [Not binary Tree as it may have multiple Nodes connected to it.]
+   -- So we have a root Node, IT can store next address of all other ChildNodes.
+   -- Each Node Structure:
+      1) It needs a variable to hold the data.
+      2) It needs an array to hold the pointers to all children.
+      3) It needs a bool flag, to indicate the last character while inserting.
+
+Operations with Tries: [useCase: Tracking Words]
+   1) Insertion: [Implemented using Recursion] TC:O(length of word)
+      -- Each Character is taken From the word one by one.
+      -- For each Character, It checks If the Root Node holds the address of that character ?
+         -- If yes, It moves the pointer to that Node.
+         -- If not, It just create a new Node, attach it to the currNode and move to that newNode.
+      -- And the Process Repeats untill all char from the String is inserted.
+   NOTE: While inserting the last char of the String, The isTerminalNode flag is made true, Thats tells the whole word ended at that Node.
+
+   2) Searching: [Implemented using Recursion] TC: O(length of word)
+       -- Each Character is taken From the word one by one.
+      -- For each Character, It checks If the Root Node holds the address of that character ?
+         -- If yes, It moves the pointer to that Node.
+         -- If not, Then the word is not present and it return false.
+      -- And the Process Repeats untill all the char from the String is Searched.
+
+   3) deletion: [Implemented using Recursion] TC: O(length of word)
+      1) Approach1: Search the Word char by char in trie and For the last Node, make the isTerminalNode, false. i.e In search for It will never find this.
+         Problem: The Char of the deleted word still exisits.
+      2) Approach2: While searching char by char in the trie, [**Best Appraoch**] [**Once check the code**]
+         -- make the isTerminalNode of the last char of the word false
+         -- Also remove words which stores No Pointer to the next char. [i.e You removing characters which are part of this word but not other words]
+
+   4) StartsWith: [Implemented using Recursion] TC: O(length of Word)
+      -- Traverse the chars, Find if all of them exists, return True, else return false.
+
+NOTE:
+   In Implementing Trie for Words, Possible Operations: Insert/search/delete/startsWith,
+      -- All have the same TC: O(length of the word, as we insert char by char)
+      -- The Approach for all Operation is similar, Travesing one char to another of the word using Recursion.
+
+Why For Storing Word, Trie is better than using a HashMap ?
+   Hashmap: map<string, bool> i.e <word itself, flag to indicate if hashmap has that word or not>
+      -- Here we will store each words in the map.
+   Advantages in using Tries:
+      1) Here we dont store the whole word, we store the characters. Thus words having same character, saves a lot of space.
+      2) If the requirement of Searching a word with its alias i.e for ca -> car, camel, cage [all starts with ca]  [**IMP**]
+         -- For hashmap we need to iterate the whole map to search this words starts with ca..
+         -- In Tries, we store char by char, So seaching words with alias name is faster.  
+
+Tries Important Questions:
+   1) Longest Common Prefix [use Normal Loop OR Trie [space optimized]]
+   2) Implement a phoneBook Directory [**HARD, IMP**][Trie Insertion + Trie Traversal]
+
+** BackTracking **
+
+
