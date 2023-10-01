@@ -327,6 +327,8 @@ String Question Trick:
 ****Multi-Dimensions Arrays****
 -- 2-D Array represented as a linear array in memory using the formula: (columnLength)*rowIndex + columnIndex
 -- int arr[][] is not accepted in c++. We have to specify colIndex for mandatory. **IMP** (This identifying the column is difficult, But can be handled.)
+-- How to Declare 2-D Array with vector:
+   vector<vector<int>> matrix(n, vector<int>(n, 0)); //creates a n x n matrix with all element initialize to 0.
 
 ***Maths For DSA***
 
@@ -1452,5 +1454,16 @@ Tries Important Questions:
    2) Implement a phoneBook Directory [**HARD, IMP**][Trie Insertion + Trie Traversal]
 
 ** BackTracking **
+Concept: 
+   -- Use Recursion to Traverse all the Possible Solution and Out of them select the best solution.
+What ?
+   -- Basically Backtracking, Mostly includes, Recursion + isVisited Array or List [keep track of visited element or Nodes]
+   -- keeping Visited Array Allows not to process already Processed info.
+
+Important Questions:
+   1) Rat in the Maze [Using backTracking] [NOTE: Already solved once in Recursion]
+   2) N Queen Problem [BackTracking] [**HARD**]
+   3) Sudoko Solver [BackTracking] [**Hard**]
+
 
 
