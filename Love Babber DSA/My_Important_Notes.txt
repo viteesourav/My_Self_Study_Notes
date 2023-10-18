@@ -235,6 +235,14 @@ Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It inc
    -- It sorts the array between the given positions.
    -- It is based on Intro sort that include: insertion, quick and heap sort. 
    -- Worst Case: TC: O(nlogn) SC: O(n2)
+NOTE: 
+   -- It takes a 3rd boolean param, can be used to define a custom sort.
+eg: 1) sort(arr.begin(), arr.end(), greater<int>()) -> sort the arr in descending order.
+    2) 
+    bool compare(pair<int, int> p1, pair<int, int> p2) {
+      return p1.first > p2.first;
+    }
+    sort(arr.begin(), arr.end(), compare);  -> sort based on pair's first element.
 
 
 
@@ -1462,8 +1470,369 @@ What ?
 
 Important Questions:
    1) Rat in the Maze [Using backTracking] [NOTE: Already solved once in Recursion]
-   2) N Queen Problem [BackTracking] [**HARD**]
-   3) Sudoko Solver [BackTracking] [**Hard**]
+   2) N Queen Problem [BackTracking] [**HARD**] [**IMP**]
+   3) Sudoko Solver [BackTracking] [**Hard**] [**VVIMP**]
+
+*** Graphs ***
+What ?
+   -- Graphs are simply the collection of some Nodes and edges.
+-- Nodes/vertex -> It represent a DS that store the data for the graph. Can be char, int or object etc
+-- edges -> The Connection between the Nodes is called edges.
+
+Types:
+   1) Directed Graph
+      -- The Connection between the Nodes are uni-directional.
+      -- Represented by directed arrow i.e  u ----> v [u and v are the nodes, from u to v we can go but vise-versa not possible]
+   2) unDirected Graph
+      -- The Connection between the Nodes are bi-directional.
+      -- Represented by a noraml Line, no arrows i.e u ----- v [here from u we can go to v and vise-versa]
+
+Degree of a Node ?
+   -- For Directed Graph:
+      1) InDegree:  Number of edges coming to the the Node.
+      2) outDegree: Number of edges going out of the Node.
+   -- For unDirected Graph:
+      -- The Total Number of edges connected to other Nodes from the Given Nodes.
+
+Weighted edges & unWeighted edges
+   -- Edges may contains some weight. i.e u --6-- v
+   -- If the Edges dont contains any weight, we can assume the weight to be 1.   
+
+Path in the Graph:
+   -- The Nodes Path that we get while traveling from source to destination Node.
+   NOTE: In the path, we can only have a node appearing only 1 time. [we cannot include any cycles in the path]
+
+Cyclic and Acyclic Graph:
+   -- In a graph, If a path exist that we start from a node and we can travel back to the same Node, [Its a cyclic Graph]
+   -- If no such Path exist, it's an Acyclic Graph.
+
+Implementation of Graph:
+   -- WE know the number of Nodes n, total Number of edges: n and then all the edges connected 
+   -- 2 ways of Implementing: [Need to keep Record of the Nodes and it's respective connected edges]
+      1) Adjacent Matrix:
+         -- Here so we have a 2-D matrix of nxn size [n is the total number of Nodes] [TC: O(n^2)]
+         -- Initially all the boxes are 0, representing there is no connections between the nodes.
+         -- If a connection exisit between any two Nodes eg: u --5-- v
+            -- Here, we need to update the matrix accordingly:
+               board[u][v] = 5 
+               board[v][u] = 5 [Since it's a non-directed Graph so edge is bi-directional]
+
+      2) Adjacent list: TC: O(n) [number of Nodes]
+         -- Here we use a HashMap with the syntax as: map<Node1, list of all edges from Node1>
+         -- We Iterate all the edges and accordingly,
+            -- We insert the Node as the key of the map and we push the edges from the Node in the list corresponding the Node.
+         -- For unordered Map, Operations like find, insert, delete are faster with TC: O(1)
+
+[**IMP**]
+What is a Graph Components or Disconnected Graphs ?
+   -- It is not mandatory that we have edges connecting all the Nodes/vertexs for a given graph.
+   -- WE have have Nodes from 1 to N, we have edges connecting 1 to N/2 Nodes and then we have edges connecting N/2 to N Nodes. [example]
+      -- In this case, we get 2 different Components of the Graphs.
+   -- Overall, The Graph is disconnected, as not all the Nodes are part of only 1 components i.e we have multiple components.
+Solution:
+   -- To Traverse or keep track of all the Nodes, Generally in we use a loop to iterate all the Nodes from 1 to N.
+   -- And apply the logic for each Nodes, For both the Components of the Graph.
+   -- We maintain a visited Nodes Map, That make sure, we dont process the same Node 2 times.
+
+NOTE:
+   -- A graph Can be represented, identified by the adjList. [It holds Nodes-edges Data]
+
+** Graph Traversals:
+   1) BFS: Breadth First Search Traversal. [TC: O(n+m) SC: O(n+m), n is no of Nodes and m is number of edges]
+      -- In this, we start from the source Node, WE print the adjacent or Connected Nodes to the Source Nodes.
+      -- Then we Process the Adjacent Nodes one by one, till we Process all the Nodes.
+      -- 3 things we need for BFS:
+         1) An Adjacent List Map for Nodes-edges Relations.
+         2) A Map <Node, isVisited> to keep track of all the vistied Nodes.
+         3) A Queue, to Push the adjacent Nodes inside the Queue to process them.
+
+   NOTE: If Given a disconnected Graph, Run a for loop for all the Nodes, If not visited -> call the BFS function.
+
+   2) DFS: DEpt First Search Traversal. [TC: O(N+E), SC: O(N+E) -> linear Complexity] [uses Recursion]
+      -- This method we print the Nodes in a one-by-one manner, using REcursion.
+      -- 3 things we need for DFS:
+         1) An Adjacent List Map for Nodes-edges Relations.
+         2) A Map <Node, isVisited> to keep track of all the vistied Nodes.
+         3) A Recursive Function to Recursively Call to Go to all the Nodes if not Visited and print them.
+
+** Cyclic Detection in Graph Traversal [**IMP**]
+1) In Undirected Graph: [TC, SC -> Linear]
+   Logic: 
+      -- Normal BFS/DFS Graph Traversal + A Map to keep track of the Parent of the current Node.
+      Case:
+         1) If the Node is Visted Already and it's a parent of the current node in the map, Ignore the Node.
+         2) If the Node is Visted but Node is not the parent of the current Node, Cycle exists. [**IMP**]
+
+2) In Directed Graph:
+   1) Using DFS Traversal: [TC, SC: O(n+m) -> Linear]
+      -- We use an bool Map, to keep track of Nodes which are going in-out of the dfs Recusrive call Stack.
+      -- WhenEver we call the Recursive function dfs, dfs_call_stack Map[node] -> true. When you finish the call, dfs_call_stack[node] -> false.
+      -- This keeps track, Which Node is inside the dfs_Call and is under processing. 
+      Case:
+         -- If a Node is already Visited and is already true for the dfs_call Stack, Then Cycle is present.
+         -- If a Ndoe is alreday Visited and not in the dfs_call Stack, Ignore it.
+
+   2) Using BFS Traversal: [Using Kahn's Algorithm] [TC, SC: O(n+m) -> Linear]
+      -- If Kahn's Algorithm is giving a valid Topology Nodes -> The Graph has to be Acyclic i.e No Cycles Present.
+      -- If After the Kahn's Algorithm,
+         -- Number of Nodes printed from Kahn's algorithm != Number of Total vertex [The Graph Contains Cycle]
 
 
+** Topology Sort in Grap ** [Only for DAG i.e Directed Acyclic Graphs] [**VVIMP**]
+What ?
+   -- In Topology Sort, we put the nodes of the Graph such that, For all the u---> v edges given, u should always comes before v.
 
+Why Only for DAG ?
+   -- In case of a cyclic graph, It is not possible to satisfy the above condition.
+   -- Topology Sort can be used to detect if a Graph has cycles or not in a directed Graph.
+      -- If we are able to find a valid Topology Sort, -> No cycle Present. Else Cycle is present.
+
+Implementation:
+   1) Using DFS Traveral. [using Stack] [TC, SC: O(n+m) -> Linear]
+      -- Do the Normal DFS Traversal
+      -- In the Recursive dfs Fucntion, while coming back, Store the Node in the stack.
+      -- Stack Stores the Nodes in LIFO Order -> [** Topology Sorted Nodes -> DONE **]
+
+NOTE: When we push in the stack a node, It means, We cannot move to any other node from my curr Position.
+      Thus, the DFS stack topology, Works on this principle.
+
+   2) Using BFS Traversal. [Kahn's Algorithm] [TC, SC: O(n+m) -> Linear]
+      -- WE need addition DS, A int vector that Stores the in-Degree for all the Nodes of the graph.
+         NOTE: IN-Degree: Number of edges coming at the current Node.
+      -- Push all the Nodes with In-Degree in the Queue.
+      -- Do this till Queue is empty:
+         -- Pop the Queue, As we Pop the front Node, Update the In-Degree for the linked Nodes.
+         -- As you Pop, Store the ans.
+      [** Topology Sort using BFS --> DONE **]
+
+** Shortest path in Graph ** [**VVVIMP**]
+
+   1) In Undirected Graph: [BFS + Track Parent For each Node] TC, SC: Linear
+      Approach:
+         -- BFS Traversal Has an advantage of finding the Shortest path between any 2 Nodes. [** VVIMP **]
+         -- Do BFS Traversal, Track the Parent for each Node. [use unorder_map]
+         -- In the Parent, BAckTrack From Destination Node to Source Node.
+         -- Reverse the ans [source to destination Shortest path]
+
+NOTE: If the Graph has weighted edges, the structure of adjList will change 
+      i.e unorder_map<u, list<pair<v, edgeWeight>>> [u and v are connected nodes]
+
+   2) Directed Acyclic Graph [Weighted Graph]: [Topology stack + distance Tracker] [** IMP **] TC,SC -> Linear
+      Approach:
+         -- Find the Topology Stack [use DFS Traversal]
+         -- Maintain a MinDistance array with all elements starting with INT_MAX [Infinity].
+         -- Mark the MinDistance of Source Node -> 0.
+         -- Process the stack:
+            -- Take out a node from stack.
+            -- If MinDistance[node] Not an Infinity, then add the edgeWidth + MinDistance[node] -> totalDistance.
+            -- If totalDistance > MinDistance[node] -> ignore it.
+               else Update the MinDistance[node] -> totalDistance.
+      -- After all Processing, You will have the min Distance to cover from source to all Other Respective Nodes. [** DONE **]
+
+** GRaph Algorithms ** [** VVVVVIMP **]
+
+1) Dijkstra's Algorithm [Shortest path Algorithm] [TC: O(e log v) SC: O(e+v), v->no of vertex, e -> no of edges]
+   -- You need:
+      1) The adjList for the given Graph.
+      2) A min_Distance Map for all the Nodes initialized with all Inf.
+      3) A DS that stores the pair<distance, node> [Stores in such a way, we can always pull out the ele with min edge_weight]
+         -- 2 Possible DS we can use:
+            1) set<>: Stores the ele in sorted way i.e the first element will be always smaller.
+            2) priority_queue i.e min_heap: When we pop, we always get the min element from the heap.
+   Logic:
+      -- Start with source node, make the min_dis of source Node 0, and push the same in the Set/minHeap.
+      -- Now till the heap is empty
+         -- Pull the node with least edge_weight from the set/minHeap.
+         -- calculate the new dis, if it's less than the dis stored in min_dis map, update the min_dis map for the node.
+[ You have the min_dis from Source Node to all other Nodes ]
+
+NOTE:
+   -- While solving, we might run into Time Exceed Error.
+   -- If using vector in code, Always specify the size of the vector. eg: vector<int> min_dis(vertices);
+   -- If you ignore it, might throw runTime errors.
+
+
+** What is a Spanning Tree ? [** IMP **]
+   -- If a Given Graph can be converted into a Tree, with n nodes and n-1 edges, where all n nodes are connected to each other.
+   -- This is called a spanning tree.
+
+** What is a Minimum Spanning Tree (MST) ?
+   -- In a spanning Tree, MST refers to the spanning Tree where the sum of all the edges in minimum.
+
+** Implementation Algorithms: Primes OR Khruskal's 
+
+2) Prim's Algorithm: [Finding the MST for a Graph] 
+   -- Needs 3 DS:
+      1) A key DS: Stores the min_edge Distance For the given Node, Initialise all with Inf [map or vector]
+      2) A MST DS: Keep Track of Nodes which we process for MST. Initialise all with False [map or vector]
+      3) A parent DS: Keep Track of Parent Nodes for the Nodes we process for MST. Initialise all with -1 [map or vector]
+NOTE:
+   -- Always check, if the given Nodes start from 0 to N [using vector DS will be faster] or 1 to N [unordered_map works here or Vector with extended index i.e 0 to N+1]
+
+   Approch:
+      -- Start with the source Node, mark key[source] = 0, parent[source] = -1.
+      -- Iterate the key, find the node with the least distance -> minNode
+      -- Update the MST[minNode] = true.
+      -- Then Iterate the adjList Node for the minNode.
+         -- If the edgeDistance < key[node] and Mst[node] is false, update that node's edge in the key DS and update the parent DS.
+      -- Repeat from step 2.
+
+   -- At the end, You have parent DS, containing the node-parent mapping and key DS containing the respective edge details.
+   -- using this, we can construct a MST. [** DONE **]
+
+   TC: O(n^2) [For finding the minNode, we are iterating again],  SC: O(n+M)
+
+** Optimization:
+   -- Have another DS: Priority Queue i.e minHeap, that stores the key DS elements. -> when we pop, we get the node with the least edge.
+   -- It will always keep the node with minEdge at the top. -> O(log n) [Fetching minNode is faster]
+
+   TC: O(n log n) [using priority Queue to find minNode], SC: O(n+m) [Optimised]
+
+** Dis-Joint Set ** [Very Important]
+
+What and Why ?
+   -- Dis-Joint Set is a type of Data Structure. Mostly used for Grpahs with Multiple Components [i.e All Nodes are not connected to each other]
+   -- It is the working principle behind implementation of Khruskal's Algorithm.
+Use:
+   1) Used in Khruskal's Algorithm for finding the MST of a Graph.
+   2) It can be used to detect presence of any cycles in the Graph.
+   3) If 2 random Nodes are given eg: u and v [** IMP **]
+      -- It can be used to identify, if u and v belong to the same Component or different Component.
+
+Operations:
+   1) findParent() or findSet()
+      -- Maintains a parent DS, that keep Tracks of the parent of the Nodes.
+      -- Initially, All Node's Parent are themselves, we update it whenever we merge 2 components.
+
+   2) union() or unionSet()
+      -- This takes 2 nodes say u and v, Find their respective Parent of u and v, comapre their rank and based on it, merge them.
+      -- We maintain a Rank DS.
+         -- Initially Rank of all Nodes are set to 0.
+   Cases:
+      1) If Rank of 2 parents are same:
+         -- Assign parent[u] -> parent [v] and increment the rank of parent[v]++ 
+
+      2) If Rank of Parents are not same: [The parent with smaller Rank goes under the Parent with bigger Rank]
+         1) if Rank[parent[u]] < Rand[parent[v]] : Assign parent[u] -> parent[v]
+         2) if Rank[parent[v]] < Rand[parent[u]] : Assign parent[v] -> parent[u]
+
+[** VIMP **]
+NOTE: 
+   -- The above Implementation of Union is called "Union by Rank and path compression". [** VIMP **]
+
+   1) We have a scenario, After union of say 2 nodes, we have a path that follows: 6 -> 7 -> 4
+      -- Here, parent[7] -> 4, parent[6] -> 7, parent[7] -> 4 i.e parent of 6 is also 4.
+      -- This extra traversal to find the parent can be fixed, as 7 -> 4 <- 6.
+      -- Now, both parent[7] = parent[6] = 4. [** Path Compression Algorithm **]
+   
+   2) How to find if 2 random Nodes belong to the same Component or not ?
+      -- Find the parent of both the nodes.
+      -- If they have the same parent i.e they belong to the same component of the graph.
+      -- If they have different compoenent i.e they belong to different components.
+
+
+3) Khruskal's Algorithm: [Finding MST for a Graph]
+Steps:   
+   -- NOTE: This algorthim we dont need any adjList
+   -- WE need a linear DS, that stores the [edge_weight, u, v] in ascending Order i.e [The elements should be sorted based on their edge weight]
+   -- Now Run a loop, till we process all the edges,
+      1. Find parent of u and v.
+      Case:
+         1) If same Parent: They belong to the same MST. [ignore]
+         2) If different Parent: Merge both of them using unionSet() from disjoint set Data structure
+   -- Keep track of the weights while merging 2 nodes.
+   -- At the end you will have the Final MST edge wight for the Given Graph [** DONE **]
+
+** Bridge in a Graph **
+what ?
+   -- Condider a Graph. A Bridge refers to a edge, Which on remove, split the whole graph into Components.[i.e Makes the Graph disconnected or increase the number of components in the graph]
+
+Implementation: TC: O(N+V) SC: O(N) [Liner]
+   -- 3 Data Structure needed:
+      1) DiscoveryTime: can be vector or map, keep track of the maxTime taken to reach a particualr Node.
+      2) Low: can be vector or map, keep track of the miniTime taken to reach a particualr Node.
+      3) Visited: A map keep tracks of the visited Nodes.
+Logic:   
+   -- You Do a noraml DFS in the given Graph, maintain a timer, update the timer everytime You visit a new Node.
+   -- Also maintain the track of the parent Node.
+   -- Update the same in the DiscovertTime DS, and LowDiscoveryTime DS, increment the timer.
+   -- Iterate all the adjList Nodes for the currNode.
+      -- If the node is parent of a currNode -> ignore it.
+      -- If the node is Visited but not a parent. i.e Back Edge Condition.[IT means there exisit another path to reach the node, which dont include the currNode]
+         -- In this case update the low[currNode] = min(low(node), DiscovertTime(neighbour))
+      -- While returning back, 2 Things:
+         1) Update the low for the neighbour node: low[neighbour] = min(low(node), low(neighbour)) [the neighbour might form a backedge, thus need to update the low for this node too]
+         2) check for bridge condition: low[neighbour] > DiscovertTime[node] 
+            -- If true Bridge Exist.
+         Reason: This works because, This condition means there exist only one path to the node. If there exisit another path, low would be less.
+   [** DONE **]
+
+
+** Articulation point **
+what ?
+   -- Consider a Graph, An Articulation point/Node refers to a node, which when removed split the whole graph into Components.
+
+Implementation: TC: O(N+E) SC: O(N) [Linear]
+   -- Implementation is similar to Finding Bridge in the Graph.
+   -- DS Needed:
+      1) discTime: vector/map, keep tracks of the maxTime needed to Reach a particular Node.
+      2) low: vector/map, keep tracks of the miniTime needed to Reach a particular Node.
+      3) isVisited: A Map to keep Track, if a node is visited or not.   
+Logic:
+   -- You Do a noraml DFS in the given Graph, maintain a timer, update the timer everytime You visit a new Node.
+   -- Also maintain the track of the parent Node.
+   -- Update the same in the DiscovertTime DS, and LowDiscoveryTime DS, incement the timer.
+   -- Keep track of child for this node.
+   -- Iterate all the adjList Nodes for the currNode.
+      -- If the node is parent of a currNode -> ignore it.
+      -- If the node is Visited but not a parent. i.e Back Edge Condition.[IT means there exisit another path to reach the node, which dont include the currNode]
+         -- In this case update the low[currNode] = min(low(node), DiscovertTime(neighbour))
+      -- While returning back, 2 Things:
+         1) Update the low for the neighbour node: low[neighbour] = min(low(node), low(neighbour)) [the neighbour might form a backedge, thus need to update the low for this node too]
+         2) check for Articulation condition: low[neighbour] >= DiscovertTime[node] && parent != -1 
+            -- If true Node is a Articualate Point, add the node in the Articulate Point List.
+         Reason:  This works because, This condition means there exist only one path to the node. If there exisit another path, low would be less.
+   -- Check if the node is sorce Node i.e parent is -1 and it's child count > 1
+      -- Include source Node in the Articulation Point array.
+   [** DONE **]
+
+** Strongly Connected Components ** [Kosaraju's Algorithm]
+what ?
+   -- A strongly Connected component is where you take any Node, You can cover all the Other Nodes.
+   -- This case can be implemented in case of a Directed Graph.
+
+Implementation: Kosaraju's Algorithm. [TC, SC: O(N+E) where N-> total Vertices, M-> total Edges]
+Logic: 3 Steps:
+   1) First you need to Find the DFS Topology Stack for the Given Graph.
+   2) Reverse all the edges in the Graph. i.e u -> v to v->u for all the Nodes. [also Called as Transpose the Graph]
+   3) Now Based on the Stack Nodes, You Do noraml DFS traversal
+      -- EAch DFS Traversal will Print all the strongly connected Nodes belong to a particular Component.
+
+** Shortest Distance in Graph with negative Weights ** [Bellman Ford Algorithm]
+What ?
+   -- Bellman Ford Algo is used to Find the shortest Path between src and Destination in a Directed Graph with Negative Weights.
+NOTE: If Grpah is unDirected, Convert it to Directed. i.e u ---wt--- V  => u --wt--> v & v --wt--> u
+
+Why Not Dijkstra Algorith ?
+   -- Dijkstra Algo is also used to Find the Shortest Path, But in Case of edges having negative Weights, It will Give worng Answers.
+
+Use ?
+   1) In a Directed Graph with negative edges: find shortest path between src and dest Node. 
+   2) Detect Negative Cycles in the Graph:
+      -- If a Graph is given, There exist a cycle in it, with negative Edges.
+      -- Everytime We loop the nodes in that cycle, The distance keeps on Reducing. [Thus, In this case, No Valid short Path exist among the Nodes]
+
+Implementation:
+   NOTE: 
+   -- You dont need adjList for Bellman Ford Algorithm. You need the edges and it's respective weights.
+   -- You need to maintain a Vector to keep track of shortest Distance i.e dis vector. Initialize with Inf i.e INT_MAX, excpet for src Node -> 0
+Steps:   
+   1) If there are N Nodes, You need to Check the below n-1 Times...
+      -- For All the edges eg: u ---wt---> v
+         if(dist[u] + wt < dist[v]) -> Update the dis[v] = dist[u] + wt;
+      [** DONE-> you found the MinDist form Src to all Other Nodes]
+   2) To check if There exist a Negative cycle in the Grpah.
+      -- Run the above check one more time, If any dis is updating, There exist a negative Cycle, So valid Shortest path won't exist.
+
+
+   
