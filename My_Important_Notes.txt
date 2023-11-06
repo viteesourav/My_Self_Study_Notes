@@ -1834,5 +1834,85 @@ Steps:
    2) To check if There exist a Negative cycle in the Grpah.
       -- Run the above check one more time, If any dis is updating, There exist a negative Cycle, So valid Shortest path won't exist.
 
+** Dynamic Programming - DP ** [Most Important topic]
 
+When to use DP ?
+   -- A Problem falls under DP under 2 condition:
+      1) Overlapping sub-problems: same functionality is repeated again and again.
+      2) The Problem can be solved with the optimal Solutuion of the sub-problems.
+
+NOTE: 
+   -- BAsically if a problem can be solved using Recusion in TC:O(2^N), there is a chance we are doing repeated processing of the same thing again and again.
+   -- This grows the tree dept and also increases the TC.
+   -- DP tech of memorization, Reduce the dept of the Tree by storing the result of Recursive Fn that is already calculated once.
+
+Implementation of DP
+   -- DP implementation includes 3 Things:
+      1) Top Down Approach: Includes Recursion + Memorization
+         -- Normal Recursion we will solve. To avoid the Recursion Tree for the same input, WE will store the result i.e memorization.
+      2) Bottoms Up Approach: Includes Tabulation, can be 1D or 2D depending upon the problem 
+         -- We avoid Recusion, We use 1-D/2-D data structure to store the data.
+      3) Space Optimization: Optimized the Space Complexity
+         -- We try to minimize the space used.
+
+** Example: check Fibbo Code for it's implementation in all the above 3 approaches.
+
+Logic:
+-- While Solving Dp, Follow the steps Sequentially:
+   1) First Find a Recursise Solution to the problem. [TC: exponential i.e 2^n]
+   NOTE: Find the Recursive Relation between the problem and sub-problem.
    
+   2) In the Recursion, to reduce the dept of the Tree, Use Memorization, to store Recursive Result.
+      -- use Vector or MAP to store the result and retrive it whenever needed. TC: Linear i.e O(N) but space: O(N) + O(N) [One for vector + One for the REcursive Stack]
+      -- This called Memorization or Top Bottom Appraoch [i.e Moving from top to bottom of the Recursive Tree]
+   NOTE: Steps: Take Reference from Recursive Solution, Store the res in dp array, after base case if the dp holds the value, If yes return it.
+   
+   
+   3) Now To Remove the, Recursion Form the solution, Convert it into a looping logic.
+      -- Here we use still use Vector or MAP but, we will not depend upon Recursion any More.
+      -- This is called Tabulation or Bottom Up Appraoch i.e Moving from bottom to top of the Recursive Tree.
+      -- TC: Linear i.e O(N) and SC: O(N) [Space taken by vector]
+   NOTE: Steps: Create a dp array, analysis the base case, Reference from Recursion + Memorization, convert in looping logic.
+   
+   4) Space Optimization [Optional, If possible]
+      -- If Possible, WE will still use the loop, but we will Try to remove the vector from the logic.
+      -- Use variables + loop Logic to handle the Values.
+      -- TC: O(N) [Loop is used], SC: O(1)
+   NOTE: Check the realtion of dp[n] on it's dependent. If it's consistent like dp[n] always depend on dp[n-1] and dp[n-1] -> Can be space Optimized.
+
+NOTE:
+   1-D Dp Problems:
+      -- Here the Problem's Recursion Tree can be optimised with Memorization and Tabulation using a Linear DP Vector.
+      -- Here the result is dependent on the change of only 1 constaraint i.e N
+      -- In the Recursive Call, Only 1 state keeps on updating in every fun call stack thus, It's 1-D DP
+
+Basic Questions: [1-D DP Problems]
+   1) nth Fibbo Number. [f(N) = F(N-1) + F(N-2) -> Recursive Relation]
+   2) MinCost to climb stairs. [**IMP**] [F(N) = Cost[N] + min(F(N-1), F(N-2)) -> Step Cost and Min of the prev 2 steps]
+   3) Minimum Element i.e coin Exchange problem [**VVIMP**] 
+   4) combination Sum IV [Based on Choice, You either pick an element or not, Recursive Tree] [**IMP**]
+
+Important:
+   5) MaxSum for Non-Adjacent Elements. [Based on Choice, You either pick an element or not, Recursive Tree]
+   6) House-Robber 2 Problem.[Implementation of MaxSum for Non-Adjacent Element's Logic] [**VIMP**]
+   7) Count Segments of a Rod. [based on choice of the segment, Recursive choice Tree] [**IMP**]
+   8) Possible de-arrangments [based on Recursion Relation derivation] [**VIMP**]
+   9) Ninja & Fence problem [Painting Fecnce Algorithm, 1-DP] [**VIMP**]
+   10) Combination Sum [Each tar will have choices, Recurive choice Tree][**VIMP**]
+   10.1) Combination Sum, Return all the possible Pairs [Same Logic as above + Backtracking] [**VVIMP**]
+   11) Perfect Squares [Recursive choice tree] [**VIMP**]
+   12) Minimum cost of Ticket [Recursive choice Tree] [**VVVVIMP**]
+
+NOTE:
+   -- 2-D Problems: Here the Recursion for the problem has 2 states which will be changing on each Function call stack.
+   -- We need to maintain 
+
+Imporant:
+   1) 0 1 Kanpsack Problem [logic: either include or exclude the item in Recursion Tree / 2D DP] [** VVIMP **]
+      -- Problem on same pattern:
+         1)Equal Subset sum partition
+         2)Subset Sum
+         3)Min subset sum difference
+         4)count of subset sum
+         5)targetSum 
+      -- aLl this problems can be solved based on Logic of either include ot exclude the element + Recursive Tree / 2D DP
