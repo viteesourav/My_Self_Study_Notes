@@ -1902,6 +1902,13 @@ Important:
    10.1) Combination Sum, Return all the possible Pairs [Same Logic as above + Backtracking] [**VVIMP**]
    11) Perfect Squares [Recursive choice tree] [**VIMP**]
    12) Minimum cost of Ticket [Recursive choice Tree] [**VVVVIMP**]
+   13) Catalan Number Implementation: [Cn = C0Cn-1 + C1Cn-2 + ..... Cn-1C0] [** VVIMP **]
+         -- Implementaion [using Recursion, Memorization[Top-down] and Catalan Triangulation using Dp]
+         -- Possible Questions:
+            - No of Possible BSTs based on number of Nodes. => Cn
+            - No of ways of Arranging valid N-parenthesis based on given set of Parenthesis. -> Cn
+            - Mountain Ranges [Possible ways to Arrange Mountains to stay above ground/sea-level] -> Cn
+            - Number of convex Polygon. -> Cn-2 [**VIMP**]
 
 NOTE:
    -- 2-D Problems: Here the Recursion for the problem has 2 states which will be changing on each Function call stack.
@@ -1915,4 +1922,10 @@ Imporant:
          3)Min subset sum difference
          4)count of subset sum
          5)targetSum 
-      -- aLl this problems can be solved based on Logic of either include ot exclude the element + Recursive Tree / 2D DP
+      NOTE: aLl this problems can be solved based on Logic of either include ot exclude the element + Recursive Tree / 2D DP
+   
+   2) Maximal-square [Logic: min of right, dig and bottom of the curr Position] [** VVVIMP **]
+
+   3) Matrix Chain Multiplication Sum Appraoch: [MCMS Problem] [*** VIMP ***]
+      -- Find the Minimum Number of Operations needed to Perform Matrix Multiplications. [MCMS Implementation using bottom-up Approcah] 
+      -- Min Score Triangulation of Polygon. [Solved using dp and MCMS Appraoch] [** VVVIMP **]
