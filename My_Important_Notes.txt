@@ -1461,6 +1461,10 @@ Tries Important Questions:
    1) Longest Common Prefix [use Normal Loop OR Trie [space optimized]]
    2) Implement a phoneBook Directory [**HARD, IMP**][Trie Insertion + Trie Traversal]
 
+
+****** Phase - 3  [ Graphs, Dynamic Programming and BackTracking ]******
+
+
 ** BackTracking **
 Concept: 
    -- Use Recursion to Traverse all the Possible Solution and Out of them select the best solution.
@@ -1929,3 +1933,5 @@ Imporant:
    3) Matrix Chain Multiplication Sum Appraoch: [MCMS Problem] [*** VIMP ***]
       -- Find the Minimum Number of Operations needed to Perform Matrix Multiplications. [MCMS Implementation using bottom-up Approcah] 
       -- Min Score Triangulation of Polygon. [Solved using dp and MCMS Appraoch] [** VVVIMP **]
+
+   4) 

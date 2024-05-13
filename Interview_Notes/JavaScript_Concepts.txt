@@ -19,6 +19,11 @@ Hoisting ?
 -- variable and function Declaration moves to the top of the scope. Scope can be both local and global
 -- This behavior is strictly for declaration only. Intializing won't be hoisted. **Imp**
 -- Its JS default's Behaviour and can be stopped by adding this at the top "use strict".
+NOTE: 
+  Hoisting Differences between var, let and const ?
+  1) var: The Variable decalration is hoisted with a default initialization of `undefined`., means you can access the variable before defining it -> function or global scope.
+  2) let: Block scope, The variable is hoiseted with no initialization thus JS knows about the variable, but it will throw a REference Error saying, cannot access the variable before initialization.
+  3) Const: Same as let, Value once initialized is fixed.
 
 == vs === ?
 -- == will just check the value. Interanlly It converts both them to String and then checkes the value.
@@ -394,6 +399,13 @@ BOM ?
   -- a huge list of property and methods for the current page.
   -- Contains tones of functionality for browser related work, has access to methods like setTimeOut, propmpt and many more.
   -- document, screen, naviagator, location and other attributes are avialble in BOM.
+
+
+NOTEs TO DO: 
+  -- On Feature wise on ES
+  -- Working of EventLoop [Preference among promise ALL and setTimeout]
+  -- Other advance Concepts. 
+  -- SOLID Design principle with example.
 
 
 **Experience Knowledge on JS**
