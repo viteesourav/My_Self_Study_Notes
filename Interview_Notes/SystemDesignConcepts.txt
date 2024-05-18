@@ -306,7 +306,7 @@ Non Functional:
 - Technique for horizontal [along the ground] Scaling of database.
 - Involves split/shrading the data across multiple instances of the database --> improves performance, reduce huge data dump on a single DB instance.
 - useCase:
-    - A database with 4 million rows OR 4 databases with each 1 million Rows ? Which one is better ?
+    -- A database with 4 million rows OR 4 databases with each 1 million Rows ? Which one is better ?
 
 - Factors Important For sharding:
 1) Data distribution [Data has the shreaded based on some unique keys like id or some hash function]
@@ -448,4 +448,76 @@ Non Functional:
             2) Single point of failure: Only one server, In case of fault/Failure, whole application can be down.
             3) Limited Scalability: Upgrading hardware has it's Limit --> Only able to handle a limited amount of additional Data.
 
+** Load Balancer
+
+- a networking device/Software application that distributes and balance the incoming traffic among the servers.
+- ensures high availablity, efficiently server utilization and high performance.
+- useCase:
+    -- Highly used for cloud application, data center [These places always deals with overwhelmed traffic]
+- Practical useCase:
+    -- Make sure servers are not overloaded and crash due to high traffic.
+- Scenario:
+    -- If a Application is running on a single server.
+    -- Problems:
+        1) If some problem happens with the server. The whole application will be down.
+        2) With time, if the user base of the application grows, req traffic will increase. 
+            - Server's performance are limit by its hardware can only handle a certain number of req at a time.
+            - This leads to server bottle neck ---> Crash the server.
+    -- Solution:
+        Introduce a load balancer, that depending upon the traffic routes the req to multiple instances of the server.
+            1) If any server node fails, Still load balancer can re-route the traffic to other nodes. [high availablity]
+            2) It balances the amount req handled by each server nodes, thus maximizing the throughput out of all the servers. [high performance]
+            3) More Servers to process data ---> less time between req and res. ---> faster server response.
+            4) based on the traffic, more servers node can be dynamically added or removed without any application downtime.    
+- Types:
+    1) Based on Configuration:
+        1) Software Load Balancers:
+            - These are software application ---> runs on general purpose servers.
+        2) hardware Load Balancers:
+            - Physical devices that hanldes Traffic [Also called Layer 4-7 Routers]
+            - Can handle all kind of HTTP, HTTPS, TCP, UDP Traffic.
+            - Very Expensive to accquire and configure.
+            - useCase:
+                -- Only used as a first loadbalancer to handle user's request, later software loadbalancers are used to handle the routes.
+        3) Virtual Load Balancers:
+            - implemented as VM or software instances within a virtual Environment.
+            - useCase:
+                -- Data centers uses VMs like VMware, Hyper-V.
+    
+    2) Based on Functions:
+        1) Layer 4 (L4):
+            - operates at the transport layer.
+            - It makes forward decision based on inforamtion in network Layer i.e IP address or PORT
+        2) Layer 7 (L7):
+            - Operates at application Layer.
+            - It makes Forward decision based on content information like URL, HTTP Headers or cookies.
+        3) Global Server Load balancer (GSLB): 
+            - It basically distributes traffic among geographically distributed servers.
+            - It takes server proximity, server health and geo location to decide where to forward the req.
+
+- Load Balancing Algorithms:
+    1) Round Robin:
+        - Distributes the req in a sequential or rotational manner.
+        - simple static implementation approach.
+        - It doesn't consider the load on any particular server thus chances of server hotspot.
+    2) Weighted Round Robin:
+        - static load balancing approach.
+        - same as roud-robin with each resources in the list provided with weight score.
+        - based on weight score, req are distributed among the servers.
+    3) Source IP Hash:
+        - Static load balancing approach.
+        - used in Netwrok balancing --> based on hashed value of source IP address.
+        - req from a particular source always goes to the same server.
+    4) Least Connection Method:
+        - dynamic load balancing approach.
+        - diverts incoming req to servers with least active connections.
+        - Aims at reducing load on any particular server ---> prevents server hotspot.
+    5) Least Response Time Method:
+        - dynamic load balancing approach.
+        - diverts incoming req to server with fastest response time.
+        - Aims at minimizing the time between the req and res. ---> High performance.
+
+NOTE:
+    - A load Balancer enables elastic scalability --> improves performance and throughput of data.
+    - It allows to keep many copies of data --> Ensures data availablity in case of any server issue.
 
