@@ -521,3 +521,4 @@ NOTE:
     - A load Balancer enables elastic scalability --> improves performance and throughput of data.
     - It allows to keep many copies of data --> Ensures data availablity in case of any server issue.
 
+

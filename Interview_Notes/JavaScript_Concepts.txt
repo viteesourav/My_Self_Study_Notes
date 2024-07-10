@@ -6,7 +6,7 @@
 **Basic Knowledge on JS**
 
 Data Types ?
-* Primitive: String, Number, BigInt, Boolean, undefined, null and symbol.
+* Primitive: string, number, bigInt, boolean, undefined, null and symbol.
 NOTE:
     -- 3 or 3.5 both are handled by Number type.
     -- BigInt can hold huge number eg: let c = 3453656n; It ends with n suffix.
@@ -14,6 +14,14 @@ NOTE:
     -- null: Doesnot exist.
     -- Symbol: newly added in ES6 of JS. stores anonymous and unique values. eg: let s = symbol('hi');
 * Non-Primitive: Arrays and Objects.
+
+NOTE:
+  -- string is immutable in JS --> Once the value is initialize, You cannot modify it again.
+  -- eg: let newStr = 'Hello';
+         newStr[0] = 'k'; //No errors here...
+         console.log(newStr);  //Hello  --> i.e No Change in the original value.
+  -- Additionally, String methods are concat(), slice() etc will create and return a new string instead of modifying the original string value.
+  -- thus, immutability.
 
 Hoisting ? 
 -- variable and function Declaration moves to the top of the scope. Scope can be both local and global
@@ -24,6 +32,22 @@ NOTE:
   1) var: The Variable decalration is hoisted with a default initialization of `undefined`., means you can access the variable before defining it -> function or global scope.
   2) let: Block scope, The variable is hoiseted with no initialization thus JS knows about the variable, but it will throw a REference Error saying, cannot access the variable before initialization.
   3) Const: Same as let, Value once initialized is fixed.
+
+NOTE:
+  Temporal Dead Zone [TDZ] **IMP
+    -- This is involved with the use of keyword 'let' and 'const';
+    -- In it's scope, TDZ is the time till which the variable is not defined and You are trying to access it. --> thorws Refernce Error.
+    -- eg:
+      //let and const are blocked scope..
+        { 
+          //TDZ starts at the start of the scope..
+
+          console.log(myVar); //Reference Error i.e cannot access my var before Initialization.
+
+          let myVar = 5; //TDZ ends here, once it's defined and initialized
+
+          console.log(myVar); //5
+        }
 
 == vs === ?
 -- == will just check the value. Interanlly It converts both them to String and then checkes the value.
@@ -83,7 +107,7 @@ JS is static or Dynamic ?
 NOTE: 
 About EcmaScript ?
 -- It is a standard for JS, and how it should be used. Js became ES standard in 1997 i.e ES1
--- Each Release of ES addes and standarise some new features of JS.
+-- Each Release of ES adds and standarise some new features of JS.
 NOTE: ***Important Developements in ES***
 -- ES5 --> strict mode is introduced.
 -- ES6(2015) --> added let and const, Array.find() and Array.findIndex().
@@ -132,7 +156,7 @@ newFun();
 Note: The Catch here is, this behaves differntly under normal funtion and arrow function.
 1) Noraml Function: "this" sees who is executing that function, it points to that.
 2) Arraow functions: "this" sees where the fun is created. OR we can put like it looks for function keyword above it.
- -- If it finds that whoever executing that this points to the same.
+ -- If it finds that whoever executing that "this" points to the same.
  -- If not, It points to the global Object. In browser we have windows object.
 
 eg: 
@@ -162,6 +186,9 @@ const testObj = {
 }
 
 Tag LINE: Never use "this" and arrow function together !!! **Important**
+Remember:
+  -- We can use Arrow Fucntion as we want, In Our global scope.
+  -- Never user Arrow Function for Function defination, Inside an Object, It will always points to Global Scope bydefault.
 
 Self Invoking Function ?
 -- functions invokes themselves automatically without calling them.
@@ -235,6 +262,8 @@ const currySum = function(a) {
     }
 }
 currySum(5)(4);  //returns 9.
+
+NOTE: Basically, a simple function [with Params] can be converted to a higher order function.
     
 SCope and Scope chains ? 
   -- Role of scope: DEfines boundaries for variables and functions.
@@ -401,15 +430,187 @@ BOM ?
   -- document, screen, naviagator, location and other attributes are avialble in BOM.
 
 
-NOTEs TO DO: 
-  -- On Feature wise on ES
-  -- Working of EventLoop [Preference among promise ALL and setTimeout]
+** NOTEs TO DO: 
   -- Other advance Concepts. 
   -- SOLID Design principle with example.
 
 
-**Experience Knowledge on JS**
 
+
+** Experience Knowledge on JS**
+
+
+Why we need Arrow Functions When we have noraml Functions ? 
+
+  -- Following Reasons:
+      1. Lexical this Binding: Arrow functions inherit this from the surrounding scope, avoiding common pitfalls with the this keyword.
+      2. Shorter Syntax: Arrow functions provide a concise syntax, making code cleaner and easier to read.
+      3. Implicit Return: For single-expression functions, arrow functions allow omitting the return keyword.
+      4. No arguments Binding: Arrow functions do not have their own arguments object, reducing potential confusion.
+      5. Predictable Behavior: Arrow functions make handling the this context more predictable in certain situations, like callbacks and event handlers.
+
+
+"arguments" keyword in JS ?
+
+  -- It holds the arguments passed to a function, If the arguments are updated, This also will update.
+  -- NOTE: One way, to prevent this is to use "use strict" inside the function.
+  -- eg: 
+          function test(x, y) {
+            console.log(arguments[0], arguments[1]);  // Prints 1, 2
+          }
+
+          test(1, 2);
+
+
+Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
+  
+  -- Debouncing:
+      - useCase:
+          -- In SerachBox, If we make service call to backend on every KeyDown, It will make a lot of unneccessary calls.
+              Solution: In Debouncing, When the user stops typing, Then we make the service call to the backend.
+      - Defination:
+          -- Debouncing, limits the rate of execution of a function and waits for a certain amount of time before exectuting it again.
+
+
+  -- Thorttling:
+    - useCase:
+        -- In Scrolling action, When we reach a particular point, In backend we make service call to fetch new data. 
+        -- This gives an infinite scrolling effect.
+    - Defination:
+        -- Thorttling, a teqnique to limit the execution of a event handler function, Even though the event is constantly getting triggered due to user action.
+        -- In above Context, scrolling is the event, And we limit it untill we reach a certain point in the scroll bar.
+
+  -- Libraries that has debounce and thorttle functions:
+      - library name: lodash [Add as cdn or use npm]
+      - For debouncing: const handleDebounce = _.debounce(()=> {}, delay); -->  Put the handleDebounce in the event handling function.
+      - For Thorttling: const handleThrottle = _.throttle(()=> {}, delay); -->  Put the handleThrottle in the event handling function.
+
+  NOTE: Diff between Debouncing and Thorttling  
+    -- Notice, Debouncing limits the execution of a function like API service call untill the specified delat. [OnSearch Functionality]
+      But, Thorttling limits the execution of the event handler function itself, till the delay. --> [Infinite Scrolling event]
+
+  NOTE: How to use debouncing in React for efficiency of search bar ? --> Added video in watchLater by Josh tried Coding.
+
+*** IMP ***
+  -- While using debouncing in React, Never !!! Neever use the state variables inside debounce to make service call or any actions.
+  -- This gives rise to redunduncy because of the Re-renders and how colsures and Async state updates works in React.
+  -- Solution: 
+      -- Pass the payload for service call in params.
+      -- InputField --> OnChangeEventHandler [update the field state and call debouceCallback method along with new FieldValue i.e e.target.value] 
+      --> then call the function That do useCallback of the debounce method pass the params[ preseve the state during re-renders]
+      --> then call the accutal debounse method [library: lodash] [use the paramaters to preapre the paylod]
+
+Wrapper Objects in JS ?
+  -- Wrapper Objects are built-in JS Objects ---> provides additional methods and functionality to existing primitive values.
+  -- example of Wrapper class that wraps primitive data-types:
+    1. String: 
+          let newStr = new String("sourav"); 
+          typeof newStr --> Object 
+    2. Number
+          let newNumber = new Number(45);
+          typeof newNumber --> Object
+    3. Boolean
+          let newBool = new Boolean(45);
+          typeof newBool --> Object
+    4. BigInt
+          let newBigint = new Object(123n);
+          typeof newBigint --> Object
+    5. Object
+          let obj = {};
+          let newObj
+
+  -- There are others built-In objects which are not wrapper but provides additional Functionaility
+    1. funtion
+       let newFun = new Function('return 43;');
+    *2. Array
+        let newArr = new Array(1, 2, 3, 5);
+    3. Regrex
+        let newRegrex = new Regrex('\\d+');
+    *4. Date
+        let newDate = new Date();
+        newDate --> A Current Date instance. [Methods are available to extract, days, month, year etc]
+    *5. Error
+        let errmsg = new Error('Something went Wrong');
+        typeof errmsg --> Object.
+
+  NOTE: Is it wise to use wrapper Objects Or primitive data-Types in Js ?
+    -- Wrapper objects are usually very rarely used in actual programming.
+    -- Reasons:
+        1) All methods provided by wrapper Objects are already available to premitive types.
+        2) Wrapper Objects sometimes behaive in weird manner.
+          eg: 
+            if('sourav ') ---> Returns True,  if(new String('')) ---> Also returns True [ideally, for '' is should be false]
+        3) They introduce unneccessary perfromance Overhead and complexity compared to primitive strings.
+
+
+
+EventLoop Explaination: 
+  -- JS is a single threaded Language i.e Only one call stack to manage the execution of the whole code.
+  
+  -- Issue:
+      - If we have any long running task in our code i.e a huge loop or a network call etc will take some time to execeute.
+      - If executed synchronous, The Thread will be blocked and the code below needs to wait.
+      - This slows down the efficiency and performance of the coding language.
+    Solution:
+      - Browser provides webApis i.e an interfaces to interact with the browser's features.
+      - These APIs are responsible for handling heavy stuff by interacting with the browser.
+      - eg: fetch, DOM, Timers, Console, Geolocation, web storages [local and session storage], Handle Files etc.
+      - Some of these web APIs, enables offloading the task to the browser.
+        - i.e it offloads the task from callstack and give it to the browser to handle.
+      
+      NOTE: Most of these webAPIs, which expose offloading are either callback based or Promise based. 
+  
+  -- Components Involved in the JS RunTime for handling Async Task in a non-blocking way in JS:
+      1. JS Engine:
+          - Heap 
+          - CallStack [Stack the Execution of Js Code Script one by one]
+      2. EventLoop [Checks if the callstack is empty, If empty it moves the Tasks from Task queue or Micro Task Queue into CallStack]
+      3. Web Apis
+      4. Task Queue [Also called Callback Queue, holds callbacks] and MicroTask Queue [Holds promises]
+  
+  -- Task Queue or Callback Queue Handles --> setTimeOut, SetInterval, Geolocation, eventListener or any webAPI with callback.
+  -- MicroTask Queue Handles --> .then(), .catch(), .finally(), the function after await keyword or queueMicrotask(()=> {}). 
+  
+  NOTE: [** IMP **]
+    -- Event Loop prioritise the MicroTask queue and then Task Queue.
+    -- i.e Event Loop first check if microTask queue is empty --> then only it moves to TaskQueue.
+    -- After Moving each Task From Task Queue, it checks microTaskQueue 
+        --> If Empty, It moves the next Task From Task queue.
+        --> If Not, It first moves all the Tasks from MicroTask Queue to callstack and then move the Task From TaskQueue. 
+  
+  -- example: 
+    1. Let see the execution of callback Based Task:  
+        SetTimeOut(() => console.log('Done'), 500); 
+      
+      -- first SetTimeOut Goes to callStack.
+      -- As it is a webAPI with callback, It will be immediately offloaded from the callstack and moved given to browser to handle.
+      -- The callstack will process other Tasks.
+      -- After 500ms, The Result is moved to Task Queue, Where it Waits.
+      -- Now, Event Loop waits till the callStack is empty, once empty It moves the callback function to callStack.
+          NOTE: 
+          -- If CallStack is not empty, Event Loop will still wait, untill it is empty and then only, the callback function moves from Task queue --> callStack.
+
+    2. Let see the exectution of Promise based Task: 
+        fetch('some url')
+          .then(resp => console.log(resp));
+      
+      -- first fetch goes to the callstack --> This returns a promise object with status as pending. --> Also Initiate the network call by the browser.
+      -- Then .then goes to callstack --> It will be offloaded and handled by the browser.
+      -- Then Other tasks will loaded and executed in the callstack.
+      -- Once we received the response, The Function will be stacked in microTask queue.
+      -- Now, Event Loop waits, Till the call stack is empty --> Then loads the function to the callStack.
+      NOTE:
+        If you have any callbacks Functions waiting at Task Queue, It has to Wait till microTask Queue is empty.
+
+
+
+Asynchronisation Js:
+  -- 
+
+
+
+DOM in JS:
+  -- 
 
 
 
