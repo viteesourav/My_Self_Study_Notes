@@ -1,3 +1,11 @@
+/*
+    Problem Statement:
+        1. If a sequence of numbers are given...
+            -- Find the postion of the First occurance of the specified Number in the list.
+            -- Find the position of the last occurance of the specified Number in the list.
+        2. If a sequence of Non-negative numbers are given,
+            -- Find the position of the mountain Peak..
+*/
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -50,7 +58,7 @@ int findLastOccurance(int arr[], int n, int k)
         int mid = l + (h - l) / 2;
 
         if (arr[mid] == k)
-        { // this is important, since we need to find the left most occurance, keep on searching on the left.
+        { // this is important, since we need to find the right most occurance, keep on searching on the right.
             endPost = mid;
             l = mid + 1;
         }
@@ -76,9 +84,9 @@ int peakMountainArr(int arr[], int n)
         if (arr[mid - 1] < arr[mid] && arr[mid] > arr[mid + 1] && mid > 0 && mid < n)
             return arr[mid]; // return the element at the peak.
         else if (arr[mid] < arr[mid + 1])
-            l = mid + 1; // mid on the up going slope
+            l = mid + 1; // mid on the up going slope --> Look in right side..
         else if (arr[mid] > arr[mid + 1])
-            h = mid; // mid on the down going slope. **NOTE: Here never do h= mid-1, then the below meantion arr it will fail.
+            h = mid; // mid on the down going slope. --> Look in left side **NOTE: Here never do h= mid-1, then the below meantion arr it will fail.
         else
             break; // if none of the above condition satisfy break the infinite loop.
     }

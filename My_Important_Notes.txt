@@ -7,7 +7,7 @@ Why #include ?
 
 Data Types:
 -- 1 byte = 8 bits, Each bit can be 0 or 1.
-eg: 4 bytes = 32 bits, Range:  2^32 to 2^32-1. 
+eg: 4 bytes = 32 bits, Range:  -2^32 to 2^32-1. 
 -- Premitive Data Type: int(4 bytes), char(1 bytes), boolean(1 bytes), float(4 bytes), double(8 bytes), long(4 bytes).
 -- boolean, 1 -> true, 0 -> false.
 
@@ -45,7 +45,7 @@ Right Shift(>>)
 eg: 5>>1 -> 101 >>1 -> 010 -> 2 or 5/2 -> 2.
 
 Reason for using namespace std ?
--- Here std is used in front of cin and cout along with scope resolution operator, 
+-- Here std is used in front of cin and cout along with scope resolution operator, --> std::cin or std::cout
 -- which indicates that the object cin and cout are defined inside the namespace whose name is std. 
 -- The std is the standard library, and both cin and cout are defined inside this scope.
 
@@ -56,13 +56,13 @@ Reason for using namespace std ?
 In an array initialization,
    int arr[5] = {0} -> Initize all values to zero.
    int arr[5] = {1} --> {1, 0, 0, 0, 0} only first value will be non-zero, rest will be zero.
-   int arr[5]; std::fill_n(arr, 5, 1); --> it will Initize all values with 1, Any non-zero value you can Initize the array with.
+   int arr[5]; std::fill_n(arr, 5, 1); --> it will Initize all values with 1, Any non-zero value you can Initize the array with. [**IMP]
 why function handling arr expect size ?
    Because we have situation where arr[10] = {1, 2}, here totalSize is 10 but the size we expect is 2. That's why always send it as param to function.
 NOTE: int arr[size], where size is a variable -> Bad practise.
 -- Inside For loop, inputs can be passed in a single line space seperated.
 -- Arrays are passed by reference, So no copy is made when passed to function. Any update of arr in function will be reflected. 
--- XOR, use, finding unique elements among all duplicates.
+-- XOR, use, finding unique elements among all duplicates. [**Imp]
    a^a = 0, 0^a = a;
    eg: 2, 3, 1, 3, 2 --> 2^3^1^3^2 -(XOR is commutative)->2^2^3^3^1 --> 0^0^1 --> 1(Unique Element).
 
@@ -83,7 +83,7 @@ Time Complexity Order:
    -- This chart helps to avoid TLE. (Time Limit Exceeded).
 
 Note:
-   -- Anything % n --> will always lies between 0 to n (used in cyclic logic of array)
+   -- Anything % n --> will always lies between 0 to n (used in cyclic logic of array) [**IMP]
 
 **Kaden's Algo: Max contigious Sum Problem.
    -- 3 Step Process: maxi = first ele, sum =0 and run a loop 0 to n-1
@@ -96,15 +96,15 @@ maxi will return the max sum of the contigious array.
 ** Binary Search:
  -- We update mid as (start+end)/2, if we have one situation when start is 2^31 -1 and end also same i.e INT_MAX.
  -- then this case start+end will be out of range of int.
- -- Solution: instead use this for mid, mid = s + (e-s)/2;  (**Very important Edge case**)
+ -- Solution: instead use this for mid, mid = s + (e-s)/2;  (**Very important Edge case**) [**IMP]
  -- NOTE:
-    If we are doing finding any pivot element, do remeber the update the h = mid  instead h=mid-1, then condition like while(l<h) and return l as answer, There is a chance it will skip the pivot if you use the later.
+    If we are doing finding any pivot element, do remeber to update the h = mid  instead h=mid-1, then condition like while(l<h) and return l as answer, There is a chance it will skip the pivot if you use the later.
  -- we can find sqrt of x using BS as 0(logn) complexity --> logic minimizing the search space from 0 to x. 
 
 -- Very Famous Questions from Binary Search:
 Why Binary Search approach ?
 -- If we find a mid in a solution space(montonous i.e 1,2,3 ...), and can say like for all element < mid we can ignore and move to  rigth part or we can ignore all ele > mid and move to the left part. 
-we can use BS Approach.
+we can use BS Approach. ===> Basically, we are reducing our Solution Sample Space to a limited options using Binary Search.
 
 ** Book Allocation Problem:
    -- you have books with certain pages, find the max no of pages assigned to a student is minimum.
@@ -125,7 +125,7 @@ NOTE: similar Questions like Book allocation Problem:
    -- Given the requiremnt of number of Cookies. minimise the time.
 
 *** Very Important NOTE For Binary SEarch problems****
--- All Problems related the binary Search Works on the bases on Sample space.
+-- All Problems related the binary Search Works on the bases on solution Sample space.
 steps: 
 -- understand what the problem is asking, Find arr, k and what need to maximise or minimise.
 -- Find a range where the solution may lies, Take the mid of the range.
@@ -174,7 +174,8 @@ NOTE: For Singly Linked list we use: forward_list
    -- maxheap is by default, for minheap you need to do: priority_queue<int, vector<int>, greater<int>> Q;
    -- ForEach doesnot work here.
    -- NOTE: It is a queue, but the methods are similar to that of a stack,
-      top() --> returns max, pop()--> remove the max, empty()--> checks if its empty or not
+      push() --> psuhes in the queue [O(logn)]
+      top() --> returns max [O(1)], pop()--> remove the max [O(logn)], empty()--> checks if its empty or not
 
 * Container Associative:
 1) set:
@@ -213,6 +214,14 @@ NOTE: For Singly Linked list we use: forward_list
    -- NOTE: If the pair elements are not initialized, then it defaults to 0.
    -- Swaping pairs ?
       P2.swap(P1); -> swap the elements of P1 and P2. [data types of elements should match]
+
+NOTE:
+   -- the time Complexity for Operations like push or insert, pop among containers.
+      - For map and set, insert and remove takes O(logn) as they store in sorted order.
+      - For unordered_map and set, inset and remove takes O(1) --> random order.
+      - For priority_queue --> heapify tech used --> insert and remove takes O(logn)
+      - for others like vector, stack, queue -> Operations take O(1).
+
 
 Algorithms in STL:
 Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It includes all headers**)
@@ -330,7 +339,7 @@ NOTE:
 
 String Question Trick:
 -- If you need a freq table, you can use flat alpha freq table. its O(1) since its constant. i.e char lookupChar[26] = {0}; //Always 26 character.
--- To add the freq of a char ch,eg: lookupChar[char-'a']++; 
+-- To add the freq of a char ch,eg: lookupChar[char-'a']++; [** condition: If the given string in lowercase: char-'a', If in upperCase: char-'A', If not sure, --> Convert to lowercase and then check]
 
 ****Multi-Dimensions Arrays****
 -- 2-D Array represented as a linear array in memory using the formula: (columnLength)*rowIndex + columnIndex

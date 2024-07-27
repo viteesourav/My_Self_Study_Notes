@@ -68,6 +68,14 @@ int main()
     return 0;
 }
 
+/*
+Conclusion: 
+    -- Mostly the pattern linked with n, row and col, 
+    -- approach to find Formula, Take one row, col, see how the values are increasing or decreasing based n and previous rows..
+    -- It will take some time, Trial and error, Try to frame the formula
+    -- This formula, basically works on n, row and col.
+*/
+
 /*Output: Pattern 1:
 
 4

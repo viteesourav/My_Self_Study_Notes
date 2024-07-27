@@ -46,6 +46,11 @@ void vectorSTL()
 
     vector<int> copyV(a); // copy vector a.
 
+    //Other ways to define vectors...
+    vector<int> v1 = {1,2,3,4,5,6,7};
+    vector<vector<int>> v2 = {{1,2}, {2,3}, {4,5}};
+    vector<vector<int>> v3 (3, vector<int>(2, 0)); //[[0,0], [0,0], [0,0]]
+
     for (int i : a)
         cout << i << " ";
     cout << endl;
