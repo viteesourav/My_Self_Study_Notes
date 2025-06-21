@@ -8,7 +8,7 @@ void printArr(int arr[], int n)
     cout << endl;
 }
 
-// selection Sort Algo... O(n2)
+// selection Sort Algo... O(n2) --> i and j = i+1 --> Look right, find the index where ar[j] < ar[i] -> swap i and j.
 void selectionSort(int arr[], int n)
 {
 
@@ -26,7 +26,7 @@ void selectionSort(int arr[], int n)
     printArr(arr, n);
 }
 
-// bubble sort Algo...O(n2)
+// bubble sort Algo...O(n2) -> swap[i and i+1] for n times.
 void bubbleSort(int arr[], int n)
 {
 
@@ -62,7 +62,7 @@ void OptimizedBubbleSort(int arr[], int n)
     printArr(arr, n);
 }
 
-// insertionSort...
+// insertionSort...--> i and j= i-1. Hold ar[i], replace -> ar[j+1] with ar[j] till arr[j] > hold --> at end replace ar[j+1] -> hold. 
 void insertionSort(int arr[], int n)
 {
 

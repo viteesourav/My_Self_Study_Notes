@@ -486,8 +486,8 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
       - For Thorttling: const handleThrottle = _.throttle(()=> {}, delay); -->  Put the handleThrottle in the event handling function.
 
   NOTE: Diff between Debouncing and Thorttling  
-    -- Notice, Debouncing limits the execution of a function like API service call untill the specified delat. [OnSearch Functionality]
-      But, Thorttling limits the execution of the event handler function itself, till the delay. --> [Infinite Scrolling event]
+    -- Notice, Debouncing delays the execution of a function like API service call untill the specified time. [OnSearch Functionality]
+      But, Thorttling limits the execution of the event handler function itself, till the sepecified time. --> [Infinite Scrolling event]
 
   NOTE: How to use debouncing in React for efficiency of search bar ? --> Added video in watchLater by Josh tried Coding.
 
@@ -603,6 +603,22 @@ EventLoop Explaination:
         If you have any callbacks Functions waiting at Task Queue, It has to Wait till microTask Queue is empty.
 
 
+** Swallow copy Vs Deep Copy of Objects ?
+  1. Swallow copy:
+    -- eg: let obj1 ==> Exists which old 2 strings and a deep nested Object.
+    -- Now, You do, let obj2 = {...obj1};
+    -- It will spread the keys of obj1 in Obj2 where obj1 and obj2 hold 2 different references in the memory.
+    -- Interestingly,
+       -- When the nested object of obj1 is spread, Obj2 and obj1 points to the same reference.
+       -- i.e If you change something in nested object with obj2, It will be for sure reflect in obj1.
+
+  2. Deep copy:
+    -- This method suggest a copy in such a way that Obj1 and obj2 are totally 2 different reference in the memory.
+    -- eg: let jsonString = JSON.stringify(obj1);
+           let obj2 = JSON.parse(jsonString);
+    -- This method,
+       -- Prevent swallow copy of nested object and obj1 and obj2 are toally 2 different reference.
+        
 
 Asynchronisation Js:
   -- 

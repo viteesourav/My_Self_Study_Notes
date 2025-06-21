@@ -341,6 +341,15 @@ String Question Trick:
 -- If you need a freq table, you can use flat alpha freq table. its O(1) since its constant. i.e char lookupChar[26] = {0}; //Always 26 character.
 -- To add the freq of a char ch,eg: lookupChar[char-'a']++; [** condition: If the given string in lowercase: char-'a', If in upperCase: char-'A', If not sure, --> Convert to lowercase and then check]
 
+NOTE: 
+   -- '' --> char, " " --> string in c++.
+   -- Methods used for char i.e charArr --> strlen(chArr), strcmp(chArr1, chArr2), strcpy(chArr1, chArr2),
+      --> iswalnum(ch), stoi(str), tolower(ch), toUpper(ch), str.push_back(ch) --> addes a char at the end..
+   -- String methods:
+      -- str.length(), str.substr(start, len), str.find(str, len), str.erase(pos, len), str.append(" ") --> adds a string..
+
+
+
 ****Multi-Dimensions Arrays****
 -- 2-D Array represented as a linear array in memory using the formula: (columnLength)*rowIndex + columnIndex
 -- int arr[][] is not accepted in c++. We have to specify colIndex for mandatory. **IMP** (This identifying the column is difficult, But can be handled.)
@@ -515,7 +524,11 @@ NOTE: (Very Important Always Remember)
 Whenever, we use any memory in heap, we need to always manually release the memory.
 -- In Stack memory it get automatically release when the execution overs.
 
+
+
 *** C++ Keywords ***
+
+
 
 Macros:
 -- #include: preprocesser directive, It brings pre-programmed functionality in our code workspace. eg: for cout and cin functionality we need iostream.
@@ -558,7 +571,10 @@ Default Params:
 NOTE: (**IMP**) 
 -- Always start assigning default values in the params from right to left manner.
 
-**Recurssion** (***VIMP****)
+
+
+*** Recurssion *** (***VIMP****)
+
 -- Basically when a function calls it-self.
 3 step in Recurssion:
 1) Base condition: 
@@ -868,7 +884,11 @@ NOTE On Class and Constructors: [V.IMP]
    -- Use Constructor to initialize the properties during Object Creation.
 If Not follwed, It will show segmentation Error.
 
+
+
+
 *** OOPs 4 Pillars/Concepts ***
+
 
 1) Encapculation [Information hiding/ Data hiding]
    
@@ -939,7 +959,10 @@ Observations from Inheritance:
       By default, Child object can access it's own function. If not defined, then it will call the inherited function from parent class.
 
 
+
+
 *** Linked List ***  [Ref: https://www.codingninjas.com/codestudio/guided-paths/data-structures-algorithms?source=youtube&campaign=YouTube_CodestudioLovebabbar23rdJan&utm_source=youtube&utm_medium=affiliate&utm_campaign=YouTube_CodestudioLovebabbar23rdJan]
+
 
    -- Linear Collections of Nodes. Nodes -> capsule that conains data and address of next node.
    -- It allocates Memeory in Random fasion, No continious memory allocation.
@@ -1019,7 +1042,11 @@ Appraoch:
    -- Move slow 1 Node at a time, and fast 2 Node at a time.
    -- AS fast reaches the end Node, Slow gives the mid Node.
 
+
+
+
 *** Stacks ***
+
 
 -- Data Structure that follows: LIFO [Last In First Out]
 
@@ -1040,7 +1067,11 @@ Important Questions From Stack: [Level: Hard][Very Important]
 NOTE: 
    -- To Fill all the elements of the array with a particular value, use:  memset(arr, 1, sizeOf(arr)) [This will fill all elements of the arr with 1]
 
+
+
+
 *** Queues ***
+
 
 -- Logic used in Queue: FIFO [First In First Out]
 -- Iterator used in Queue: front[keep tracks of front queue element] and back [keep tracks of queue back element]
@@ -1086,7 +1117,12 @@ Important Questions of Queue..
    -- Implement N Queues in Array. [same as Implementing N stack in Array] [Vimp]
    -- Sum of minimum and maximum elements of all subarrays of size “K” [Vimp, Hard]
 
+
+
+
 *** Binary Tree ***
+
+
  -- non-Linear Data Structure [One Node may connect to multiple Nodes]
  -- BinaryTree: Each Node may have <= 2 childs [at max 2 childs]
  
@@ -1158,7 +1194,12 @@ Important Questions:
    8) Min Time to Burn Binary Tree. [ParentNodeMapping + VistiedNodeMap and Queue] [***VIMP**]
    9) Flattern a Binary Tree into LinkedList. [Morris Traversal, SC: O(1)] [**VImp**]
 
+
+
+
 ** Binary Search Tree ** [Mostly asked Topic]
+
+
    -- A BTree, with Strict 2 Conditions: 
    For any Node,   
       1) The left Child should be smaller i.e currNode->left->data < currNode->data
@@ -1215,7 +1256,12 @@ NOTE:
    -- 10th question shows how to handle/hold multiple data using class [or we can use struct also] during recursion.
    -- If only 2 data you need to handle/hold, then go with pairs, If more than 2, use struct or class to hold as data-members.
 
+
+
+
 ** Heaps **
+
+
 
 What are Heaps ?
    -- Heaps are Complete BinaryTree with heap Order Property.
@@ -1309,7 +1355,11 @@ NOTE:
    2) Find the Median in a Stream [MaxHeap-Median-MinHeap Algo] [**VVVIMP**]
    3) ReArrange a Given String such that no 2 adjacent characters are same. [charFreq + maxHeap] [Imp]
 
+
+
+
 ** Hash Maps **
+
 
 Why needed ?
    1) Major Advantage of using HashMaps -> The Complexity of insertion, deletion and others are better in hashMap
@@ -1410,7 +1460,12 @@ Implementation:
    -- If N increases, then b also should increases in order mainatin the condition.
       -- This is called reHashing, It increases the bucket Size.
 
+
+
+
 ** Tries **
+
+
    -- It is type of Data structure. useCase eg: It can be used to Implement a Dictionary [Keep track of words insertion/searching/deletion].
    -- It can keep tracks of Words inserted, can search a Word and also delete a particular word.
    
@@ -1486,7 +1541,12 @@ Important Questions:
    2) N Queen Problem [BackTracking] [**HARD**] [**IMP**]
    3) Sudoko Solver [BackTracking] [**Hard**] [**VVIMP**]
 
+
+
+
 *** Graphs ***
+
+
 What ?
    -- Graphs are simply the collection of some Nodes and edges.
 -- Nodes/vertex -> It represent a DS that store the data for the graph. Can be char, int or object etc

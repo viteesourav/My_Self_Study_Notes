@@ -1,4 +1,8 @@
 // This Program finds the powerSets of a given Array. Power Set : All possible subsets of given array.
+
+#include <bits/stdc++.h>
+using namespace std;
+
 class Solution
 {
 private:
@@ -46,6 +50,8 @@ public:
 ]
 
 Approach:
+
+-- Classic case: where we either exclude or include a element in ouput array. --> Finding all possible subsets or power set.
 
 Solve Recurssively.
 fn -> givenArr, outputArr, index ans ansArr

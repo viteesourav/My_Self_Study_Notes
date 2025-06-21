@@ -1,0 +1,13 @@
+** Interview preparation For Core Java Devs ***
+
+-- Topic to cover:
+    1. Core Java Concepts --> OOPs
+    2. java Collections and Streams APIs.
+    3. Java Multi-threading Concepts.
+    4. Java Exception Handling concepts.
+    5. Java 8 features.
+    6. Java frameWork Knowledge --> Spring and SpringBoot.
+
+
+** Core Java Concepts **
+

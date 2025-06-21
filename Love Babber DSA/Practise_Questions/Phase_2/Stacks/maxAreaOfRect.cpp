@@ -113,14 +113,16 @@ Largest Rect in Histogram [Area of the max Rectangle]
 2 1 5 6 2 3  -> Plot this all heights with width 1, Find max possible area of rect.
 
 
-Appraoch 1: Brute Force [TC: O(n2) ]
+Appraoch 1: Brute Force [TC: O(n2) ] --> I will extend the bar to it's left and right till i can, then find the area..
 
  0 1 2 3 4 5
  2 1 5 6 2 3
 
+ Area -> height * breadth. [height of the bars are constant, the breadth is varying...]
+
  -- Run on For lop on the index...
- -- For each element, look on right part, till it is smaller, take the index. let sat m
- -- Find the left look on its left part till its samller, let say at index n.
+ -- For each element, look on right part, can you extend the bar towards right, If yes, Do it and track the index. let sat m
+ -- look left on its left part till you can extend the bar towards left, do it and track the index, let say at index n.
  -- Now we form a rectangle, width: m-n-1 and height will value at element.
  -- compare for all elements and find the max possible area.
 
