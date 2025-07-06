@@ -27,6 +27,15 @@ Hoisting ?
 -- variable and function Declaration moves to the top of the scope. Scope can be both local and global
 -- This behavior is strictly for declaration only. Intializing won't be hoisted. **Imp**
 -- Its JS default's Behaviour and can be stopped by adding this at the top "use strict".
+  eg: "use strict";
+      x = 10; 
+    - the above throws error as x is not defined.
+    - But if you remove "use strict" ---> It doesnot throw error.
+
+NOTE:
+  x = 10;
+  -> The above variable if defined outside of any function or block scope -> is stored in global/window scope.
+
 NOTE: 
   Hoisting Differences between var, let and const ?
   1) var: The Variable decalration is hoisted with a default initialization of `undefined`., means you can access the variable before defining it -> function or global scope.
@@ -70,7 +79,8 @@ implicit type coercion ?
 -- Automatic Conversion of Value from one data Type to another.(while using +,-, ||, && or ==).
 -- '+' convert both operands to String and then concat them.
 -- '-' convert both operands to Number and then subtract them. 
--- '==' converts both sides to same type i.e string before comparing.
+-- '===' converts both sides to same type i.e string before comparing.
+
 NOTE: Boolean Coercion:
 -- Falsy: null, 0, 0n, -0, undefined, false, "" and NaN are falsey. REst are all are truthy. (**Imp**).
 Logical Operator Working ? 
@@ -95,6 +105,11 @@ JS is static or Dynamic ?
  eg: let x=5; let y=x; here, y points to a new location that copy's the value of x and put there. Changing x value wont effect y.
  -- Non-premitive data-types are passed by Reference.
  eg: let obj = {one:"1", two: "2"}; let obj1 = obj; here, obj1 is pointing at a refernce to obj. so Any change in Obj will be reflected in obj1.
+
+NOTE: 
+  1. shallow copy: [copy only the parent keys of the obj, nested keys are still taken as reference] --> 2 ways -> Object.assign({}. obj1), {...obj1};
+  2. Deep copy: [copy the whole Obj and newly create a object, no references] -> 1 way -> JSON.parse(JSON.stringify(obj1))
+
 
  Immediatly invoked Functions (IIFE or pronounced as IIFY) ?
  -- function that runs as soon as it is declared.
@@ -123,6 +138,12 @@ use Strict ? What and Why we use ?
    2) cannot use JS keyword in funct name or param.
    3) Hoisting is not allowed i.e Intializing variable not allowed before defining it.
 
+eg: 
+  1. If a function takes param1, param2, param1.
+    In non-strict mode --> param1 will take whatever passed in the 3rd paramter in the call.
+    In strict mode --> duplicate parameters are not allowed.
+
+
 Higher Ordered Functions ?
 -- Functions taking another funtions as parms or returning another function are called higher ordered function.
 -- All Callback functions are higher order functions. eg: forEach,map,filter,reduce. 
@@ -138,7 +159,7 @@ eatFun(function(){
     console.log('Shit! I am going to be eaten');
 });
 
-2) returns a Function: eg:
+2) returns a Function: eg: [closure example]
 
 const spitFun = ()=> {
     let a = 5;
@@ -150,7 +171,8 @@ const spitFun = ()=> {
 const newFun = spitFun();
 newFun();
 
-"this" keyword explain ?
+
+### "this" keyword explain ? [** V.IMP **]
 -- "this" points to the object, the current function is a property of.
 -- simply put, this is used to access the current object.
 Note: The Catch here is, this behaves differntly under normal funtion and arrow function.
@@ -187,7 +209,8 @@ const testObj = {
 
 Tag LINE: Never use "this" and arrow function together !!! **Important**
 Remember:
-  -- We can use Arrow Fucntion as we want, In Our global scope.
+  -- We can use Arrow Fucntion/ normal Fucntions as we want, In Our global scope. => It doesn't matter, this points to global.
+  -- Always use Function keyword inside an Obj => If you use this, it will point to current obj.
   -- Never user Arrow Function for Function defination, Inside an Object, It will always points to Global Scope bydefault.
 
 Self Invoking Function ?
@@ -414,7 +437,7 @@ Server-side JS:
     -- Independent of any browser platform. Runs outside of browser.
     -- No access to Windows or dom elements.
     -- Have access to npm packages, That manage various open-source package for server side development and database integration. eg: express and mongoose.
-    -- Mostly focused on REST API Creatio and managing server-side scripting.
+    -- Mostly focused on REST API Creation and managing server-side scripting.
 
 DOM ?
   -- Document Object Model. A programming interface to HTML and XML documents.
@@ -430,15 +453,14 @@ BOM ?
   -- document, screen, naviagator, location and other attributes are avialble in BOM.
 
 
-** NOTEs TO DO: 
-  -- Other advance Concepts. 
-  -- SOLID Design principle with example.
+NOTE:
+  lexical scope --> the place where the function is defined.
+  eg: For arraw fun, they dont have their own 'this'. They inherit from their lexical scope, where the function is defined.
 
 
 
 
 ** Experience Knowledge on JS**
-
 
 Why we need Arrow Functions When we have noraml Functions ? 
 
@@ -448,6 +470,7 @@ Why we need Arrow Functions When we have noraml Functions ?
       3. Implicit Return: For single-expression functions, arrow functions allow omitting the return keyword.
       4. No arguments Binding: Arrow functions do not have their own arguments object, reducing potential confusion.
       5. Predictable Behavior: Arrow functions make handling the this context more predictable in certain situations, like callbacks and event handlers.
+
 
 
 "arguments" keyword in JS ?
@@ -460,6 +483,12 @@ Why we need Arrow Functions When we have noraml Functions ?
           }
 
           test(1, 2);
+NOTE:
+  -- arguments keyword doesnot work with Arrow Fucntions.
+  -- arguments will follow the input to the functions. any change in arguments will reflect in the input params.
+  -- But any change in the input params will not effect the arguments, --> It always carries the values when the control enters the function.
+  -- "use strict" to disable "arguments"
+
 
 
 Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
@@ -489,7 +518,6 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
     -- Notice, Debouncing delays the execution of a function like API service call untill the specified time. [OnSearch Functionality]
       But, Thorttling limits the execution of the event handler function itself, till the sepecified time. --> [Infinite Scrolling event]
 
-  NOTE: How to use debouncing in React for efficiency of search bar ? --> Added video in watchLater by Josh tried Coding.
 
 *** IMP ***
   -- While using debouncing in React, Never !!! Neever use the state variables inside debounce to make service call or any actions.
@@ -499,6 +527,8 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
       -- InputField --> OnChangeEventHandler [update the field state and call debouceCallback method along with new FieldValue i.e e.target.value] 
       --> then call the function That do useCallback of the debounce method pass the params[ preseve the state during re-renders]
       --> then call the accutal debounse method [library: lodash] [use the paramaters to preapre the paylod]
+
+
 
 Wrapper Objects in JS ?
   -- Wrapper Objects are built-in JS Objects ---> provides additional methods and functionality to existing primitive values.
@@ -541,7 +571,6 @@ Wrapper Objects in JS ?
           eg: 
             if('sourav ') ---> Returns True,  if(new String('')) ---> Also returns True [ideally, for '' is should be false]
         3) They introduce unneccessary perfromance Overhead and complexity compared to primitive strings.
-
 
 
 EventLoop Explaination: 
@@ -605,7 +634,7 @@ EventLoop Explaination:
 
 ** Swallow copy Vs Deep Copy of Objects ?
   1. Swallow copy:
-    -- eg: let obj1 ==> Exists which old 2 strings and a deep nested Object.
+    -- eg: let obj1 ==> Exists which holds 2 strings and a deep nested Object.
     -- Now, You do, let obj2 = {...obj1};
     -- It will spread the keys of obj1 in Obj2 where obj1 and obj2 hold 2 different references in the memory.
     -- Interestingly,
@@ -620,17 +649,279 @@ EventLoop Explaination:
        -- Prevent swallow copy of nested object and obj1 and obj2 are toally 2 different reference.
         
 
-Asynchronisation Js:
-  -- 
+####### Revision and Notes for Important Topics in JS #############
+
+
+** Core JavaScipt COncepts ** 
+
+1. Variables and Scoping
+2. var, let, const
+3. Hoisting
+4. Data Types and Structures
+5. Temporal Dead Zone
+6. Primitive vs. reference types
+7. Arrays and objects
+8. Type coercion and type checking
+9. Functions
+10. Function declarations vs. expressions
+11. Arrow functions
+12. Closures
+13. IIFE (Immediately Invoked Function Expressions)
+14. Higher-order functions
+15. Asynchronous JavaScript
+16. Callbacks
+17. Promises
+18. async/await
+19. Event loop and microtasks/macrotasks
+20. Object-Oriented Programming (OOP)
+21. Prototypal inheritance
+22. ES6 classes
+23. this keyword, call, apply, bind
+24. Functional Programming
+25. Pure functions
+26. Immutability
+27. Function composition
+28. Array methods (map, filter, reduce)
 
 
 
-DOM in JS:
-  -- 
+** Advance Javascript
+		Event Handling
+		Event listeners
+		Event propagation (bubbling and capturing)
+		Event delegation
+		Error Handling
+		try, catch, finally
+		Custom errors
+		JavaScript Engine and Runtime
+		V8 Engine
+		Just-In-Time (JIT) compilation
+		Memory management
+		Modules
+		ES6 modules (import/export)
+		CommonJS
+		Advanced Data Structures
+		Sets and Maps
+		WeakSet and WeakMap
+		Design Patterns
+		Singleton
+		Factory
+		Module
+		Observer
+		Concurrency and Parallelism
+		Web Workers
+		Service Workers
+
+** Frontend-Specific Topics
+		DOM Manipulation
+		Selecting elements
+		Modifying elements
+		Event handling
+		Web APIs
+		try, catch, finally
+		Custom errors
+		JavaScript Engine and Runtime
+		Fetch API
+		WebSockets
+		LocalStorage, SessionStorage, and IndexedDB
+		Navigator API
+		Frameworks/Libraries
+		React (hooks, lifecycle methods, state management)
+		Angular (directives, services, dependency injection)
+		Vue.js (reactivity, components, Vuex)
+		Performance Optimization
+		Debouncing and throttling
+		Lazy loading
+		Code splitting
+		
+** Best Practices
+		Code Quality
+		Clean code principles
+		Code reviews
+		Refactoring
+		Security
+		XSS, CSRF
+		CORS
+		Secure coding practices
+		Accessibility
+		ARIA roles
+		Semantic HTML
+
+
+
+Important Notes:
+  -- TDZ [Temporal dead zone]: the time between variable declared and initialization when let or const exist but cannot be access.
+    eg: console.log(a);  //Reference Error.
+      let a = 10;
+  --  let x; 
+      console.log(x); // undefined.
+  -- var, let, const --> scope, reassignable, hoisted, initialized.
+  -- Shadowing: 
+    With let if inside a nested block, If the variable is declared again [defined and initialized], for that block, the value changes.
+  -- Function expression like var greet() = () => {console.log("hi")} 
+    -> Here greet will be hoisted and initialized as undefined.
+    -> NOTE: If we have greet() {...} => here the whole function will get hoisted.
+  -- typeof null --> Object [** JS legacy bug **]
+  -- NaN === NaN -> false , [] == false -> true.
+  -- prmitive data types are stored in "stack", Reference type data are stored in "heap"
+  -- Arrays:
+      1. reverse arr without using .reverse(). [ use .reduce([acc, item] => [item, ...acc], [])]
+      2. flatten nested arr. [.flat(_nested-level_), use Recusrion: consider if the ele is array, call the fn again else push the val inside the arr.]
+      3. find duplicates. [use freq Map and then filter on main arr]
+  -- Non-Integer keys in arr --> Length will be 0. 
+    const arr = [];
+    arr["test"] = "fool";
+    console.log(arr); // print ["test": fool]
+    console.log(arr.length); // length ==> 0
+  -- false + 1 ==> 1 [false will become 0], true + '1' ==> true1 [true will be string].
+  -- Type Coercion:
+      1. Implicit --> automatically [using + or -]
+      2. Explict --> using wrapper class [Number('3'), String(123), Boolean(0), !!'hello" ]
+  -- [] + {} --> [object, object]
+     {} + [] --> 0
+     [] == false --> true
+     null == undefined -> true.  
+  -- 2 ways of checking types:
+    1. typeof 
+    2. Object.prototype.toString().call() --> Precise type check.
+  -- First class citizens:
+      3 things are allowed -> can be stored in varaible, passed as params, or returned from function.
+      NOTE: Functions are first class citizens.
+  --  When you using "this" inside a function ==> You must call the fun like: new fun() --> The fun will be a constructor function.
+  -- var loop trap fixed using closure...
+      for (var i = 0; i < 3; i++) {
+        (function(j) {
+          setTimeout(() => console.log(j), 1000);
+        })(i);
+      }
+  -- NOTE:
+     The variables inside a closure will be garbage collected when the reference of the inner function is out of scope or is no longer in use.
+     as long as we have the refernce of the inner function, The variable exists in memory.
+  -- Callbacks --> fun passed to another fun, that executes after sometime.
+     Prmise: JS Object that returns a value that may be available now, later or never.
+  -- OOPs in JS:
+    1. Prototype based.
+    2. ES6 class based.
+  -- private field inside a class --> declare variabel with # eg: #balance [from ES2022]
+  -- JS follows prototype based inheritance --> Every obj has __proto__ --> that links to another object forming a link.
+  -- at the end of the link it will always be Object.prototype.
+  -- __proto__ vs prototype
+    __proto__ ==> Points to the object's internal prototype chain. [exist on the obj]
+    Func.prototype --> used only on constructor functions and classes. ==> Can be used to define new methods on the class.
+  -- Object.create(fn) --> creates a new Object with prototype set to proto. [using Object.create is manual inheritance]
+  -- using extend keyword with classes --> [Syntactic Sugar on the way we inherit properties of other classes]
+  eg:
+    - a class Animal, a class dog extends animal, then we create an object for the class dog.
+    - d.__proto__ == Dog.prototype // true
+      Dog.prototype.__proto__ === Animal.prototype // true [extends create a link between dog class and animal class]
+  -- In ES6 classes,
+    -> any method declared inside a function ==> will go inside it's prototype.
+    -> "constructor" keyword is used to define constructor for the class when object is created.
+    -> base class, a derived class extends the base class --> Inside derived class constructor, we must call super(); // this calls the base class constructor.
+    1. static method:
+     any method inside a class can be declared as static. eg: class MathUtil { static sq(x) { return x*x} };
+     -> Here you can call sq method directly on Class without creating instance.
+    2. Private field:
+     -> variable declared with # eg: #count --> this are private to the class methods cannot be accessed outside.
+    3. getter and setter:
+      get/set key word infront of method inside the class.
+  -- "this" keyword --> execution context.
+  NOTE: sometime this context get lost...
+     eg: const user = {
+          name: "Sourav",
+          greet() {
+            console.log("Hi " + this.name);
+          }
+        };
+      setTimeout(user.greet, 1000); // Hi undefined. ==> because here the context for this is not passed.
+      setTimeout(() => user.greet(), 1000); // Hi Sourav.
+  -- Functional Programming --> programs build using Pure function, immutable data and function composition.
+  -- pure Function: give same input --> always same output, no side effects.
+     immutable --> data is not mutable, copies are made with changes.
+     Function componsition --> small funs are combined to build complex logic.
+    eg:  
+      const multiply = x => x*x;
+      const increment = x => x++;
+      // fun composition...
+      const compose = (f, g) => {
+          return x => {
+              return f(g(x));
+          }
+      }
+      console.log(compose(multiply, increment)(5));  // 25
+  -- Array methods that mutates the original arr content --> push, pop, shift(), unshift(), splice(), others method returns new arr.
+  -- Pure Functions:
+      -> It should have any dependency on outer variable or any thing that can change.
+      -> Impure eg: 
+          function addItem(arr, item) {   // modify the input arr based on item.
+            arr.push(item);
+            return arr;
+          }
+        Pure one: // input arr doesnot change --> we return a new arr with change.
+          function addItem(arr, item) {
+          return [...arr, item];
+        }
+    usecase:
+      -> In react, useMemo, useCallback, memo depends upon pure fun behavior for optimization.
+  -- 2 condition for pure function:
+      1. same input --> always same output.
+      2. should not Change anything outside the function.
+  -- Muttable vs Immutable example:
+    const user = {name: "test"}
+      Mutable --> user.name = "sourav"  //the user object is updated.
+      Immutable --> {...user, name: test}  // the user obj is not updated.
+    -- How keep data immutable:
+      - For arrays --> use methods other that push, pop, slice or splice or Spread the elements.
+      - for obejct -> spread the keys 
+  -- In React state --> It detects changes via reference (shallow compare).
+  -- Reducers must returns pure and must not mutate state.
+    eg: return {...state, count: state.count + 1 };
+  
+
+        
+
+
+    
 
 
 
 
+
+
+## Regrex basic in JS:
+
+Metacharacters:
+1. Special characters with specific meanings:
+  .: Matches any single character (except newline).
+  \d: Matches any digit (0-9).
+  \w: Matches any word character (alphanumeric and underscore).
+  \s: Matches any whitespace character.
+  ^: Matches the beginning of the string.
+  $: Matches the end of the string.
+
+Quantifiers:
+2.Define how many times a character or group can appear:
+  *: Zero or more occurrences.
+  +: One or more occurrences.
+  ?: Zero or one occurrence.
+  {n}: Exactly n occurrences.
+  {n,}: At least n occurrences.
+  {n,m}: Between n and m occurrences.
+
+Character Classes:
+3.Define a set of characters to match:
+  [abc]: Matches 'a', 'b', or 'c'.
+  [0-9]: Matches any digit from 0 to 9.
+  [^abc]: Matches any character not 'a', 'b', or 'c'
+
+eg: Email Regrex -> /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+
+BreakDown:
+
+1. ^[a-zA-Z0-9._%+-]+ → Matches the beginning of the email (username part), allowing letters, numbers, dots, underscores, percentage signs, plus, and minus symbols.
+2. @ → Ensures the presence of the @ symbol.
+3. [a-zA-Z0-9.-]+ → Matches the domain name, which can include letters, numbers, dots, and hyphens.
+4. \.[a-zA-Z]{2,}$ → Ensures a valid top-level domain (TLD) with at least two letters, such as .com or .org.
 
 
 
