@@ -62,6 +62,76 @@ bool checkInclusion(string s1, string s2)
     return false;
 }
 
+// Approach 2 -> One freqMap for s1 use as refernce.
+
+bool isPermuation1(string word, int freqMap[])
+{
+    int temp[26] = {0};
+
+    for (int i = 0; i < 26; i++)
+    {
+        temp[i] = freqMap[i];
+    }
+
+    // update the freqMap with a decrement counter..
+    for (int i = 0; i < word.length(); i++)
+    {
+        temp[word[i] - 'a']--;
+    }
+
+    // NOTE: if word is a permutation -> all freq must reduce to zeroes..
+    //  eg: "ab" and "ba" will have the same freq.
+    for (int i = 0; i < 26; i++)
+    {
+        if (temp[i] != 0)
+            return false;
+    }
+    return true;
+}
+
+bool checkInclusion1(string s1, string s2)
+{
+    // edge case if, s1 is longer than s2 --> no chance..
+    if (s1.length() > s2.length())
+        return false;
+
+    // 1. create a charfreq map for s1...
+    int charFreq1[26] = {0};
+    for (int i = 0; i < s1.length(); i++)
+    {
+        charFreq1[s1[i] - 'a']++;
+    }
+
+    // 2. start taking substring of len s1 from s2 and check their freq map..
+    int i = 0;
+    while (i <= s2.length() - s1.length())
+    {
+        string subword = s2.substr(i, s1.length());
+        if (isPermuation1(subword, charFreq1))
+        {
+            return true;
+        }
+        i++;
+    }
+    return false;
+}
+
+/*
+    Logic: [another aaproach] --> s2 premutations in s1.
+    -> edgecase -> s2 must be <= s1 to procced.
+    -> create the freqMap for s2.
+    -> loop over s1 ->
+        -> find words of substr of size s2. -> subword.
+        -> now pass to a checkmethod with subword and freqMap.
+        -> In checkmethod --> iterate over the subword and make freqMap for char in decrement.
+        eg: "ab" -> in freq map will have a->1, b->1.
+            if "ba" or "ab" appeard --> in the freq map it will make a->0 and b->0 [as we are decrementing]
+        -> at the end check if all ele inside freq Map 0 or not ?
+           -> if yes, subword is a premuation of s2 present in s1.
+           -> if no, then it is not.
+
+*/
+
 // VEry Very Important Question: (String compression)
 int compress(vector<char> &chars)
 {

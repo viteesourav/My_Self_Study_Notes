@@ -750,6 +750,8 @@ EventLoop Explaination:
 
 
 Important Notes:
+
+## Core JS: 
   -- TDZ [Temporal dead zone]: the time between variable declared and initialization when let or const exist but cannot be access.
     eg: console.log(a);  //Reference Error.
       let a = 10;
@@ -876,6 +878,9 @@ Important Notes:
   -- In React state --> It detects changes via reference (shallow compare).
   -- Reducers must returns pure and must not mutate state.
     eg: return {...state, count: state.count + 1 };
+
+## Advance Js:
+  -- 
   
 
         

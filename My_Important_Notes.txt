@@ -378,7 +378,7 @@ NOTE: Relation between LCM and GCD
       LCM(a, b) * GCD(a, b) = a* b
 
 3) Modulo Arithmetic:
--- we know for sure, if a%b then ans always lies between 0 to n-1.
+-- we know for sure, if a%b then ans always lies between 0 to b-1.
 NOTE:
 In Few questions, its given the ans range should be below 10^9+7 i.e. 100000007.
 -- This means you need to use res%1000000007 everytime you perform any operationto keep the res within 10^9+7 range.
@@ -396,8 +396,8 @@ Formula:
 for a^b --> if b is even then (a^(b/2))^2
         --> if b is odd then (a^(b/2))^2 * a       
 code Logic: for a^n
--- if n is even keep on multiplying a, and update as n as n/2.
 -- if n is odd then return res = res * a.
+-- if n is even keep on multiplying a, and update as n as n/2.
 NOTE: even n starts with even, at the end one time n will be 1 i.e odd, thus it will return the result correct.
 eg: 2^5   a^n
 res = 1

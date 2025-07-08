@@ -13,6 +13,7 @@ int findGCD(int a, int b)
     if (b == 0)
         return a;
 
+    // till a and b are euqal, keep reducing the bigger number by subtraction.
     while (a != b)
     {
         if (a > b)

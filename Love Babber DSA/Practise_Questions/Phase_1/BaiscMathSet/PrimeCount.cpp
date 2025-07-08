@@ -41,7 +41,7 @@ Logic:
 sieve of eratosthenes
 
 -- assume all are prime no.
--- mark all ele that are divisible by current ele as non-prime.
+-- look ahead in the arr, and mark all ele that are divisible by current ele as non-prime.
 -- at the end left out numbers are prime.
 
 n= 20

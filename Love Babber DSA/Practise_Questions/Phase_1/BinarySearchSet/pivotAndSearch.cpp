@@ -137,3 +137,17 @@ int main()
 
     return 0;
 }
+
+/*
+Logic:
+    1. finding Pivot Index:
+        - you find the mid.
+        - Look left --> If arr[mid] < arr[0].
+        - Look right --> If arr[mid] > arr[0].
+        - Left will show the pivot index.
+    2. searching in Privoted Arr:
+        - find the pivot index.
+        - apply BS on left if searchEle > arr[pivot] and arr[n-1] i.e last element
+        - else look on right side.
+    3.
+*/
