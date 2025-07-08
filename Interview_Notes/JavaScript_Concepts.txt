@@ -649,68 +649,71 @@ EventLoop Explaination:
        -- Prevent swallow copy of nested object and obj1 and obj2 are toally 2 different reference.
         
 
+
+
+
 ####### Revision and Notes for Important Topics in JS #############
 
 
 ** Core JavaScipt COncepts ** 
 
-1. Variables and Scoping
-2. var, let, const
-3. Hoisting
-4. Data Types and Structures
-5. Temporal Dead Zone
-6. Primitive vs. reference types
-7. Arrays and objects
-8. Type coercion and type checking
-9. Functions
-10. Function declarations vs. expressions
-11. Arrow functions
-12. Closures
-13. IIFE (Immediately Invoked Function Expressions)
-14. Higher-order functions
-15. Asynchronous JavaScript
-16. Callbacks
-17. Promises
-18. async/await
-19. Event loop and microtasks/macrotasks
-20. Object-Oriented Programming (OOP)
-21. Prototypal inheritance
-22. ES6 classes
-23. this keyword, call, apply, bind
-24. Functional Programming
-25. Pure functions
-26. Immutability
-27. Function composition
-28. Array methods (map, filter, reduce)
+  1. Variables and Scoping
+  2. var, let, const
+  3. Hoisting
+  4. Data Types and Structures
+  5. Temporal Dead Zone
+  6. Primitive vs. reference types
+  7. Arrays and objects
+  8. Type coercion and type checking
+  9. Functions
+  10. Function declarations vs. expressions
+  11. Arrow functions
+  12. Closures
+  13. IIFE (Immediately Invoked Function Expressions)
+  14. Higher-order functions
+  15. Asynchronous JavaScript
+  16. Callbacks
+  17. Promises
+  18. async/await
+  19. Event loop and microtasks/macrotasks
+  20. Object-Oriented Programming (OOP)
+  21. Prototypal inheritance
+  22. ES6 classes
+  23. this keyword, call, apply, bind
+  24. Functional Programming
+  25. Pure functions
+  26. Immutability
+  27. Function composition
+  28. Array methods (map, filter, reduce)
 
 
 
 ** Advance Javascript
-		Event Handling
-		Event listeners
-		Event propagation (bubbling and capturing)
-		Event delegation
-		Error Handling
-		try, catch, finally
-		Custom errors
-		JavaScript Engine and Runtime
-		V8 Engine
-		Just-In-Time (JIT) compilation
-		Memory management
-		Modules
-		ES6 modules (import/export)
-		CommonJS
-		Advanced Data Structures
-		Sets and Maps
-		WeakSet and WeakMap
-		Design Patterns
-		Singleton
-		Factory
-		Module
-		Observer
-		Concurrency and Parallelism
-		Web Workers
-		Service Workers
+  Event Handling
+    Event listeners
+    Event propagation (bubbling and capturing)
+    Event delegation
+  Error Handling
+    try, catch, finally
+    Custom errors
+  JavaScript Engine and Runtime
+    V8 Engine
+    Just-In-Time (JIT) compilation
+    Memory management
+  Modules
+    ES6 modules (import/export)
+    CommonJS
+  Advanced Data Structures
+    Sets and Maps
+    WeakSet and WeakMap
+  Design Patterns
+    Singleton
+    Factory
+    Module
+    Observer
+  Concurrency and Parallelism
+    Web Workers
+    Service Workers
 
 ** Frontend-Specific Topics
 		DOM Manipulation
@@ -879,8 +882,244 @@ Important Notes:
   -- Reducers must returns pure and must not mutate state.
     eg: return {...state, count: state.count + 1 };
 
-## Advance Js:
-  -- 
+## Advance Js Notes:
+  -- Event Handling --> browser detects and responds to interactions.
+  -- Envent Listeners:
+      -> Functions that listens to any event on a DOM element.
+      -> accept's an event and callback function.
+      -> eg: document.querySelector("#btn").addEventListener("click", handleClick);
+      NOTE: Later, you must remove the event Listner, It will work only if the reference to callback is same.
+            document.querySelector("#btn").removeEventListner("click", handleClick); 
+  -- Event propagation:
+     -> Also called -> Event bubbling.
+     -> Event fired in child, bubbles up to parent. 
+     -> to capture/stop Event propagation, must use 
+        1. event.stopPropagation(); 
+          OR
+        2. element.addEventListener("click", handler, true); -> pass true in third parameter.
+  -- Event Delegation:
+    -> Instead of attaching Event to child, attach it to the common ancestor, Let the ancestor handle the rest.
+    -> improves performance --> less listeners.
+  -- Event Object:
+    -> in case of event we receive evt object.
+    -> evt.stopPropagation(); -> prevents the event from bubbling to parent.
+    -> evt.preventDefault(); --> prevent the default behavior of form submit.
+  -- Error Handling:
+    -> Fault tolerant code.
+    -> using try...catch....finally.
+    -> catch throws error object --> includes err.message, err.name, err.stack.
+    -> we can throw manual errors. eg: throw new Error("somthing went wrong");
+    -> NOTE:
+        -> we have Error class that can be extended and a custom error class can be created.
+        eg: 
+        class ValidationError extends Error {
+          constructor(message) {
+            super(message);
+            this.name = "ValidationError";
+          }
+        }
+        -> throw new ValidationError("Custom error is thrown");
+    -> try...catch doesnot catch async fucntions unless we await them. [** imp **];
+  -- JS Engine and Runtime:
+    -> Js runs on v8 engine --> available in browsers or node.js
+    -> v8 Engine -> converts to machine code, Optimise by Just-In-Time compilation, manage memory by Garbage collection.
+    -> Runtime -> by browser/node.js 
+      -> Provides callstack, webAPIs, Event loop, Task/microTaskQueues.
+    -> JIT compliation:
+      -> code is compiled when the program is running, not before it like C++;
+      -> usecase:
+        -> faster than interpreter.
+        -> learns which part of code is run oftem i.e hot. [** IMP **]
+        -> re-optimise freq used functions.
+    -> Memory Management:
+      -> Release memory when no longer needed --> automatically handled by Garbage collector.
+      -> Still memory leaks can be created:
+        1. closures with large retained variables.
+        2. timers.
+        3. Global variables.
+        4. listners not removed.
+  -- ES6 Module vs CommonJS 
+    -> modules - split your code into reusable pieces.
+    -> ES6 --> Import/Export.
+      -> Export -> you can either to named export or export default [only 1 thing is exported from that file by default] from a file.
+      -> Import -> if named export, you have to perform named imports.
+        -> also supports lazy loading of any module. eg: const Test = lazy(() => import("./component/test.js")); => Optimise performance.
+    -> Common JS Modules:
+      -> used before ES6's import/export.
+      -> syntax:
+        from the file, we exporting -> module.exports = greet;  [greet is a function from that file]
+        In the file, we importing --> const greet = require('./file_name');
+      -> module are loaded synchronouly.
+      -> import happens during run-time, works only in node [browser not suppported]
+    -> diff:
+      1. ES6 import/export is loaded in compile time, commonJS loads in runtime.
+      2. ES6 import/export supports both browser and node, commonJS only in node.
+      3. File extension is required in browser, it is optional here.
+      4. tree-shaking, remove unused code, cannot do that.
+  -- Data-Structure:
+    -> Set: 
+      const items = new Set([1, 2, 2, 3, 4]); // set(3) {1, 2 , 3};
+      const arr = [...items];  // spread the content of set in an arr..
+      -> stores uniques values.
+      -> methods: .add(), .delete(), .has(), .size();
+    -> Map:
+      const map = new Map();
+      map.set("key1", 2);
+      -> NOTE: here keys can be any type, not just strings.
+      -> .size() 
+      -> here insertion order is maintained, unlike in object.
+      -> you can iterate using map.forEach()
+    -> weakSet:
+      -> like set but it only stores objects. [not any primitive data-type]
+      -> cannot iterate, no methods like .size, .clear, .keys.
+    -> WeakMap:
+      -> keys must be object here.
+      -> usecase: memory-safe caching or private data storage. 
+      -> you have access to method like .set, .get, .has
+  -- Design Patterns:
+    1. Singleton Pattern:
+      -> A class must have only 1 instance, and provides global access point to that instance.
+      -> usecase:
+        1. app-wide configurations.
+        2. Logger services
+        3. auth token manager.
+        4. Theme manager.
+      -> Use when we need a single, shared statte across the app, avoids duplicate instance of service like DB connection.
+    eg: 
+        class AppConfig {
+          constructor() {
+            if (AppConfig.instance) {
+              return AppConfig.instance;
+            }
+            this.theme = "dark";
+            AppConfig.instance = this;
+          }
+        }
+
+        const config1 = new AppConfig();
+        const config2 = new AppConfig();
+
+        console.log(config1 === config2); // true
+
+    2. Factory Pattern:
+      -> provides a method to create object without specifying the exact class of the object.
+      ->usecase:
+        1. creating dynamic ui component like buttons, modals.
+        2. API adapters. (REST, GraphQL, wesockets)
+      -> use when we want to abstract object creation based on types.
+    eg: 
+      class Car {
+        drive() { console.log("Driving car"); }
+      }
+      class Truck {
+        drive() { console.log("Driving truck"); }
+      }
+
+      class VehicleFactory {
+        static create(type) {
+          if (type === "car") return new Car();
+          if (type === "truck") return new Truck();
+        }
+      }
+
+      const myVehicle = VehicleFactory.create("truck");
+      myVehicle.drive(); // Driving truck
+
+    3. Module Pattern:
+      -> Encapsulate related code -> variables and method inside a self-contained module, like closures.
+      ->usecase:
+        1. Code Organization
+        2. creating private var/funs.
+      -> use when we need data encapsulation/ for utility lib, localstorage wrappers or cokkie utils.
+    eg:
+      const CounterModule = (() => {
+        let count = 0; // private
+
+        return {
+          increment() {
+            count++;
+            return count;
+          },
+          reset() {
+            count = 0;
+          }
+        };
+      })();
+
+      console.log(CounterModule.increment()); // 1
+      console.log(CounterModule.increment()); // 2
+      CounterModule.reset();
+
+    4. Observer Pattern:
+      -> one object (subject) maintains a list of dependents (observers) and notifies them of state changes.
+      -> usecase:
+        1. ui updates from state changes.
+    eg:
+      class Subject {
+        constructor() {
+          this.observers = [];
+        }
+
+        subscribe(fn) {
+          this.observers.push(fn);
+        }
+
+        unsubscribe(fn) {
+          this.observers = this.observers.filter(obs => obs !== fn);
+        }
+
+        notify(data) {
+          this.observers.forEach(fn => fn(data));
+        }
+      }
+
+      const subject = new Subject();
+
+      function logger(data) {
+        console.log("Logged:", data);
+      }
+
+      subject.subscribe(logger);
+      subject.notify("New data received!"); // Logged: New data received!
+  
+  -- Concurrency & Parallelism in JS:
+    -> Concurrency: managing multiple task at the same time, but no necessary in parallel.
+    -> Parallelism: performing parallel execution of tasks at once.
+    1. Web workers:
+      -> Allows JS to run in a background thread without blocking the main ui-thread.
+      -> communication with main thread via --> .postMessage()
+      -> usecase:
+        1. Long running loops or cals.
+        2. Imag/video processing.
+        3. parsing large JSON.
+        4. complex filtering/sorting.
+      -> NOTE: 
+          1. no access to dOM.
+          2. comminication via post message.
+          3. each worker will have it's own file.
+      eg: 
+        In worker.js:
+          self.onmessage = function (event) {
+            const result = event.data * 2;
+            self.postMessage(result);
+          };
+        In main.js:
+          const worker = new Worker("worker.js");
+
+          worker.postMessage(5); // send data
+
+          worker.onmessage = function (event) {
+            console.log("Result from worker:", event.data); // 10
+          };
+    2. Service Workers:
+      -> Acts as a proxy between web app and network. --> runs in background, intercept HTTP reqs -> handles caching, push notifications
+      -> usecase:
+        1. caching assert for performance.
+        2. Push notifications.
+      -> life-cycle events:
+        1. install -> first time installation -> setup cache.
+        2. activate -> after install, cleanup or versioning 
+        3. fetch -> intercepts HTTP reqs.
   
 
         
