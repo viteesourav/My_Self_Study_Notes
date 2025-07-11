@@ -1,1 +1,80 @@
 ** Important React Concepts **
+
+1. Core Concepts -> Fundamentals.
+    1. JSX and Rendering Basics
+        JSX syntax and expressions
+        Rendering elements & components
+        Babel and transpilation
+    2. Components (Functional & Class)
+        Functional vs Class components
+        Props and Prop Drilling
+        Component lifecycle (both types)
+    3. State and setState
+        State management in function vs class components
+        Batching of state updates
+        setState behavior (async vs sync)
+        Functional updates
+    4. Event Handling
+        Synthetic events in React
+        Binding and context in event handlers
+    5. Conditional Rendering and Lists
+        Rendering lists and keys
+        Short-circuiting, ternary, and IIFE patterns
+2. React Hooks 
+    6. useState
+        Initial state, lazy initialization
+        Common patterns and pitfalls
+    7. useEffect
+        Dependency array
+        Cleanup function
+        Execution order (after paint)
+        Common interview traps
+    8. useRef
+        DOM reference
+        Mutable value storage without re-render
+    9. useContext
+        Creating and using Context
+        Avoiding prop drilling
+        Context performance pitfalls
+    10. useMemo & useCallback
+        Memoization and performance optimization
+        Common misuse and proper use cases
+    11. Custom Hooks
+        Structure and design patterns
+        Sharing logic across components
+3. ADvance Topics:
+    12. Reconciliation and Virtual DOM
+        How React compares and updates DOM
+        Keys in diffing algorithm
+    13. Rendering Optimization
+        Memoization (React.memo, useMemo)
+        Avoiding unnecessary re-renders
+        Profiling performance
+    14. Error Boundaries
+        Handling errors in class components
+        Why no error boundaries in function components
+    15. Controlled vs Uncontrolled Components
+        Forms in React
+        Refs vs State
+    16. React Router (v6+)
+        Routing, navigation, params, nested routes
+        Route guarding and redirection
+    17. Higher Order Components (HOC)
+        What they are
+        Use cases and patterns
+    18. Render Props
+        Pattern explanation
+        Real use cases
+5. State Management
+    19. Redux (or other state managers like Zustand, Jotai)
+        Redux core concepts (actions, reducers, store)
+        Redux Toolkit basics
+        React-Redux hooks
+    20. Context API vs Redux
+        Use-case comparison
+        Performance and scaling
+    21. React Query / SWR
+        Data fetching and caching
+        Stale-while-revalidate pattern
+
+

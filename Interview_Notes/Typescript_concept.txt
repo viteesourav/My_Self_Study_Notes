@@ -1,0 +1,51 @@
+## Important Concepts
+1. Must Know -> Interview Critical
+Type System & Annotations
+    Static typing vs dynamic typing
+    Type inference
+    Type annotations (: string, : number, etc.)
+    Type aliases (type)
+    Interfaces (interface)
+    Literal types
+    Union & intersection types
+    Optional and readonly properties
+    Enums
+Functions & Classes
+    Function type annotations
+    Optional and default parameters
+    Function overloads
+    this in classes
+    Access modifiers (public, private, protected)
+    Constructor parameter shorthand
+    Readonly and static properties
+Type Narrowing & Guards
+    typeof, instanceof
+    Discriminated unions
+    Custom type guards
+Generics (💥 must-know!)
+    Generic functions
+    Generic interfaces & classes
+    Constraints with <T extends>
+    keyof, typeof, in operators
+Utility Types (Very Common)
+    Partial<T>, Required<T>, Readonly<T>
+    Pick<T, K>, Omit<T, K>
+    Record<K, T>
+    ReturnType<T>, Parameters<T>
+
+2. Important Concepts:
+Advanced Types & Mapping
+    Conditional types (T extends U ? X : Y)
+    Mapped types
+    Template literal types
+    Type-level computation
+Modules & Namespaces
+    export, import syntax
+    declare module, ambient module declarations
+    Type declaration files (.d.ts)
+    Working with 3rd-party libraries & DefinitelyTyped (@types)
+Utility with React
+    Typing functional components with React.FC or props
+    Typing useState, useReducer, and useEffect
+    Using React.ComponentProps, JSX.IntrinsicElements
+    Generics in custom hooks
