@@ -1,0 +1,153 @@
+## Javascript Core Challenges
+
+1. Debounce Function 
+ --> you constantly triggering an event eg: typing --> we want the event to execute only after d ms.
+Implement a debounce(fn, delay) utility to optimize performance-heavy operations like search input.
+
+2. Throttle Function 
+ --> you constanly triggering an event eg: resizing/scroll -> we want the event to execute at an interval of d ms only.
+Implement a throttle(fn, delay) function for limiting event frequency (e.g., scroll, resize).
+
+3. Deep Clone And Deep Merge.
+Deeply clone an object, handling nested structures and edge cases.
+Deeply merge 2 nested objects, handle nested structure.
+
+4. Flatten Nested Array
+Recursively flatten:
+Input: [1, [2, [3, 4], 5]] → Output: [1, 2, 3, 4, 5]
+
+5. Implement once(fn)
+Run a function only once—return cached result on next calls.
+
+6. Custom bind, call, apply
+Polyfill and explain behavior in different contexts.
+
+7. Promise Polyfill / Promise.all Clone
+
+8. Currying a Function
+sum(1)(2)(3)() → 6
+
+9. Event Emitter
+Implement on, emit, off, once.
+
+    on -> Adds callback to an event's callback..
+    emit -> calls the registered callback with args.
+    off -> Removes the sepecific callback
+    once -> Register a callback that auto removes.
+
+    const EventEmitter = require("events"); // Part of the event core module in node js.
+    const emitter = new EventEmitter();
+
+10. Memoization Function
+Cache function calls with different inputs.
+
+
+
+
+## React — Component & Hook Challenges
+
+11. Custom useDebounce Hook
+Reusable hook that debounces an input value.
+
+12. Build a Controlled Form with Validation
+With custom validation rules and multiple inputs.
+
+13. Modal with Portal
+Use ReactDOM.createPortal, and trap focus.
+
+14. Tabs/Accordion Component
+Accessible, keyboard-navigable, with animation.
+
+15. Toast Notification System
+Dynamic rendering, dismissable, timeouts.
+
+16. Infinite Scroll List
+Load more content on scroll, optimized for performance.
+
+17. usePrevious, useToggle, useClickOutside
+Utility hooks for clean logic reuse.
+
+18. Dynamic Component Loader
+Render a component from a config map:
+const map = { input: InputComponent, button: Button };
+
+Extra topics: [Ref: Roadsidecoder]
+    1. Folder structure.
+    2. Pagination
+    3. Password generation
+    4. breadcrumbs
+    5. OTP login
+    6. AutoSuggestion
+
+
+
+
+
+### System Design-Oriented UI Coding
+
+19. Build a Lightweight Router
+Without React Router – handle dynamic routes, query params.
+
+20. Build a Reusable Component Library
+Design tokens, theming, and extensible components.
+
+21. Real-Time Chat UI
+With WebSocket integration and optimistic rendering.
+
+
+
+Additional Topics:
+
+🔸 1. Code Splitting & Lazy Loading
+How to lazy load routes or components. --> React.lazy, Suspense, dynamic import().
+
+Interview Q: “How would you optimize initial bundle size in a large app?”
+
+🔸 2. Accessibility (a11y) Best Practices ---> aria-* attributes, focus management, keyboard navigation.
+
+Interview Q: “Build an accessible dropdown.”
+Or: “How do you make a modal keyboard-friendly?”
+
+🔸 3. Error Boundaries
+Class component with componentDidCatch.
+Handling graceful UI degradation.
+
+Interview Q: “How do you handle runtime errors in React?”
+
+🔸 4. Testing (Unit + Integration)
+Writing tests using Jest + Testing Library.
+Testing hooks, user interactions, async behavior.
+
+Interview Q: “How would you test a custom hook or form component?”
+
+🔸 5. Security in Frontend
+XSS, CSRF, sanitizing inputs, avoiding inline scripts.
+
+Interview Q: “How do you prevent script injection in React?”
+
+🔸 6. State Management Trade-offs
+Local state vs Context vs Redux vs Zustand/Recoil.
+
+Derived state problems, prop drilling, performance.
+
+Interview Q: “When would you lift state vs use context?”
+
+🔸 7. React Performance Optimization
+Reconciliation process, render phases.
+
+React.memo, useMemo, useCallback, lazy rendering.
+
+Interview Q: “What causes unnecessary re-renders in React?”
+
+🔸 8. Immutable Patterns & Structural Sharing
+Handling large deeply nested objects immutably.
+
+Interview Q: “Why is immutability important in React?”
+
+🔸 9. Browser APIs
+localStorage, sessionStorage, History API, Fetch, AbortController, BroadcastChannel.
+
+Interview Q: “How do you cancel a fetch request in progress?”
+
+🔸 10. Web Workers or Service Workers (Bonus)
+Used in performance-heavy frontend logic or PWAs.

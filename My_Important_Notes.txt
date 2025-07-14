@@ -223,6 +223,19 @@ NOTE:
       - for others like vector, stack, queue -> Operations take O(1).
 
 
+
+NOTE: 
+   for defining custom Comparator function with Priority Queue => follow the below example..
+
+   auto cmp[](pair<int, int>& a, pair<int, int>& b) {
+      return a.second < b.second;
+   }
+
+   priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> maxHeap(cmp);
+
+   NOTE: If comparator function is not given, It will simply sort the values based on it.first for the pair values.
+
+
 Algorithms in STL:
 Note: header required: #include<algorithm> or #include<bits/stdC++.h> (***It includes all headers**)
 1) BinarySearch:
@@ -1310,6 +1323,7 @@ NOTE:
    -- So based on which int, It would arrange the elements in heap ?
       -- Whatever is the first int in pair, based on that the whole heap will be updated. [Since we dont pass a seperate compare in maxHeap]
 
+
 **** using the Comparator function in minHeap **** [**IMP**]
    -- So maxHeap implementation is pretty straigt: prioirty_queue<int> max_heap;
    -- For minHeap, it takes 3rd param as a comparator: priotity_queue<int, vector<int>, greater<int> > min_heap;
@@ -1328,6 +1342,14 @@ NOTE:
 
 NOTE: Basically, we create a Compare Class and overload the Operator method, with 2 params that we are expecting...
       Now it can return 3 things: -1 [Then the comapre put this value in front], 0 [it will not touch the value] or 1 [It will put the value at the end]
+
+Option 2: use Lambda: [simple and faster]
+
+   auto cmp = [](const pair<int, int>& a, const pair<int, int>& b) {
+      return a.second < b.second;  // max-heap on second
+   };
+
+   priority_queue<pair<int, int>, vector<pair<int, int>>, decltype(cmp)> maxHeap(cmp);
 
 
 Implementing Heap using STLs:

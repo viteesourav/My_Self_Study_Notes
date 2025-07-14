@@ -1121,8 +1121,15 @@ Important Notes:
         2. activate -> after install, cleanup or versioning 
         3. fetch -> intercepts HTTP reqs.
   
-
-        
+NOTE:
+  What are the drawbacks of using JSON.parse(JSON.stringify(obj)) for performing deep copy ?
+  --> Below mentioned types are completly loss:
+    1. undefined --> lost 
+    2. functions --> lost.
+    3. Date --> converted to string.
+    4. RegExp --> lost.
+    5. If circular ref present --> Crash/Error.
+  --> circular ref --> When inside the obj, there is a key that is pointing to the same object.      
 
 
     

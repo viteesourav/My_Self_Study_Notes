@@ -1,0 +1,558 @@
+//Ref: Frontend_coding_concepts.txt
+
+### JS Core Challenges code for Reference ###
+
+1. Debouncing function:  -> trigger event only after d ms.
+
+const debounce = (fn, delay) => {
+    
+    let timer = 0;
+
+    return function (...args) {
+        
+        // If timer is present already -> clear it...
+        if(timer) {
+            clearTimeout(timer);
+        }
+
+        timer = setTimeout(()=>{
+            fn(...args);
+        }, delay);
+    }
+};
+
+const debouncedLog = debounce(() => console.log("Search triggered!"), 500);
+
+debouncedLog();
+debouncedLog();
+debouncedLog();
+// // Only one log will appear after 500ms
+
+
+
+2. Throttle fucntion: -> trigger event at d ms interval.
+
+const throttle = (cb, d) => {
+    let last = 0; // Keeps track of the last event occur time.
+    
+    return (...args) => {
+        let now = new Date().getTime();
+         // dont do anything if any event occurs before d ms.
+         console.log(now-last);
+        if(now - last < d) return; 
+        last = now;
+        return cb(...args);
+    }
+}
+
+const throtleLog = throttle(() => console.log("Search triggered!"), 500);
+
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+throtleLog();
+// event logs only at an interval of 2 ms.
+
+
+
+
+3. Deep Clone. --> JSON.prase + JSON.strigigy has some drawbacks for deep copy for functions, dates, undefined and Regrex.
+
+// Recursion Approach
+const customDeepClone = (val, keyVisited = new Map()) => {
+    //1. Handle if val is not object/array/date/regex...
+    if(val === null || typeof val !== "object")
+        return val;
+        
+    //2. If val is already visited once..
+    if(keyVisited.has(val)) 
+        return keyVisited.get(val);
+        
+    let clone;
+    
+    // 3. Handle for date type.
+    if(val instanceof Date) {
+        clone = new Date(val);
+    } else if (Array.isArray(val)) {
+        // 4. Handle for array type.
+        clone = [];
+        keyVisited.set(val, clone);
+        for(let item of val) {
+            clone.push(customDeepClone(item, keyVisited));
+        }
+        
+    } else if(val instanceof RegExp) {
+        // 5. Handle for regex type. 
+        clone = new RegExp(val.source, val.flags);
+        
+    } else {
+        // 6. Handle for object type.
+        clone = {};
+        keyVisited.set(val, clone);
+        for(let key in val) {
+            if(val.hasOwnProperty(key)) {
+                clone[key] = customDeepClone(val[key], keyVisited);
+            }
+        }
+    }
+    return clone;
+}
+
+
+const original = {
+  name: "Sourav",
+  meta: {
+    age: 28,
+    skills: ["React", "JS"],
+  },
+};
+
+const copy = customDeepClone(original);
+console.log(original);
+console.log(copy);
+console.log(JSON.parse(JSON.stringify(original))); // With this, function, regexp, undefined will be lost. 
+
+
+Deep Merge --> Merge nested object with Recursion.
+
+const isObject = (obj) => {
+    return obj && typeof obj === "object" && !Array.isArray(obj);
+}
+
+const customDeepMerge = (obj1, obj2) => {
+    //edge case check...
+    if(typeof obj1 !== "object" && typeof obj2 !== "object")
+        return null;
+    if(obj1 == null || typeof obj1 !== "object") 
+        return obj2;
+    if(obj2 == null || typeof obj2 !== "object")
+        return obj1;
+        
+    let result = {};
+    
+    //mege all the keys and get a common distinct key list..
+    const mergedKeys = new Set([...Object.keys(obj1), ...Object.keys(obj2)]);
+    
+    // we will loop throught the keys...
+    for(let key of mergedKeys) {
+        const val1 = obj1[key];
+        const val2 = obj2[key];
+        
+        //case1: If both val1 and val2 are objects
+        //case2: If both val1 and val2 are arrays.
+        //case3: None of the above --> Overwrite with val2
+
+        if(isObject(val1) && isObject(val2)) {
+            result[key] =  customDeepMerge(val1, val2);      
+        } else if(Array.isArray(val1) && Array.isArray(val2)) {
+            result[key] = [...new Set([...val1,...val2])];
+        } else {
+            result[key] = val2 !== undefined ? val2 : val1; 
+        }
+    }
+    
+    return result;
+};
+
+
+
+4. Flat Array/Object ====> Nested Array or objects must be flatten...
+
+const flatten = (items) => {
+    
+    if(!Array.isArray(items)) return [items];
+    if(items.length === 0) return [];
+        
+    let result = [];
+    
+    for(let item of items) {
+        if(Array.isArray(item)) {
+            result.push(...flatten(item));
+        } else {
+            result.push(item);
+        }
+    }
+    return result;
+}
+
+console.log(flatten([1,[2, [3, 4], 5], 6])); //1, 2, 3, 4, 5, 6
+
+
+5. Custom call, apply and bind with context.
+
+    let obj1 = {
+        name: "sourav",
+        age: 27
+    }
+
+    function describe(msg) {
+        console.log(`Message from ${this.name} of age ${this.age}: ${msg}`);
+    }
+
+    1. Polyfill for call...
+
+
+    Function.prototype.myCall = function(context = {}, ...args) {
+        // myCall can be only called from a function..
+        if(typeof this !== 'function') {
+            throw new Error(this + "is not callable");
+        }
+        
+        //which ever functionis is calling myCall --> add that inside context.
+        context.fn = this;
+        context.fn(...args);
+    }
+
+    describe.myCall(obj1, "using call function method");
+
+
+    2. Polyfill for apply...
+
+    Function.prototype.myApply = function(context = {}, args=[]) {
+        // myApply can be only called from a function..
+        if(typeof this !== 'function') {
+            throw new Error(this + "is not callable");
+        }
+        // second param should be array in case of apply => else it should be type array.
+        if(!Array.isArray(args)) {
+            throw new Error("CreateListFromArrayLike called on non-object");
+        }
+        
+        //which ever functionis is calling myCall --> add that inside context.
+        context.fn = this;
+        context.fn(...args);
+    }
+
+    describe.myApply(obj1, ["using call function method", "test"]);
+
+
+    3. Polyfill for bind...
+
+    Function.prototype.myBind = function(context = {}, ...args) {
+        // myCall can be only called from a function..
+        if(typeof this !== 'function') {
+            throw new Error(this + "cannot be bound as it's not callable");
+        }
+        
+        //which ever functionis is calling myCall --> add that inside context.
+        context.fn = this;
+        return (...args1) => {
+            context.fn(...args,...args1);
+        };
+    }
+
+    const newFun = describe.myBind(obj1, "test");
+    newFun();
+
+
+6. Promise polyfill, Promise.all clone. [*** IMP ***]
+
+
+const myPromise = function (executor) {
+
+    //4. a variable to store resolved or rejected from .then/.catch..
+    let onResolve, onReject;
+    let isFulfilled = false, 
+    isRejected = false, 
+    isCalled = false, 
+    storeVal;
+    
+    //3. functions that runs from the executor --> passing resolve/reject value to local onResolve/onReject variable.
+    function resolve(value) {
+        isFulfilled = true;
+        storeVal = value;
+        
+        // onResolve wont be a function in case of Sync.
+        if(typeof onResolve === "function") {
+            isCalled = true;
+            onResolve(value);
+        }
+        
+    }
+    
+    function reject(value) {
+        isRejected = true;
+        storedVal = value;
+        
+        if(typeof onReject === "function") {
+            onReject(value);
+        }
+    }
+    
+    //1. adding a then/catch method on whoever calling this function.
+    this.then = function(callback) {
+        onResolve = callback;
+        
+        if(isFulfilled && !isCalled) {
+            isCalled = true;
+            onResolve(storeVal);
+        }
+        
+        return this;
+    }
+    
+    this.catch = function(callback) {
+        onReject = callback;
+        
+        if(isRejected && !isCalled) {
+            isCalled = true;
+            onReject(storedVal);
+        }
+        return this;
+    }
+    
+    //2. calling the executor with resolve/reject funtions.
+    executor(resolve, reject);
+}
+
+//NOTE:
+// In Async mode, first .then executes and then the promise resolves after some time.
+// In Sync mode, First the promise resolves and .then() runs afterward.
+
+const expPromise = new myPromise((resolve, reject) => {
+    
+    //Async example..
+    setTimeout(()=> {
+        resolve("This Promise is from async call");
+    }, 1000);
+    
+    //Sync example..
+    // resolve("This Promise is a sync call");
+});
+
+expPromise
+    .then((res)=> {
+        console.log(res);
+    })
+    .catch((err) => {
+        console.error(err);
+    })
+
+
+### Promise.resolve polyfill....
+myPromise.resolve = (val) => {
+    return new myPromise((resolve, reject) => resolve(val));
+}  
+
+
+
+#### Promise.all poylfill.... [***** VVIMP ****]
+
+// Some functions that returns promise...
+const fun1 = (msg) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(msg), 2000);
+    })
+}
+const fun2 = (msg) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(msg), 1000);
+    })
+}
+const fun3 = (msg) => {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => resolve(msg), 3000);
+    })
+}
+
+// Promise polyfill....
+Promise.allPolyfill = (promises) => {
+    return new Promise((resolve, reject) => {
+        // Promise.all polyfill here...
+        let result = [];
+        
+        if(!promises.length) {
+            resolve(result);
+            return;
+        }
+        
+        let pending = promises.length; // track if all promises resolved
+        
+        //iterate all of the promises and resolve them 1 by 1 ==> add into result array...
+        promises.forEach((promiseItem, idx) => {
+            Promise.resolve(promiseItem).then((res) => {
+                result[idx] = res;
+                pending--;
+                
+                 // If all the promises are resolved...
+                if(pending === 0) {
+                    resolve(result);
+                }
+            }, reject);
+        })
+    })
+}
+
+
+Promise.allPolyfill([
+    fun1("This is Promise1"),
+    fun2("This is Promise2"),
+    fun3("This is Promise3"),
+]).then((res) => {
+    console.log(res);
+}).catch(err => console.log(err));
+
+
+7. Currying...
+
+//Currying...
+const sum = (val1) => {
+    return (val2) => {
+        return (val3) => {
+            return () => {
+                return val1*val2*val3;
+            }
+        }
+    }
+}
+
+console.log(sum(1)(2)(3)());
+
+
+// Recusrion + currying for a converting a normal function into Currying.
+    --> collect all the args, then then execute the function...
+ 
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+console.log(sum.length) // Prints the length of total arguments it is taking...
+
+//Currying a bit matured example... REcursion + currying...
+function curry(fn) {
+    return function curried(...args) {
+        if(args.length >= fn.length) {
+            console.log('## Done collection all args', args);
+            return fn.apply(this, args);  //calls the sum function here..
+        } else {
+            // collects all the arguments passed to curry till it is same as what sum or fun expects...
+            return function(...nextArgs) {
+                return curried.apply(this, [...args, ...nextArgs]);
+            }
+        }
+    }
+}
+
+const curriedSum = curry(sum);
+
+const ans = curriedSum(1)(2)(3);
+console.log(ans);  // 6
+
+
+8. Event Emitter...
+
+class EventEmitter {
+  constructor() {
+    this.events = {};
+  }
+
+    // Adds callbacks into events obj with their respective event name...
+  on(eventName, callback) {
+    if (!this.events[eventName]) {
+      this.events[eventName] = [];
+    }
+
+    this.events[eventName].push(callback);
+  }
+
+    // find all callbacks from event name and call them one by one with passed args..
+  emit(eventName, ...args) {
+    const callbacks = this.events[eventName];
+    if (callbacks) {
+      callbacks.forEach(cb => cb(...args));
+    }
+  }
+
+  // remove a particular callbacks...
+  off(eventName, callback) {
+    const callbacks = this.events[eventName];
+    if (callbacks) {
+      this.events[eventName] = callbacks.filter(cb => cb !== callback);
+    }
+  }
+
+    // executes the callback and then removes it from the event..
+  once(eventName, callback) {
+    const wrapper = (...args) => {
+      callback(...args);
+      this.off(eventName, wrapper); // remove after first call
+    };
+    this.on(eventName, wrapper);
+  }
+}
+
+const emitter = new EventEmitter();
+
+function greet(name) {
+  console.log(`Hello, ${name}`);
+}
+
+emitter.on("greet", greet);
+emitter.emit("greet", "Sourav"); // Hello, Sourav
+
+emitter.off("greet", greet);
+emitter.emit("greet", "Sourav"); // (no output)
+
+emitter.once("login", () => console.log("User logged in"));
+emitter.emit("login"); // User logged in
+emitter.emit("login"); // (no output)
+
+
+
+
+9. Memorization
+
+function slowAdd(a, b) {
+  console.log("Computing...");
+  return a + b;
+}
+
+// Memorization of params and result using cache map...
+const memoize = (fn) => {
+    let cache = new Map();
+    return (...args) => {
+        
+        // stringify the incoming args and store as key...
+        const key = JSON.stringify(args);
+        
+        // If cache already hold that --> returns from cahce...
+        if(cache[key]) {
+            console.log('From cache:');
+            return cache[key];
+        }
+        
+        // Call the function, usign apply, as args can be multiple..
+        const res = fn.apply(this, args);
+        cache[key] = res;
+        return res;
+    }
+}
+
+const memoizedAdd = memoize(slowAdd);
+
+console.log(memoizedAdd(1, 2)); // "Computing...", returns 3
+console.log(memoizedAdd(1, 2)); // returns 3 from cache (no "Computing...")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
