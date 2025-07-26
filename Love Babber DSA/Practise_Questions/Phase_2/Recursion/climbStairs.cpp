@@ -3,7 +3,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-int climbStairs(int n)
+// Recursive solution... O(2^n)
+int climbStairsRecusrion(int n)
 {
 
     // base case:
@@ -18,8 +19,53 @@ int climbStairs(int n)
     return climbStairs(n - 1) + climbStairs(n - 2);
 }
 
+// Dp Solution: O(n)
+class Solution
+{
+public:
+    int climbStairs(int n)
+    {
+        // edgeCase:
+        if (n == 1)
+            return 1;
+        if (n == 2)
+            return 2;
+
+        // 1. initializing a dp matrix that stores no of ways we can reach to top from nth stair.
+        vector<int> dp(n + 1, 0);
+
+        // 2. If you already at the top i.e nth stair or you are at the n-1th stair you got only 1 way to reach to top.
+        dp[n] = dp[n - 1] = 1;
+
+        for (int i = n - 2; i >= 0; i--)
+        {
+            // no of wys at nth stair ==> no of ways of n+1th stair [if 1 step is taken] + no of ways of n+2th stair [if 2 step is taken].
+            dp[i] = dp[i + 1] + dp[i + 2];
+        }
+
+        // at the bottom stair, we will have total ways to reach to top.
+        return dp[0];
+    }
+};
+
 /*
-Logic:
+Optimal Logic: DP solution using memorization.
+Steps:
+    1. edgecase:
+        - If we just have 1 stair => we can do it in 1 way only.
+        - If we just have 2 stairs => we can do it in 2 ways only.
+    2.  n =5,
+        If we are at 5th step => no of ways to top => 1 way.
+        If we are at 4th step => no of ways to top => 1 way.
+        If we are at 3rd step => no of ways to top => either you go to 4th stair or 5th stair => chancesAt(4) + chancesAt(5) => 1 + 1 => 2 ways.
+        If we are at 2nd step => no of ways to top => either you go to 3rd stair or 4th stair => chancesAt(3) + chancesAt(4) => 2 + 1 => 3 ways.
+        If we are at 1st step => no of ways to top => either you go to 2nd stair or 3rd stair => chancesAt(2) + chancesAt(3) => 3 + 2 => 5 ways.
+        If we are at 0th step => no of ways to top => either you go to 1st stair or 2nd stair => chancesAt(1) + chancesAt(2) => 5 + 3 => 8 ways.  [ans]
+
+*/
+
+/*
+Logic: Recurisve approach.
 
 n = 5
 

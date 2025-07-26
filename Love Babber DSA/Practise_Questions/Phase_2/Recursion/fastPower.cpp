@@ -65,7 +65,7 @@ int main()
     // using Fast Pow using loops
     cout << fastPow(x, y) << endl;
     // using Fast Pow using Recursion.
-    cout << fastPow2(x, y) << endl;
+    cout << fastPow3(x, y) << endl;
     cout << "Basic Math Recursion" << endl;
     return 0;
 }

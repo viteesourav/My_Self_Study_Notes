@@ -464,7 +464,7 @@ eg: int *ptr; --> a wild pointer. now if next you do, ptr= &num; now it's no mor
 Pointers & Integer Arrays:
 -- Pointers can be used efficiently for handling arrays. Ref: see the Phase2 PointersBasic.cpp for reference.
 NOTE: (Important)
--- We cannot update the array name like arr = arr +1; It is now allowed and throw error.
+-- We cannot update the array name like arr = arr +1; It is not allowed and throw error.
    If we have array arr points to address 100 (As stored in symbol table), Then it cannot be changed atall.
    arr = arr + 1; --> this will throw error, as you are trying to update the location of array.
 --Instead of using array name, We can use pointer to move in the array. eg: int *ptr = arr; ptr += 1; --> this is valid.
@@ -622,7 +622,7 @@ Real Logic behind Recursion while solving questions ?
 
 Sorting Algorithms:
 
-1) Merge Sort:
+1) Merge Sort:  [** Divide and Conqure Technique **]
 logic ?
 -- First step: break the entire array using finding the mid formula, Divide it till you reach at single-single element block. (use Recursion)
 -- Now we will merge all the single-single element block into together in a sorted way.

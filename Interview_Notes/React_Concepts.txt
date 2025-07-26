@@ -70,6 +70,7 @@
         Redux core concepts (actions, reducers, store)
         Redux Toolkit basics
         React-Redux hooks
+        Redux Thunk
     20. Context API vs Redux
         Use-case comparison
         Performance and scaling
@@ -77,4 +78,182 @@
         Data fetching and caching
         Stale-while-revalidate pattern
 
+
+### Other Important Topics:
+    22. React Virtualization.
+        - Doesnot render stuff that is not in view-port
+        - Very useful concept for rendering large List.
+
+    23. React Design Principles and Coding Structure Habits. [https://www.youtube.com/playlist?list=PLApy4UwQM3Updrw-4mOXTwgsWar9bqk6i]
+        1. single responsible Component.
+        2. Compound components.
+
+
+### NextJs Concepts [TODO]
+
+
+
+### List of all Events and Actions that Triggers Component Refresh with React. [** VIMP **]
+
+    1. Intentional / Expected Re-render Triggers:
+        | # | Cause                        | Explanation                                                                                    |
+        | - | ---------------------------- | ---------------------------------------------------------------------------------------------- |
+        | 1 | **Parent Re-renders**        | When a parent re-renders, all its children re-render **by default**, unless they’re memoized.  |
+        | 2 | **Props Change**             | If child receives new props (different by reference or value), it re-renders.                  |
+        | 3 | **Context Value Change**     | If a child subscribes to a context and the value changes, it re-renders.                       |
+        | 4 | **State Change (in child)**  | A component always re-renders when its own `useState`/`useReducer` state updates.              |
+        | 5 | **Force Update**             | Calling a function like `forceUpdate()` (via ref or lifecycle methods) will force a re-render. |
+        | 6 | **Key Change**               | Changing a component's `key` (especially in lists) unmounts and re-creates it = re-render.     |
+        | 7 | **React Router Path Change** | If the route matches a new component, it unmounts/remounts = new render.                       |
+
+
+    2. Unintentional or Avoidable Re-render Triggers [** This effects performance **]:
+        | # | Cause                                 | Explanation                                                                                                  | Solution                                 |
+        | - | ------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------------- |
+        | 1 | **New Object/Array Props Every Time** | Functions or objects created inside parent on every render cause child to re-render even if logic unchanged. | `useCallback`, `useMemo`                 |
+        | 2 | **Anonymous Functions in JSX**        | Inline lambdas cause new function reference each time.                                                       | Move to `useCallback` or stable variable |
+        | 3 | **Not Using `React.memo`**            | Components re-render even when props didn’t change.                                                          | Wrap pure components with `React.memo()` |
+        | 4 | **Context Not Split**                 | One large context shared by many components causes all of them to re-render unnecessarily.                   | Split context or use selectors           |
+        | 5 | **State Mutation**                    | Mutating state objects (instead of creating new ones) causes React to miss re-render.                        | Always treat state as immutable          |
+        | 6 | **Key Conflicts in Lists**            | Using array index or non-unique keys can lead to unpredictable behavior and re-renders.                      | Use stable, unique keys                  |
+
+
+    3. React Feature and Pattern Triggers: 
+
+        | # | Feature                    | Re-render Behavior                                                         |
+        | - | -------------------------- | -------------------------------------------------------------------------- |
+        | 1 | **Strict Mode (Dev only)** | Triggers **double render** on mount to detect side effects.                |
+        | 2 | **Suspense/Lazy**          | Mounting async-loaded children triggers re-renders as content resolves.    |
+        | 3 | **Concurrent Mode**        | May interrupt and re-run rendering work, especially with transitions.      |
+        | 4 | **Portals**                | Rendering outside DOM hierarchy but tied to React tree — same rules apply. |
+
+        | # | Pattern                             | Re-render Impact                                     |
+        | - | ----------------------------------- | ---------------------------------------------------- |
+        | 1 | **useEffect that updates state**    | Triggers re-render after mount or dependency change. |
+        | 2 | **Fetching data and setting state** | Common cause of async-triggered re-renders.          |
+        | 3 | **WebSocket/EventListener**         | Emits events → sets state → re-renders.              |
+        | 4 | **Refs don’t trigger re-renders**   | ✅ safe to mutate without re-render.                 |
+
+
+    4. Visualization:
+
+        <Parent>
+        ├── <ChildA> ← props/state/context/ref change? Yes → re-render.
+        ├── <ChildB> ← anonymous functions as prop? Yes → re-render.
+        ├── <ChildC> ← pure component but parent re-rendered? Depends.
+
+
+
+
+
+NOTES:
+
+## Core Concepts:
+    -- JSX -> syntax extension to Javascript.
+    -- JSX compiles to React.createElement() under the hood. => Babel [converts JSX to JS so that browser can understand]
+    -- eg: 
+        const element = <h1 className="greet"> Hi </hi>  ===> Bable Converts this to ===> const element = React.createElement("h1", {className: 'greet'}, "hi);
+    -- functional Component => stateful (we have hooks), takes props and render JSX.
+    -- Class Component => legacy way, implements life-cycle methods [componentDidMount, shouldComponentUpdate], takes props keyword => this.props.name [If name is passed as prop to component].
+        - Class Component do extends React.Component to get access to Class Life-cycle methods like: render(), componentDidMount() etc.
+        - uses this.state and this.setState to access the states.
+        eg: 
+            class Counter extends React.Component {
+                state = { count: 0 };
+
+                increment = () => this.setState({ count: this.state.count + 1 });
+
+                render() {
+                    return <button onClick={this.increment}>Count: {this.state.count}</button>;
+                }
+            }
+
+    -- Props => read-only input to any Component.
+        1. Prop drilling => prop is passed down from parent to children through intermediate children where it is not used.
+          Problem => this causes unnecessary re-renders for the intermediate children.
+          Solution => use context API or Redux [App level state].
+    -- React Life cycle:
+        
+        1. Class component Life Cycle Methods:
+            1. Mounting Phase  => constructor(), render(), componentDidMount()
+            2. Update Phase  => shouldComponentUpdate(), componentDidUpdate()
+            3. UnMounting Phase => componentWillUnMount()
+
+        2. Function Component Life-Cycle Method with Hooks:
+            1. Mounting Phase  => useEffect(()=>{}, [])  => Empty Dependency array in useEffect runs the content only when Component mounts.
+            2. Updating Phase => useEffect(()=>{}, [state])  => If the state changes => useEffect Runs the the content and re-render the content.
+            3. UnMounting Phase  => useEffect(()=>{fn() return () => {...} },[])  => return anonymous function from useEffect will run to Cleanup timers or Event listener to clean up when the component unMounts.
+
+    NOTE:
+        stale Closure problem with Hooks and Functional Component:
+            - React functional component updates on every re-render => and If we have some logic written inside useEffect, useCallback => we must provide this method with the update state value.
+            Problem :
+                If we dont, these functions are executed only with the first state's value, as later on these functions are not aware that the state has changed. 
+                i.e the closure [functional component function] for the above functions have expired => It is running with expired state value instead of latest one. 
+            - solution:
+                - how to fix it ? ==> pass the state as a dependency array to this methods.
+                - This tells React to create a new function reference or run the function again with the latest value of state.
+        - remember this:
+            | Pattern                                                        | Why it's safe                          |
+            | -------------------------------------------------------------- | -------------------------------------- |
+            | `setState(prev => newValue)`                                   | Uses latest value from React           |
+            | Declare functions inside `useEffect` with correct dependencies | Ensures closure always captures latest |
+            | Memoize functions with `useCallback` and correct deps          | Avoids outdated references             |
+    
+    -- Batching of States:
+        - React batches multiple state updates into 1 render ==> Optimises performance.
+        - eg:   
+                const handleClick = () => {
+                    setCount(count + 1);
+                    setName("New Name");
+                };
+            => Only 1 render is triggered where count and name both are updated.
+    NOTE:
+        -- From React 18 onwards, Multiple State Updates inside setTimeout, Promises are also batched.
+        -- setState Doesnot immediatly updates the state => It rather schedule a re-render with the latest state value. => setState is not async, It deferred and batched for next render cycle.
+    
+    -- Functional Update:
+        setState(count => count + 1);  //preferred way to update state if it depends on previous state.
+    -- Synthetic Event:
+        React wraps browser native events into SyntheticEvent Obj for cross-browser consistency and performance optimization.
+            - eg: handleChange = (evt) => {console.log(evt.nativeEvent)} ==> this prints the native browser event.
+            - SyntheticEvent mimics the native event, but with a consistent interface.
+    -- Binding and 'this' Context in Event handlers:
+        - In old class component you have 2 ways to bind events:
+            1. use Arrow Method:
+                const handleClick = () => console.log(this);  //this point to the class.
+            2. use bind method:
+                constructor() {
+                    super();
+                    this.handleClick = this.handleClick.bind(this);
+                }  
+
+                function handleClick() {
+                    console.log(this);   // with the above bind, now this points to current class instance ==> without above bind, it will be undefined.
+                }
+    -- Functional Component `this` scope:
+        No Need to worry, everything is properly scope here.
+    -- Rendering Arrays:
+        -> use .map().
+        -> must use an unique Id for key attribute in the elemets. ==> helps React to identify which item chnaged during re-render.
+        -> index as a key is acceptable only:
+            1. If the list is static.
+            2. we are adding, removing or updating element in the list.
+    
+    ## Why key prop needed ?
+        -> React uses a Reconciliation algorithm (diffing) to decide wether to:
+            1. reuse the existing DOM element.
+            2. Destroy and re-create the DOM element.
+        -> If key is not proper/uique ==> React updates are difficult to predict.
+    
+## React Hooks:
+    -- 
+
+## React Advance concepts:
+
+## React State Management:
+          
+
+  
+ 
 

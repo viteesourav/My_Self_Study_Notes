@@ -1,4 +1,4 @@
-## Javascript Core Challenges
+## Javascript Core Challenges [Ref: ./JS_core_challenges.txt]
 
 1. Debounce Function 
  --> you constantly triggering an event eg: typing --> we want the event to execute only after d ms.
@@ -44,7 +44,7 @@ Cache function calls with different inputs.
 
 
 
-## React — Component & Hook Challenges
+## React — Component & Hook Challenges [Ref: CodeSandbox/React-interview-practise-ts]
 
 11. Custom useDebounce Hook
 Reusable hook that debounces an input value.
@@ -58,7 +58,7 @@ Use ReactDOM.createPortal, and trap focus.
 14. Tabs/Accordion Component
 Accessible, keyboard-navigable, with animation.
 
-15. Toast Notification System
+15. Toast Notification System  ---> [System Design Question]
 Dynamic rendering, dismissable, timeouts.
 
 16. Infinite Scroll List
@@ -77,7 +77,200 @@ Extra topics: [Ref: Roadsidecoder]
     3. Password generation
     4. breadcrumbs
     5. OTP login
-    6. AutoSuggestion
+    6. AutoSuggestion  ---> [System Design Question]
+
+
+
+
+
+
+### Using Hooks Like: 
+
+        1. Context API Hook.
+            -- You need to create a contextAPI with React.createContext().
+            -- Wrap your Parent Component with contextAPI.provider and pass the value.
+            NOTE: Do the above in a seperate File, and upLift the state from Parent to here.
+            -- Now all the children below that parent will have access to the value. Saves us from Prop drilling and unnecessary re-renders.
+        
+        2. Reducer Hook.
+            -- Make more sense when you use it in Redux state.
+            -- It take 2 params: 
+                1. a callback with 2 params: state and action [action will have type and payload]
+                2. the initial state.
+            -- Helps us to manage Complex state updates based on conditions.
+
+        3. Imperative Hook.
+            -- Very interestion hook.
+            -- In the child component you have ref that hold an Input or Aggrid Context. 
+            -- You want to expose few custom methods to parent so that it can handle actions from outside.
+            -- useImperative Hook provides a way you can expose your custom method from child to parent.
+            NOTE: 
+                1. In child a ref must be there that holds the context of a particular DOM element.
+                2. Child component has to be of React.forwardRef type.
+                3. In child component you have to decalre the useImperative hook to expose the methods to parents.
+                4. From the parent, the ref that hold the context of this Child will have these exposed method.
+
+        4. useId hook.
+            -- Rarely used hook but good functionality.
+            -- we can bind an Input and Label in HTML using name field from Input and HTMLFor field in label.
+            -- We need to provide a name here for the above to work. ==> useId generates a Random Name for us to use.
+            NOTE: 
+                Never use useId generated ids in Key prop in looping logic.
+
+        5. useTransition:
+            -- use to efficiently handle functions that are expensive [takes lot of time to Execute] ==> slows the UI => bad user Experience .
+            -- useTransition returns 2 things:
+                1. isPending => will be ture, untill the expensive function done executing. ==> based on this show a loading indicator.
+                2. startTransition => callback function that takes the expensive function.
+
+        6. useDeferredValue:
+            -- Similar to useTransition but it will show the older value untill new data is fetched.
+            -- It takes a value and returns a deferredValue. 
+                    const[query, setQuery] = useState('');
+                eg: const deferredQuery = useDeferredValue(query);
+            -- Here,
+                1. Initially both query and deferredQuery will be same.
+                2. the query will update immediatly as the input changes ==> but deferredQuery will be still old untill the new data is fetched.
+                3. Once new data is fetched ==> It updates the ui and shows New data that is fetched.
+
+            NOTE:
+                - until we get the new data from the response with the updated val, useDeferredValue will keep the old value and result, once new value comes => It loads the same in UI.
+
+        7. useActionState (React 19)
+            -- Handle Form actions efficiently.
+            -- eg: const [state, formAction, isPending] = useActionState(fn, initialState);
+            -- useCase:
+                1. pass the formAction from above in form's "action" attribute.
+                2. fn --> This specify the action needs to be perform when the form is submitted.
+                    -> it takes 2 params: previousStae and queryParms.
+                    -> we can extract formData using name field. eg: queryParms.get("filed_name")                    
+                3. If the it takes time ==> isPending can be used to show loading Indicator.
+
+        8. useFormStatus (React 19)
+        9. useOptimistic (React 19)
+        10. Custom Hooks.
+            -- Seperatation of Logic is implemented using Custom Hook.
+            -- eg: 
+                An API logic can be seperated out in form of a custom hook that can be return latest Value and a API state.
+
+
+
+
+
+
+NOTE:
+    Ideal Folder structure to Follow...
+        under src...
+            1. index.tsx => first File that holds the layout of the page.
+            2. components => Folder => that holds the child components.
+            3. types/index.ts ==> file that holds all types for this components.
+            4. api/index.ts ==> Holds the fetch calls and API methods to backend.
+            5. hooks/useCustomHooks.ts ==> file that handles a particular CRUD Logic like create or fetch or update Operation or any other custom hook.
+
+
+
+
+
+
+## React Queries:   [*** IMP ***] 
+    What ?
+        - It is a data-fetching and caching library for React that 
+            1. Manages remote data state.
+            2. Caches API calls.
+            3. Offer utils like refetch, retries, pagiantion etc...
+    
+    -- Basically,
+        It handles fetching data automatically or manually, also provide caching of the data, handles loading and error state too.
+
+    -- To use React queries:
+        1. You must add @tanstack/react-queries in dependency.
+        2. Then wrap the Parent Componet under QueryClientProvider and client as new QueryClient.
+    
+    -- example:
+        const {data, isLoading, refresh, isError, error} = useQuery<T>({
+            queryKey: ['uniqueKeyName'],
+            queryFn: fetchAPI,
+            stateTime: 5 * 60 * 1000, // 5 min caching.
+            retry: 2,
+            refreshOnWindowFocus: true,
+            enabled: true,
+        })
+    -- Life Cycle:
+        As the app loads ==> query checks in cache ==> If not make a call => fetch data and show.
+    -- Params:
+        1. queryKey => Under this name caching is done.
+        2. queryFn => this is the api call that fetches data.
+        3. staleTime => upto this time => data stay fresh.
+        4. retry => If API fails, this max no o times it will try again.
+        5. enabled --> a flag that decides if it should fetch data or not.
+
+    -- Refresh the data that is fetched..
+        queryClient.invalidateQueries(['queryKeys']);
+
+    --usecases:
+        1. Fetch data based on any state changes.   
+            const [name, setName] = useState("");
+
+            const { data, isLoading } = useQuery({
+                queryKey: ['user', name], // key includes name to make it dynamic
+                queryFn: () => fetchUserByName(name),
+                enabled: !!name, // only runs when name is truthy
+            });
+
+
+        2. Fetch data on component loads.
+            const { data, isLoading } = useQuery({
+                queryKey: ['todos'],
+                queryFn: fetchTodos,
+            });
+
+
+        3. Fetch data after update.
+        const queryClient = useQueryClient();
+        const addTodoMutation = useMutation({
+            mutationFn: addTodoApi,
+            onSuccess: () => {
+                queryClient.invalidateQueries(['todos']); // triggers re-fetch
+            },
+        });
+
+
+        
+        4. Fetch data strictly based on a flag.
+        const { data, refetch, isFetching } = useQuery({
+            queryKey: ['report'],
+            queryFn: fetchReport,
+            enabled: false, // prevent the APi call to run on Mounting phase.
+        });
+
+        // On button click
+        <button onClick={() => refetch()}>Get Report</button>
+
+    -- Automatically Fetching data Vs Manual fetching data with React Query.
+        1. when enable -> true.
+            React Query will automatically fetch:
+            ✅ On component mount
+            🔁 When query becomes stale (e.g. after staleTime)
+            🔄 When window/tab regains focus (unless disabled)
+            🔁 On network reconnect
+            ♻️ If invalidated via invalidateQueries
+
+            NOTE: we dont need refetch() method at all.
+        
+            usecase:
+                React Query auto-fetch on:
+                    1.Mount
+                    2.Tab focus
+                    3.Reconnect
+                    4.Stale data
+
+        2. When enable -> false.
+            React does nothing ==> It only fetch data when you we call refetch().
+            usecase:
+                If your data is optional, conditional, or user-triggered, go with manual fetching (enabled: false + refetch()).
+
+
+
 
 
 
@@ -96,7 +289,11 @@ With WebSocket integration and optimistic rendering.
 
 
 
-Additional Topics:
+
+
+
+
+#### Additional Topics:
 
 🔸 1. Code Splitting & Lazy Loading
 How to lazy load routes or components. --> React.lazy, Suspense, dynamic import().
