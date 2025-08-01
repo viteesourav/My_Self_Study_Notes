@@ -1,75 +1,127 @@
 ## Javascript Core Challenges [Ref: ./JS_core_challenges.txt]
 
-1. Debounce Function 
- --> you constantly triggering an event eg: typing --> we want the event to execute only after d ms.
-Implement a debounce(fn, delay) utility to optimize performance-heavy operations like search input.
+    1. Debounce Function 
+    --> you constantly triggering an event eg: typing --> we want the event to execute only after d ms.
+    Implement a debounce(fn, delay) utility to optimize performance-heavy operations like search input.
 
-2. Throttle Function 
- --> you constanly triggering an event eg: resizing/scroll -> we want the event to execute at an interval of d ms only.
-Implement a throttle(fn, delay) function for limiting event frequency (e.g., scroll, resize).
+    2. Throttle Function 
+    --> you constanly triggering an event eg: resizing/scroll -> we want the event to execute at an interval of d ms only.
+    Implement a throttle(fn, delay) function for limiting event frequency (e.g., scroll, resize).
 
-3. Deep Clone And Deep Merge.
-Deeply clone an object, handling nested structures and edge cases.
-Deeply merge 2 nested objects, handle nested structure.
+    3. Deep Clone And Deep Merge.
+    Deeply clone an object, handling nested structures and edge cases.
+    Deeply merge 2 nested objects, handle nested structure.
 
-4. Flatten Nested Array
-Recursively flatten:
-Input: [1, [2, [3, 4], 5]] → Output: [1, 2, 3, 4, 5]
+    4. Flatten Nested Array
+    Recursively flatten:
+    Input: [1, [2, [3, 4], 5]] → Output: [1, 2, 3, 4, 5]
 
-5. Implement once(fn)
-Run a function only once—return cached result on next calls.
+    5. Implement once(fn)
+    Run a function only once—return cached result on next calls.
 
-6. Custom bind, call, apply
-Polyfill and explain behavior in different contexts.
+    6. Custom bind, call, apply
+    Polyfill and explain behavior in different contexts.
 
-7. Promise Polyfill / Promise.all Clone
+    7. Promise Polyfill / Promise.all Clone
 
-8. Currying a Function
-sum(1)(2)(3)() → 6
+    8. Currying a Function
+    sum(1)(2)(3)() → 6
 
-9. Event Emitter
-Implement on, emit, off, once.
+    9. Event Emitter
+    Implement on, emit, off, once.
 
-    on -> Adds callback to an event's callback..
-    emit -> calls the registered callback with args.
-    off -> Removes the sepecific callback
-    once -> Register a callback that auto removes.
+        on -> Adds callback to an event's callback..
+        emit -> calls the registered callback with args.
+        off -> Removes the sepecific callback
+        once -> Register a callback that auto removes.
 
-    const EventEmitter = require("events"); // Part of the event core module in node js.
-    const emitter = new EventEmitter();
+        const EventEmitter = require("events"); // Part of the event core module in node js.
+        const emitter = new EventEmitter();
 
-10. Memoization Function
-Cache function calls with different inputs.
+    10. Memoization Function
+    Cache function calls with different inputs.
 
 
 
 
 ## React — Component & Hook Challenges [Ref: CodeSandbox/React-interview-practise-ts]
 
-11. Custom useDebounce Hook
-Reusable hook that debounces an input value.
+    11. Custom useDebounce Hook
+    Reusable hook that debounces an input value.
 
-12. Build a Controlled Form with Validation
-With custom validation rules and multiple inputs.
+    12. Build a Controlled Form with Validation
+    With custom validation rules and multiple inputs.
 
-13. Modal with Portal
-Use ReactDOM.createPortal, and trap focus.
+    13. Modal with Portal
+    Use ReactDOM.createPortal, and trap focus.
 
-14. Tabs/Accordion Component
-Accessible, keyboard-navigable, with animation.
+    14. Tabs/Accordion Component
+    Accessible, keyboard-navigable, with animation.
 
-15. Toast Notification System  ---> [System Design Question]
-Dynamic rendering, dismissable, timeouts.
+    15. Toast Notification System  ---> [System Design Question]
+    Dynamic rendering, dismissable, timeouts.
 
-16. Infinite Scroll List
-Load more content on scroll, optimized for performance.
+    16. Infinite Scroll List
+    Load more content on scroll, optimized for performance.
 
-17. usePrevious, useToggle, useClickOutside
-Utility hooks for clean logic reuse.
+    17. usePrevious, useToggle, useClickOutside
+    Utility hooks for clean logic reuse.
 
-18. Dynamic Component Loader
-Render a component from a config map:
-const map = { input: InputComponent, button: Button };
+    18. Dynamic Component Loader
+    Render a component from a config map:
+    const map = { input: InputComponent, button: Button };
+
+    19. React Router
+    usecase and machine coading practise.
+    using React-router-dom For handling routes.
+    NOTE:
+        - Must wrap <App /> with <BrowserRouter> inside main.jsx
+        - What is <Outlet> from react-router-dom ?
+            - Let say you have defined Routes with some nested routes inside.
+            - using Outlet will render the matching nested route's element there.
+        - Types of Routes useCase:
+            1. Default Landing page Route => Checks the Authentication and redirect to Home or SignIn page.
+            eg: 
+            const Layout = () => {
+                //Runs the authenticated service...
+                return isAuthenticated ? <Outlet /> : <Naviagte to="user-auth" replace />
+            }
+
+            Inside AppRouter.tsx :    
+                <Routes>
+                    <Route element={<Layout />}>
+                        // all your application Routes...
+                    <Route>
+                    <Route path="user-auth" element={<Auth />} />
+                </Routes>
+            NOTE:
+                - Above, The layout component will run authentication Logic and every app url re-direction ==> If authenticated then <Outlet /> i.e it will render the protected application routes. 
+                => If not authenticated ==> It will naviagte to user-auth route for authentication.
+            
+            2. Routes that are nested [use Naviagte and Outlet and LinkNav for this]
+                -> <NavLink to="path-name">Link-Name</NavLink> 
+                -> used to navigate from within the application.
+                
+            3. Routes with params and queries => [useParams and useSearchParams hook provided by react-router-dom]
+            4. Fallback Route => If no Route matches => fallback to the deafult screen [NOTE: write at the end with path="*" or directly add element <Route element={<NotFound />} />].
+
+    eg: 
+        <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="overview" element={<Overview />} />
+            <Route path="settings" element={<Settings />} />
+        </Route>
+
+        Inside the component DashboardLayout: 
+            const DashboardLayout = () => {
+                return (
+                    <div>
+                        <h1>Dashboard Layout</h1>
+                        <Outlet />
+                    </div>
+                );
+            };
+        NOTE: Now Outlet will render either /dashboard/overview or /dsahboard/settings.
+
 
 Extra topics: [Ref: Roadsidecoder]
     1. Folder structure.
@@ -278,14 +330,14 @@ NOTE:
 
 ### System Design-Oriented UI Coding
 
-19. Build a Lightweight Router
-Without React Router – handle dynamic routes, query params.
+    19. Build a Lightweight Router
+    Without React Router – handle dynamic routes, query params.
 
-20. Build a Reusable Component Library
-Design tokens, theming, and extensible components.
+    20. Build a Reusable Component Library
+    Design tokens, theming, and extensible components.
 
-21. Real-Time Chat UI
-With WebSocket integration and optimistic rendering.
+    21. Real-Time Chat UI
+    With WebSocket integration and optimistic rendering.
 
 
 

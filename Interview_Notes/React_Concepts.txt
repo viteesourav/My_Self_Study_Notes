@@ -84,6 +84,10 @@
         - Doesnot render stuff that is not in view-port
         - Very useful concept for rendering large List.
 
+    23. Websocket using React
+        - websocket Protocal and Event Life-cycle.
+        - Built a simple chat application.
+
     23. React Design Principles and Coding Structure Habits. [https://www.youtube.com/playlist?list=PLApy4UwQM3Updrw-4mOXTwgsWar9bqk6i]
         1. single responsible Component.
         2. Compound components.
@@ -245,11 +249,305 @@ NOTES:
             1. reuse the existing DOM element.
             2. Destroy and re-create the DOM element.
         -> If key is not proper/uique ==> React updates are difficult to predict.
-    
-## React Hooks:
-    -- 
+
+
+## React Hooks Important Notes:
+    -- useState's Lazy initialization:
+        const [expensiveValue, setExpensiveValue] = useState(() => computeHeavyValue());
+        -> use this when you have to initialize state that involves some heavy computation.
+        -> () => fn() make sure it runs only once, else it will run on every re-render.
+        -> usecase: Initializing state is expensive (sorting, filtering, parsing, etc.)
+    -- states with Object/Arrays:
+        eg: const [from, setForm] = useState({name: "", email: ""});
+        -> In class components, the state Object will get merge automatically.
+        -> In Functional Component, the state has to merge manually i.e setForm(prev => {...prev, name: 'test'});
+    -- useEffect, uses "shallow comparison" for tracking changes in dependencies array.
+        -> avoid this:
+            useEffect(()=>{...}, [obj])  // here obj will get new refernce on every re-render.
+        -> follow this:
+            const memoObj = useMemo(()=> obj, []);
+            useEffect(()=>{...}, [memoObj]); //memoObj reference will not change unless the object is changed.
+        -> when and why the cleanup function will run ?
+            1. before Mounting  => to prevent memory leaks.
+            2. before re-runnning th effect => to clean up outdated logic.
+        -> Traps:
+            1. missed Dependency.
+            2. updating the state inside useEffect which is in dependency. ==> infinite loop
+            eg: 
+                useEffect(()=> {
+                    setCount(prev => prev +1);
+                },[count]);
+    -- useRef: => returns a mutable ref Obj => {current: initialVal}
+        -> 2 useCases:
+            1. To Access Dom Elements.
+            2. Storing mutable values that is preserved throughout the re-render and doesnot trigger re-render on updates.
+    --  useContext:
+        -> Provider:
+           1. const ContextProvider = React.createContext(initialVal);  //defaultVal.
+           2. Wrap the parent with the context Provider with the value.
+                <ContextProvider.provider value="new-val">
+                    {children}
+                </ContextProvider>
+            3. In the child where we need that state:
+                const val = useContext(ContextProvider);
+        -> If a parent has multiple children, and a prop is drill from parent to a child through intermediate children i.e prop drilling.
+            => causes un-necessary re-renders.
+            => useContext saves us from that.
+        -> When context is updated => all children with useContext will be re-rendered. => To optimise memorize the context val.
+    -- useMemo: memorize computed values.
+       useCallback: memorize function instances.
+       -> useMemo useCase:
+            1. when doing expensive calculations.
+            2. Prevent re-render for child due to new obj/arr/fun creation.
+        -> useCallback useCase:
+            1. when fn is passed to child as prop.
+            2. It works only if the child is memorised, and useCallback wont generate a new reference on re-render. 
+        -> Pitfall:
+            1. No use of using useCallback alone, If the fucntion is not passed inside a memorized Child [React.memo where we force the child to shallow compare the props]
+            2. If a function is used as dependency in useEffect, there also useCallback saves to runs the useEffect content on every re-render.
+            3. If the function is event-driven only in the same file, then no need for useCallback.
+            4. anonymous function for event handler for child component.
+                <MemoizedComponent onClick={() => doSomething()} /> // always a new function, will re-render
+                -> This re-reneders the Component on every re-render.
+                -> fix is: add a useCallback for the click handler. -> as the func is going as a prop to child component.
+    --  Custom Hook -> Encapsulate re-usable logic.
+        -> Common Pattern of Custom hook:
+            1. fetch Hook
+                function useFetch(url) {
+                    const [data, setData] = useState(null);
+                    const [loading, setLoading] = useState(true);
+
+                    useEffect(() => {
+                        let ignore = false;
+
+                        fetch(url)
+                        .then(res => res.json())
+                        .then(json => {
+                            if (!ignore) setData(json);
+                        })
+                        .finally(() => setLoading(false));
+
+                        return () => { ignore = true; };
+                    }, [url]);
+
+                    return { data, loading };
+                }
+
+            2. Local Storage Hook:
+                function useLocalStorage(key, initialValue) {
+                    const [value, setValue] = useState(() => }{
+                        const json = localStorage.getItem(key);
+                        return json ? JSON.parse(json) : initialValue;
+                    );
+
+                    useEffect(() => {
+                        localStorage.setItem(key, JSON.stringify(value));
+                    }, [key, value]);
+
+                    return [value, setValue];
+                }
+
+        NOTE:
+            1. Always define hooks at the top level -< Out of any loop or condition.
+            2. prefix with use, Dont return JSX just logic.  
 
 ## React Advance concepts:
+    -- VDOM -> Virtual DOM is a light weight in memory representation of the actual DOM.
+    -- Reconciliation ==> uses to update the DOM when component's stat or porp changes.
+        Process:
+            1. React creates a new DOM tree.
+            2. Diffs it against he previous tree.
+            3. Figures out the min no. of updates to the actual DOM.
+    -- Why use Key prop in List render:
+        1. Track items across re-render.
+        2. Avoid re-rendering of the whole list.
+        3. Optimise insertion, deletion and re-rendering.
+    NOTE: use index as key in list only if the list is static, Else go with some stable unique Id.
+    -- Optimizing Re-renders:
+        -> Problem: Frequent re-render impacts performance of the whole application ==> bad UI experience.
+        -> Why re-renders ?
+            1. If state changes.
+            2. If prop changes.
+            3. If parent re-render then all it's root nodes will re-render event if it's prop doesn't change.
+        -> Solution:
+           *1. React.memo() 
+                => If parent re-renders and Prop doesnot change => React.memo prevents the child from re-rendering again.
+                => use shallow Comparison.
+            2. useMemo()
+                => hook that saves costly operations and values that dependes upon state/props.
+                => saves the value through re-renders.
+            3. useCallback()
+                => hook that saves the ref of a function through all re-renders.
+                => If a function is passed to child component. When Parent re-render, a new refernce will be created. => even if the child is memorized still it will re-render.
+                => useCallback deals with the above issue.
+            4. Key usage in List.
+                => Optimise rendering Items in a list type of data view.
+           *5. Splitting Component: 
+                => Break large component into smaller one => Only smaller one will re-render instead of the Whole component.
+                => Improved performance.
+            6. Lazy Loading:
+                => React provides React.lazy to lazy load a non-critical Component.
+                => While the componets loads => <Suspense> handles the fallback screen.
+                
+                    const Lazy Component = React.lazy(()=> import('./component/file-name'));
+                    
+                    <Suspense fallback={<div> Loading.. </div> }>
+                        <LazyComponent ...{props} />
+                    </Suspense>
+    -- Where to monitor Performance ?
+        1. React devTools Profiler.
+            => highlights: which components are re-rendered unnecessarily.
+            => Measure Performance.
+    -- Error Boundaries: 
+        -> Captures JS Errors in the rendering phase of their child component tree.
+        -> Only applicable and implemented with Class Component => using the component Life-cycle event: ComponentDidCatch [as of React 18]
+        eg:
+            class ErrorBoundary extends React.Component {
+                constructor(props) {
+                    super(props);
+                    this.state = {hasError: false};
+                }
+
+                // update the state ==> shows fallback UI
+                static getDerivedStateFromError(error) {
+                    return {hasError: true};
+                }
+
+                //Logs the Error...
+                componentDidCatch(error, info) {
+                    console.error('Error Caught:', error, info);
+                }
+
+                render() {
+                    if(this.state.hasError) {
+                        return <h2>Fallback Error Message: Something went Wrong !!</h2>
+                    }
+                }
+
+                return this.props.children;
+            }
+
+        useCase:
+            <ErrorBoundary>
+                <Mycomponent />  --> catches Error if any....
+            </ErrorBoundary>
+
+        -> what Error Boundary catches ?
+            1. Errors during Rendering.
+            2. Life-cycle methods.
+            3. React Hooks.
+        -> What Error Boundary will miss ?
+            1. Event Handlers -> use try/catch.
+            2. Async errors -> setTimeout, fetch
+            3. SSR issues.
+        -> NOTE: Not possible with Functional Component using hooks yet.
+        -> Optimised Suggestion:
+            -> use one global Error Boundary at Parent Level of the Application.
+            -> use smaller error boundary in high risk component, with logging.
+    -- Controlled Component => react track the input changes using useState hook.
+       UnControlled Compoennt => Input changes are tracked using ref to the input node. => usecae: for simple form and critical components.
+    -- File input types are uncontrolled  => reason: For security reasons, File value cannot be set by js, they are accessed using ref.
+    eg: 
+        const handleUpload = () => {
+            const files = fileRef.current.files[0];
+            const fileMultiple = fileRef1.current.files;
+            Array.from(fileMultiple).forEach(file => {
+                console.log(file.name);
+            })
+        }
+
+        <input type="file" ref={fileRef} />
+        <input type="file" ref={fileRef1} multiple />
+    NOTE: Why not useState ?
+        -> Browsers don’t allow scripts to set file paths, as that would pose a huge security risk (apps could upload local files without permission).
+            That’s why file inputs are read-only from JS, and React recommends you treat them as uncontrolled inputs.
+    -- ref usecases:   
+        1. want to access the DOM directly.
+        2. Performance oriented for reducing re-renders in component.
+    -- React Router:
+        -> Standard way for Routing in React Application.
+        -> Core Concepts:
+            1. BrowserRouter   => Wraps around the App component, enable Routing with HTML5 history API.
+            2. Routes          => Holds all Route components.
+            3. Route           => Defines url path and Element to render.
+            4. Link/NavLink    => Naviagtes to a page without page reload.
+                eg: <NavLink to="/home"> HOME </NavLink>
+
+            5. useNaviagte     => Programmatically naviagte.
+                const naviagte = useNaviagte();
+                navigate('/home');
+                naviagte(-1); //go back
+                    OR
+                <Route path="/" element={<Naviagte to="/login" replace />}>
+                NOTE:
+                    replace keyword will remove the entires from the url naviagte stack.
+            6. useParams       => hook to extract path param from url.
+            7. useLocation     => access current URL Info.
+            8. Outlet          => Placehold for nested Routes.
+
+        -> eg for protective Routes/Routes Guarding:
+            const Layout = () => {
+                const isAuth = isAuthenticated(); //the service to verify Authentication...
+                return isAuth ? <Outlet/> : <Route path='/user-Auth' element={<Naviate to='/user-Auth' }
+            };
+
+            <Routes>
+                <Route element={<Layout />}>
+                    <Route path='/' element={<Naviagte to='/home' replace>} />
+                    <Route path='/dashboard' element={<Dashboard />} />
+                </Route>
+            </Routes>
+
+            -> Above code:
+                1. As the Route starts => Layout is called by default for every re-direction.
+                2. If the auth is success => <Outlet /> will render the nested route under the current Route url.
+                3. If auth fails ==> It will re-direct to user-Auth and also clears out the navigation history [using replace keyword in <Naviagte>]
+    -- HOC:
+        -> Takes a component as input and return a new component with updated state or props.
+        -> structure of HOC:
+            const hocName = (WrappedComponent) => {
+                return ({isLoading, ...props}) => {
+                    // 1.Above If you want child to expect additional prop -> you can define like isLoading.
+                    // 2.props refer to the actual props the child is expecting...
+
+                    // 3.Here you can use all react hooks, and logic..
+
+                    return isLaoding ? 
+                      <div>Loading....</div>
+                        : <WrappedComponent {...props} />;  
+                };
+            }
+        -> useCase:
+            1. Authentication/Role guards.
+            2. Analytics Logging.
+            3. Theme injection.
+            4. Error tracking.
+            5. Feature flags
+        -> Hooks used for Logic seperation and returns data/logic  =>   HOC is good for UI seperation, returns a component.
+    -- Render Props:
+        -> A pattern of sharing logic between components by passing a function as prop that returns React Elements. ==> Legacy Way
+        -> An Alteranative to HOC => share logic between components.
+        -> Basically function is passed as a prop to the component.
+        eg: 
+            const DataProvider = ({ fetchUrl, children }) => {
+                const [data, setData] = useState(null);
+
+                useEffect(() => {
+                    fetch(fetchUrl).then((res) => res.json()).then(setData);
+                }, [fetchUrl]);
+
+                return children(data);
+            };
+
+            // Usage:
+            <DataProvider
+                fetchUrl="/api/user"
+            >
+                {(user) => (user ? <UserCard {...user} /> : <p>Loading...</p>)}
+            </DataProvider>
+        NOTE: here render is passed as function that handles the UI JSX to show i.e either UserCard component or Loading...
+        
+
 
 ## React State Management:
           
