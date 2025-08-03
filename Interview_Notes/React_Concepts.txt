@@ -148,10 +148,6 @@
 
 
 
-
-
-NOTES:
-
 ## Core Concepts:
     -- JSX -> syntax extension to Javascript.
     -- JSX compiles to React.createElement() under the hood. => Babel [converts JSX to JS so that browser can understand]
@@ -351,6 +347,7 @@ NOTES:
             1. Always define hooks at the top level -< Out of any loop or condition.
             2. prefix with use, Dont return JSX just logic.  
 
+
 ## React Advance concepts:
     -- VDOM -> Virtual DOM is a light weight in memory representation of the actual DOM.
     -- Reconciliation ==> uses to update the DOM when component's stat or porp changes.
@@ -548,10 +545,180 @@ NOTES:
         NOTE: here render is passed as function that handles the UI JSX to show i.e either UserCard component or Loading...
         
 
-
 ## React State Management:
-          
+    -- Redux ==> helps manage state in a centralized store, especially used for large application where we have deep nested components.
+    -- Elements:
+        1. Actions
+            -> Plane JS Objects that descibe an event.
+            -> must include 'type' property.
+            -> may include payload to carry extra info for updating the state.
+        2. Reducers:
+            -> Are Pure functions. [no side effects like api calls, always have same output with the same input] => Ensures State updates are predicatable and testable.
+            -> must include => state[initial], action and return new state.
+            NOTE: existing state cannot be mutated here ===> must return a new state.
+        3. Store:
+            -> store is created with the reducer defined.
+            -> configureStore with Redux Toolkit ==> creates a store.
+        4. Middlewares:
+            -> Intercepts actions before they reach reducers.
+            -> usecase:
+                1. Async logic [Redux Thunk]
+                2. Logging actions.
+                3. Authentication/redirects.
+    eg: 
+        1. reducer:
+            const counterReducer = (state = {count: 0}, action) => {
+                const {type} = action;
+                switch(type) {
+                    case 'Increment':
+                        return {count: state.count +1 };
+                    default:
+                        return state;
+                }
+            }
+            NOTE: reducer based on action's type property [action must have type] ==> returns the updated state.
+        2. create a store:
+            const counterStore = createStore(counterReducer);   // takes createStore from react-redux.
+        3. wrap APP with Provider [from react-redux] and store.
+            <Provider store={counterStore}>
+                <App />
+            </Provider>
+        4. use useDispatch() and useSelector() to access the store state.
+            const dispatch = useDispatch();
+            const count = useSelector(state => state.count);  //Picks the count from the redux state.
 
-  
+            onClick ={() => dispatch({type: 'Increment})};   //calling the dispatch to send action.
+    NOTE:
+        1. Multiple reducers can be combined into a single root reducer with ===> combineReducers.  [Build into Redux]
+        eg: 
+            import { combineReducers } from 'redux';
+
+            const userReducer = (state = {}, action) => { /* ... */ };
+            const postsReducer = (state = [], action) => { /* ... */ };
+
+            const rootReducer = combineReducers({
+            user: userReducer,
+            posts: postsReducer,
+            });
+
+            // state shape: { user: ..., posts: ... }
+
+        2. reduceReducer => utility included with @reduxjs/toolkit. => To chain multiple reducers together so they can process the same state. [From the external library support]
+        eg: 
+            import reduceReducers from 'reduce-reducers';
+
+            const baseReducer = (state = {}, action) => { /* ... */ };
+            const extraReducer = (state, action) => { /* ... */ };
+
+            const combinedReducer = reduceReducers(baseReducer, extraReducer);
+        NOTE: all reducers in reduceReducers receive the same state and action and state flows through them one by one.
+    
+    -- Redux ToolKit [RTK]:
+        -> Prob with Redux ==> had to create actionTypes, action creators and reducers manually.
+        -> sol: RTK reduces boilerplate code, auto-gen actions.
+        -> Working logic:
+            1. Create store.
+                import { configureStore } from '@reduxjs/toolkit';
+                import counterReducer from './counterSlice';
+
+                const store = configureStore({
+                    reducer: {
+                        counter: counterReducer,
+                    },
+                });
+
+            2. CreateSlice. ==> Generates the reducers and actions automatically.
+                import { createSlice } from '@reduxjs/toolkit';
+
+                const counterSlice = createSlice({
+                    name: 'counter',
+                    initialState: { value: 0 },
+                    reducers: {
+                        increment: (state) => {
+                            state.value += 1; // ✅ Immer under the hood - allows "mutating" [we can directly update state here, it will take care of immutability under the hood.]
+                        },
+                        decrement: (state) => {
+                            state.value -= 1;
+                        },
+                    },
+                });
+
+                export const { increment, decrement } = counterSlice.actions;   //createSlice -> automatically creates actions.
+                export default counterSlice.reducer;                            //createSlice -> automatically creates reducers.
+
+            NOTE: Immer is used above that allows us to mutate the state directly i.e state.value += 1 ==> under the hood it takes care of the immutability.    
+
+            3. create AsyncThunk:  ==> handles aasync actions like fetching data...
+                import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+
+                // Async thunk
+                export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
+                    const res = await fetch(`/api/user/${userId}`);
+                    return res.json();
+                });
+
+                const userSlice = createSlice({
+                    name: 'user',
+                    initialState: { data: null, status: 'idle', error: null },
+                    reducers: {},
+                    extraReducers: (builder) => {
+                        builder
+                            .addCase(fetchUser.pending, (state) => {
+                                state.status = 'loading';
+                            })
+                            .addCase(fetchUser.fulfilled, (state, action) => {
+                                state.status = 'succeeded';
+                                state.data = action.payload;
+                            })
+                            .addCase(fetchUser.rejected, (state, action) => {
+                                state.status = 'failed';
+                                state.error = action.error.message;
+                            });
+                    },
+                });
+            NOTE: 
+                1. Here we are making an API call ==> We are adding cases on the API fetch status inside extraReducers.
+                2. How to call thunk actions with dispatch:
+                    const dispatch = useDispatch();
+                    onClick={() => dispatch(fetchUser(id))}  ==> Triggers Async Thunk actions. => Once it fulfilled, state is updated.
+                3. useSelector ==>
+                    1. Triggers re-render if the value changes [shallow comparision]
+                    2. Advice to be very specific on Selection of state items with useSelector.
+                        eg: 
+                            const user = useSelector(state => state.user);           //re-render whenever the whole user obj changes ==> unnecessary re-renders here.
+                            const userName = useSelector(state => state.user.name);  //re-render when the name changes.
+        -> ContextAPI vs Redux:
+            1. used for a Performance optimization of small DOM Tree, REdux is for a Prod level Application.
+            2. Context API is pretty simple with createContext, Provider, useContext, Redux has some boilerplate code [simplified with RTX]
+            3. Context API solves Prop drilling issue, Redux Provides a centeralized state.
+            4. Doesn't inheritly supports async logic, RTX has createAsyncThunk ==> handles async Logic.
+
+        -> ContextAPI pitfalls:
+            1. Any child component which is using the Context will be re-rendered when the contextVal updates.
+                -> Sol: memorise the context value.
+        ->  Redux advantage on the above issue:
+            -> we have useSelector that takes out a very specific state's value instead of the whole object ==> prevents unnecessary re-renders.
+        -> useCase:
+            -> ContextAPI if data is rarely updated,  Redux if data is updated frequently or have async calls.
+            -> Context API dont have middleware or dev tool support, Redux have middleware support.
+    -- React Query/SWR:
+        -> Why go ahead with useQuery rather than useEffect + useState ?
+            1. Caching.
+            2. Retry on failure.
+            3. Refresh on window focus.
+            4. Reduce the manual work on handling API status and error State.
+        -> SWR 
+            -> Provided by vercel ==> Handles API calls specifically with Next.js => includes caching, Auto-refresh.
+            eg: 
+                import useSWR from 'swr'
+
+                const fetcher = url => fetch(url).then(res => res.json())
+                const { data, error, isLoading } = useSWR('/api/user', fetcher)
+            -> preferred for simple use-case ot smaller apps.
+
+    
+
+
+
  
 

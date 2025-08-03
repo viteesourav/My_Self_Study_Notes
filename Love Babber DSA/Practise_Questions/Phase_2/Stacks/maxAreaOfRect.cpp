@@ -97,10 +97,40 @@ private:
     };
 
 public:
+     int solve3(vector<int>& heights) {
+        int maxArea = 0;
+        stack<pair<int, int>> st;   //tracks <index, height>
+
+        //iterate in the histogram....
+        for(int i=0; i<heights.size(); i++) {
+
+            int start = i;  //The current bar starts at ith index..
+
+            // If stack already holds any elements and it's height > height[i] => the hight in stack's top cannot to extend to right => so pop them...
+            while(!st.empty() && st.top().second > heights[i]) {
+                pair topHeight = st.top();
+                st.pop();
+                maxArea = max(maxArea, topHeight.second * (i - topHeight.first)); // currentArea = bar height * (current index - bar's index) => update max Area.
+                start = topHeight.first;  // we update the current bar starting to left, since left bar height > curr bar height.
+            }
+            st.push({start, heights[i]});  //push the current bar starting index and it's height.
+        }
+
+        //there might be some element left in stack ==> these bars can extend till the end of heights list..
+        while(!st.empty()) {
+            pair topHeight = st.top();
+            int area = topHeight.second * (heights.size() - topHeight.first);
+            maxArea = max(maxArea, area);
+            st.pop();
+        }
+        return maxArea;
+    }
+
     int largestRectangleArea(vector<int> &heights)
     {
         // we will solve it using stack and left and right next min element Logic...
-        return solve(heights);
+        // return solve(heights);
+        return solve3(heights);
     }
 };
 
@@ -111,6 +141,31 @@ Largest Rect in Histogram [Area of the max Rectangle]
 
 
 2 1 5 6 2 3  -> Plot this all heights with width 1, Find max possible area of rect.
+
+Approach 3: [Most Optimised Approach] -> O(n), O(n)
+
+ 0 1 2 3 4 5
+ 2 1 5 6 2 3
+
+initial:
+    1. a variable maxArea -> tracks the max possible area.
+    2. a stack => <index, height> => stores bar's starting index [as the bar can be extended to left if possible] and it's height.
+Steps:
+    1. Start iterating in the histogram.
+        1. Lets assume, the starting index of curr Height is ==> start.
+        2. Now If the stack is not empty and the height at top > curr Height [i.e the stack's top bar hieght cannot be extended to right, as the curr Height is smaller]
+            -> Pop the bar from stack.
+            -> Calculate the area of the popped bar => bar's height * (currentIndex - bar's index) [current index because => we are measuring area from the current index point]
+            -> update maxArea.
+            -> NOw for the curr bar, since the popped bar height is greater i.e we can extend the curr bar to left ==> update start as the popped bar's index.
+        3. After all this, We may have any element left in stack.
+            -> This means for these bars -> they can extend till the end of the no of height given,
+            -> Find area of these => bar's height * (len(height) - bar's index);
+            -> update maxArea.
+            -> Pop form the stack.
+        4. You have the max possible Area in the histogram.
+
+
 
 
 Appraoch 1: Brute Force [TC: O(n2) ] --> I will extend the bar to it's left and right till i can, then find the area..
@@ -127,6 +182,10 @@ Appraoch 1: Brute Force [TC: O(n2) ] --> I will extend the bar to it's left and 
  -- compare for all elements and find the max possible area.
 
 
+
+
+
+ 
 Appraoch2: Using Stack and next min element on the left and right side... [TC: O(n) SC: O(n)]
 
  0 1 2 3 4 5

@@ -161,10 +161,10 @@ NOTE: For Singly Linked list we use: forward_list
 * Container Adapters:
 1) Stacks:
    -- LIFO
-   -- TC of all Operations: O(1)
+   -- TC of all Operations: O(1): push(), pop(), empty(), top(), size()
 2) Queue:
    -- FIFO
-   -- TC for all Operations: O(1)
+   -- TC for all Operations: O(1): push(), pop(), front(), back(), size()
 3) Priority Queue (Very important):
    -- Max heap --> A Queue where the first element is always greatest.
    -- Min heap --> A Queue where the first element is always the minimum.
@@ -174,7 +174,7 @@ NOTE: For Singly Linked list we use: forward_list
    -- maxheap is by default, for minheap you need to do: priority_queue<int, vector<int>, greater<int>> Q;
    -- ForEach doesnot work here.
    -- NOTE: It is a queue, but the methods are similar to that of a stack,
-      push() --> psuhes in the queue [O(logn)]
+      push() --> pushes in the queue [O(logn)]
       top() --> returns max [O(1)], pop()--> remove the max [O(logn)], empty()--> checks if its empty or not
 
 * Container Associative:
