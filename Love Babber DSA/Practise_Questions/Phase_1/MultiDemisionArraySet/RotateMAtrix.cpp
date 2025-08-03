@@ -24,7 +24,7 @@ private:
     }
 
 public:
-    void rotate(vector<vector<int>> &matrix)
+    void rotate1(vector<vector<int>> &matrix)
     {
 
         // taking the row and column count
@@ -50,10 +50,60 @@ public:
             noOfSwaps -= 2; // why 2 because both start and end Col will move towards each other.
         }
     }
+
+    // Optimised Approach: swaps and using index left and right, top and bottom for clarity...
+    void rotate2(vector<vector<int>>& matrix) {
+        int left = 0, right = matrix.size() -1;
+
+        //iterate till they cross each other...
+        while(left < right) {
+            // the below make sure, we rotate all elements in the considered square...
+            for(int i=0; i<right-left; i++) {
+                int top = left, bottom = right;
+                swap(matrix[top][left + i], matrix[top + i][right]);
+                swap(matrix[top][left + i], matrix[bottom][right-i]);
+                swap(matrix[top][left + i], matrix[bottom - i][left]);
+            }
+
+            // update the left and right pointers towards each other..
+            left++;
+            right--;
+        }
+    }
 };
 
 /*
 Logic behind this:
+
+Appraoch 2: 
+    initial:
+        -> lets have left = 0 and right = size-1.
+
+    steps:
+        -> Loop till left and right meet:
+            -> start a loop i => 0 to right-left:   [This helps us to rotate all elements for the other square in the matrix, eg: for (3,3) => i: 0 to 2 => i will run for i =0 and i=1] 
+                -> lets use top => left.
+                            bottom => right.
+                -> start swaping for the first corner elements with the element at (0,0)  [using in-place swaps reduces complexity]
+                    swap -> top-left and top-right
+                    swap -> top-left and bottom-right
+                    swap -> top-left and bottom-left
+                -> This rotates the corner elements => not we need to rotate the next element in the row => use i and modify the above swaps.  
+                -> replace the above swap along using ith logic 
+                    swap -> top-(left+i) and (top+i)-right
+                    swap -> top-(left+i) and bottom-(right-i)
+                    swap -> top-(left+i) and (bottom-i)-left
+            -> Increment Left by 1.
+            -> decrement right by 1.
+
+        -> Done [solved]
+
+
+
+
+
+
+
 
  1 2 3        7 4 1
  4 5 6   -->  8 5 2
