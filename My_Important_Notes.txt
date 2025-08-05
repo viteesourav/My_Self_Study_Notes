@@ -361,6 +361,21 @@ NOTE:
    -- String methods:
       -- str.length(), str.substr(start, len), str.find(str, len), str.erase(pos, len), str.append(" ") --> adds a string..
 
+NOTE: String stream. [Used in serialize and deserialize a Tree]
+   1. ostringstring out:
+      -> you basically print the values you want in the string stream.
+      -> eg: 
+         out << "sourav" << " "<< "takes" << " " << "test";
+      -> to get the string val out from the stream:  out.str() ==> sourav takes test.
+   
+   2. istringstream in:
+      -> It can take the data in form of a string and can convert into a string.
+      eg:  
+         istringstream in(data);
+         strin val;
+         in >> val;
+      -> It will store each word in val => It reads till it encounters any space character => store in val and move on.
+
 
 
 ****Multi-Dimensions Arrays****

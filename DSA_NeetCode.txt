@@ -1,0 +1,262 @@
+### DSA Preparation - NeetCode 150 + Additional Questions. ####
+
+
+------------------------------
+🔹 1. Arrays & Hashing [Concepts: Frequency map, two pointers, prefix sums]
+------------------------------
+[ ] Two Sum (Easy)  --> use map, track [reminder-currIndex]
+[ ] Contains Duplicate (Easy) ->  use a set to track already visited items.
+[ ] Valid Anagram (Easy) -> s1 -> populate the charFreqMap, s2 -> reduce the charFreqMap, if all zero -> valid.
+[ ] Group Anagrams (Medium)  -> eat --> [e->1, a->1, t->1] ->a1e1t1 ==> store in map -> {a1e1t1, [eat]}, tea --> [t->1, e->1, a->1] ->a1e1t1 ==> add in map -> {a1e1t1, [eat, tea]} => print the values.
+[ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] OR 2. Manually use quick sort logic to sort. [optimal]
+[ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exit --> One possible consequative seq length.
+[ ] Subarray Sum Equals K (Medium) -> prefix sum concept, for i > j => if ps[i] - ps[j] = k, then ps[i] - k = ps[j]. So In map, for ps[j], if there exist ps[i] -k, then that is one possible suseq sum from i+1 to j.
+
+
+------------------------------
+🔹 2. Sliding Window [Concepts: Fixed & variable length window, frequency counters]
+------------------------------
+[ ] Maximum Average Subarray I (Easy)  ==> First sum of k element ==> as the window slides, remove i-1th ele, add j+1th element, find max avg. [NOTE: type casting: (double) 2 -> 2.000]
+[ ] Best Time to Buy and Sell Stock (Easy) => move left to right, track minPrize => maxProfit = max(maxProfit, currPrize - minPrize);
+[ ] Best Time to Buy and Sell Stock II  => Track up going inclines for total possible profit amount.
+[ ] Longest Substring Without Repeating Characters (Medium)  ==> use set to identify unique substr, update l, r pointer, unitill set content is unique, Find max len possible.
+[ ] Permutation in String (Medium)  ==> s1, make a hasmap, iterate s1.len window in s2, update the hasmap, if all zeros ==> valid permutation.
+[ ] Minimum Size Subarray Sum (Medium) => take 2 pointers, since all positives, slides till right if sum >= target, track the length => min length.
+[ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> reduce from freqMap, If any value in freqMap is 0 and exisit in set, remove from set, reduce the window. 
+
+
+------------------------------
+🔹 3. Two Pointers [Concepts: Left and right pointers, moving inward]
+------------------------------
+[ ] Valid Palindrome (Easy)  => iswalnum() and tolower() used, 2 pointers moving inward.
+[ ] Merge Sorted Array (Easy) => start tracking from behind, k tracks the largest element.. => arr will be sorted with O(m+n);
+[ ] Remove Duplicates from Sorted Array (easy) => 2 points l and r, move r till size => ele at r is a distinct ele at l => move l and replace ele at l with ele at r. => return the final len.
+[ ] Container With Most Water (Medium) => 2 pointers at extremes, max area, whicher side height is smaller -> move inside from that side.
+[ ] Remove Duplicates from Sorted Array II (Medium)   => allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r].
+[ ] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)]
+[ ] 3Sum (hard) => sort it first, loop i => use 2 pointer l = i+1 and r=size-1, find a sum == 0 [valid, now => move one pointer till it's unique (** imp **) ], sum > 0 [r--, since, sorted arr], sum < 0 [l++, since sorted arr]. 
+
+
+------------------------------
+🔹 4. Binary Search [Concepts: Left, right, mid, lower/upper bounds]
+------------------------------
+[ ] Binary Search (Easy) => a simple binary search logic. [remember the condition l<=h and updaiting h to mid-1]
+[ ] Guess Number Higher or Lower (Easy) => just simple binary search logic.
+[ ] Search in Rotated Sorted Array (Medium) => mid can be wither on the sortedside [ if target > mid or target > l => look right, else look left] or rotated side. [if target < mid or target > h => look left else look right] 
+[ ] Find Peak Element (Medium) => check if left neighbour is up, check if the right neighbour is up..
+[ ] Koko Eating Bananas (Medium) => sample space of k: 1 to max pile => find for at k rate -> how many hours koko can finish piles.[ if koko take 1.2 hr -> round it to 2 hr.] => if koko takes less or equal time than h => look left for smaller k value, If koko takes more time -> look right to increase k value and reduce time. 
+[ ] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
+
+
+------------------------------
+🔹 5. Stack / Monotonic Stack [Concepts: LIFO, Next Greater Element, stock span]
+------------------------------
+[ ] Valid Parentheses (Easy) => any open bracket -> push in stack, else => if it stack empty -> false, if the top matches the current close => pop from stack, if not -> false.  Else if st is empty -> balanced orelse not.
+[ ] Min Stack (Easy) => use pair in stack<currVal, minVal> => minVal will hold the minValue in the entire stack. [decide when you push new element in stack]
+[ ] Daily Temperatures (Medium) => stack<temp, index>, If stack empty or temp is less than top => push in stack. => If greater them coming => pop from stack one by one and find diff in index, store in ans[popped ele's index]. [** a bit simple, Just let the stack maintain indxes]
+[ ] Next Greater Element II (Medium) => arr is circular, loop for 2*n => access index, i%n, Now in stack[maintain indexes] pop till the top is less that incoming value, allow push in stack only in first iteration.
+[ ] Asteroid Collision (Medium) =>  collision cond: !st.empty() and top and incoming must be opposite sign => add them => if > 0: make incoming astroid 0, if < 0: pop from stack, if =0: do both. ==> stack holds the ans [convert that into vector]
+[ ] Largest Rectangle in Histogram (Hard) => stack [stores index and height] => start iterate in bar => if the top in stack height > incoming height => pop from stack [the bar in stack cannot be extedned to right], cal the area, update the curr bar's index to this [since curr bar can be extended to left] => Process the element left in stack.
+
+
+------------------------------
+🔹 6. Linked List [Concepts: Pointers, dummy nodes, fast/slow]
+------------------------------
+[ ] Reverse Linked List (Easy) => Recursively go till the end of the List, save newHead, Point the Node infront of the head to head itself, make head point to null, return newHead. 
+[ ] Merge Two Sorted Lists (Easy) => L1, and L2 => iterate and store the smallest val in ans. => check for leftover nodes in Either L1 and l2 -> return the new head.
+[ ] Add Two Numbers (Medium) => take carry, iterate and sum and store in a dummy List. NOTE: carry -> val/10, value -> val%10.=> Add till l1 and l2 is null, collect any remaining, collect any carry left => return the dummy List's head.
+[ ] Linked List Cycle II (Medium) => fast and slow pointer => To know the start of loop, if fast already reached end -> No cycle present, now move slow back to head, move slow and fast both untill they meet again ** Imp part **.
+[ ] Remove Nth Node From End of List (Medium) => maintain window with 2 pointer L and R of size n -> iterate till R reaches Null. NOTE: L must move 1 node behind the node to delete, so that we can update the node's link => use dummyHead node infront of head, start left from here. 
+[ ] Reverse Nodes in K Group (Hard) => use iterative method, reverse the first k nodes, then rest part recursion will handle [returns a head] -> connect old head to recursion's head, and new head will be prev.
+[ ] Copy List with Random Pointer (Hard) => a map maintains the Nodes of original and copied one. 1. copy the nodes normally, then create the random points for each nodes using map's data.
+
+
+------------------------------
+🔹 7. Trees & Binary Search Trees [Concepts: DFS, BFS, Inorder/Preorder/Postorder, recursion]
+------------------------------
+[ ] Maximum Depth of Binary Tree (Easy)  => DFS approach -> Recursive approach into the DEpt of the Tree OR Iterative BFS appraoch => use qeueue => add root Node => Run a loop in the current nodes in queue => pop them and add their children if exist => update count.
+[ ] Symmetric Tree (Easy)  => dfs appraoch => consider left and right node => If both nodes are present => their value must be same and their mirrir opposite children must be symmetrical [call the recursive fun]
+[ ] Diameter of Binary Tree (Medium) => diameter at a node = max of (dia , dept of left tree + dept of right tree) ==> use recusrion to find the dept of the tree -> take diameter as a param and update it as we visit each node => TC: O(n)
+[ ] Path Sum (Medium) => a currSum --> at each node, find sum, If that node is leaf => compare to target. If not -> Either the right-tree will have the sum or the left-tree.
+[ ] Lowest Common Ancestor of BST (Medium) => If BST: p,q value < curr => look in left, p,q val > curr => look in right, else => curr node is the common ancestor , If normal-Tree [iterative method]: node is null => return null, node is either p or q => return node, now from left and right of curr Node you receive some node. => If both are null -> return null, if either one is null => return non-null one, If both are not null -> return curr node.
+[ ] Binary Tree Maximum Path Sum (Hard) => At a node => 1. path spliting at node: path = nodeVal + unSplitPath from left + unsplitPath from right, [NOTE: The left and right could be negative, so compare it with 0], 2. path UnSplit at node: => nodeVal + max(leftTree, rightTree) => You have to return this back in the recursive fn. 
+[ ] Serialize and Deserialize Binary Tree (Hard) => PreOrder + c++ string builder ==> 1. Convert the Tree into a Pre-Order traversal [N L R] => using ostringsream out => print in the stream like out << "N " or out << "NodeVal" << " ".  2. To read the string => istringstream in(data) => where data is string => construct using pre-order traversal. [capture stream data like string val; in >> val] => It will store in val till it hits a space. 
+
+
+------------------------------
+🔹 8. Tries [Concepts: Prefix trees]
+------------------------------
+[ ] Implement Trie (Easy)
+[ ] Replace Words (Medium)
+[ ] Word Search II (Hard)
+
+
+------------------------------
+🔹 9. Heap / Priority Queue [Concepts: MinHeap/MaxHeap, k-largest/smallest]
+------------------------------
+[ ] Kth Largest Element in an Array (Medium)
+[ ] Top K Frequent Elements (Medium)
+[ ] Merge K Sorted Lists (Hard)
+[ ] Sliding Window Maximum (Hard)
+
+
+------------------------------
+🔹 10. Graphs (BFS/DFS/Union Find) [Concepts: Traversals, cycle detection, connected components]
+------------------------------
+[ ] Number of Islands (Easy)
+[ ] Flood Fill (Easy)
+[ ] Clone Graph (Medium)
+[ ] Course Schedule (Medium)
+[ ] Pacific Atlantic Water Flow (Medium)
+[ ] Word Ladder (Hard)
+[ ] Alien Dictionary (Hard)
+
+
+------------------------------
+🔹 11. Dynamic Programming (DP) [Concepts: Memoization, Tabulation]
+------------------------------
+[ ] Climbing Stairs (Easy) => use DP memorization bottom up appraoch. start from nth step to 0th step and track how many ways we can reach to top step, stepway(n) = stepways(n+1) + stepways(n+2) [Practically O(n)] <> Alteranative recursion approach is O(2^n).
+[ ] House Robber (Easy)
+[ ] Coin Change (Medium)
+[ ] Longest Palindromic Substring (Medium)
+[ ] Maximum Subarray (Medium)
+[ ] Edit Distance (Hard)
+[ ] Regular Expression Matching (Hard)
+
+
+------------------------------
+🔹 12. Backtracking [Concepts: Explore all possibilities recursively]
+------------------------------
+[ ] Subsets (Easy)
+[ ] Combination Sum (Medium)
+[ ] Word Search (Medium)
+[ ] Palindrome Partitioning (Medium)
+[ ] N-Queens (Hard)
+[ ] Sudoku Solver (Hard)
+
+
+------------------------------
+🔹 13. Greedy [Concepts: Locally optimal → globally optimal]
+------------------------------
+[ ] Assign Cookies (Easy)
+[ ] Jump Game (Medium)
+[ ] Partition Labels (Medium)
+[ ] Merge Intervals (Hard)
+[ ] Minimum Number of Arrows to Burst Balloons (Hard)
+
+
+------------------------------
+🔹 14. Intervals [Concepts: Sorting + merging or overlapping logic]
+------------------------------
+[ ] Insert Interval (Medium)
+[ ] Merge Intervals (Medium)
+[ ] Meeting Rooms II (Medium)
+
+
+
+
+
+Other Questions:
+
+### Array and String
+1. **Find the missing number in an array** of size n containing numbers from 1 to n+1. --> XOR with index starting from 1.
+2. **Find the duplicate number** in an array containing n+1 integers where each integer is between 1 and n. -->For one duplicate XOR, For multiple --> flip the num.
+3. **Merge two sorted arrays** into one sorted array. --> 2 pointers.
+4. **Kadane's Algorithm**: Find the maximum sum subarray. --> sum, maxSum, (sum <0) -> sum = 0.
+5. **Reverse words in a string**. --> swap between extremes.
+6. **Check for palindrome** in a string. --> swap between extremes.
+7. **Find the longest common prefix** among a list of strings. -->  store fist one in ans, iterate from next String,--> find common prefix and update ans..
+8. **Rotate an array** to the right by k steps. --> store first num, shift others left, put first_num at end, repeat k times.
+9. ** Longest SubString with Non-Repeating Character** --> Slinding Window with Variable Window.  [TODO]
+10. ** Longest Palindromic SubString** --> expand from Middle. [ToDO]
+
+### Linked List
+1. **Reverse a linked list** (iteratively and recursively). --TODO..
+2. **Detect a cycle** in a linked list. --TODO..
+3. **Find the middle of a linked list**. 
+4. **Merge two sorted linked lists**. --TOD0..
+5. **Remove nth node from end** of a linked list.
+6. **Find the intersection point** of two linked lists. --> Interview Question  todo
+7. **Check if a linked list is a palindrome**.
+
+### Stack and Queue
+1. **Implement a stack using two queues**.  -->TODO.
+2. **Implement a queue using two stacks**.
+3. **Check for balanced parentheses** in an expression. --> DONE.
+4. **Evaluate a postfix expression**. --> DONE.. --> 2345+-/*
+5. **Find the maximum element** in a stack in constant time. --> O(1) -->TODO.. --> Sol similar to implementing min Stack.
+
+### Recursion:
+1. PowerSet of an array / All possible subsequences of array.
+2. Permutation of Strings.
+3. climbStairs.
+
+### Tree 
+1. **Implement inorder, preorder, and postorder traversal** of a binary tree. -- TODO..
+2. **Find the height of a binary tree**. -- TODO..
+3. **Check if a binary tree is balanced**. -- TODO..
+4. **Level order traversal** of a binary tree.
+5. **Find the lowest common ancestor (LCA)** of two nodes in a binary tree. --TODO..
+
+### Graphs:
+6. **Detect a cycle in a graph** (using BFS/DFS).
+7. **Find the shortest path** in an unweighted graph using BFS.
+8. **Topological sort** of a directed acyclic graph (DAG).
+
+### Dynamic Programming
+1. **0/1 Knapsack problem**.
+2. **Longest common subsequence**.
+3. **Longest increasing subsequence**.
+4. **Edit distance problem**.
+5. **Coin change problem**.
+6. **Matrix chain multiplication**.
+7. **Subset sum problem**.
+
+### Searching and Sorting
+1. **Binary search** in a sorted array.
+2. **Find the first and last occurrence** of an element in a sorted array.
+3. **Merge sort** algorithm.
+4. **Quick sort** algorithm.
+5. **Heap sort** algorithm.
+6. **Count sort** algorithm.
+7. **Find the kth largest/smallest element** in an array. --> 2 solutions --> 1.Quick Sort, 2.using maxHeap [priorityQueue]
+
+### Hashing
+1. **Two sum problem**.
+2. **Longest consecutive sequence** in an array.
+3. **Group anagrams** together.
+4. **Subarray sum equals k**.
+5. **Find the number of subarrays with given XOR**.
+
+These questions cover a range of fundamental concepts and problems in DSA that are commonly encountered in technical interviews. Familiarity with these problems and their solutions will help in preparing for coding interviews.
+
+### Additional Questions.
+Arrays:
+	-- Two Sum --> find index of 2 elements whose sum is target in an array. [You are not allowed to sort the arr] --> use hashMap to track target-num[i] -> index
+	-- Maximum SubArray [Kadane's Algo] --> Kaden's algo..
+	-- Merge Intervals  --> Good Question.
+	-- Product of array except self  --> Nice Question. preSum & PostSum concept.
+	-- Kth Largest Element in an Array. --> Interesting Problem.
+
+Strings:	
+	-- Longest SubString without repeating characters. --TODO  [**After Recursion**]
+	-- Valid Anagram --DONE.
+	-- Longest Palindromic SubString. --> Recursion, at bit difficult.. ** Will Approach it After Recursion **
+
+Trees:
+	-- InOrder Traversal
+	-- Maximum Depth of Binary Tree.
+	-- Least common Ancestor of a Binary Search Tree --> **IMP**
+	-- Serialize and DeSerialize Binay Tree.
+	
+Stacks & Queues:
+	-- Valid Parentheses. -->DONE.
+	-- Min Stack --> TODO..
+	-- Sort Stack --> DONE..
+	-- Implementation of Queue using stacks..
+	-- infix to postfix --> scane one by one --> if operand --> push in ans, if higher preference coming --> push in stack, --> If lower pref coming, pop and add till it becomes entry or equal to the one that is coming, then push in the ans. 
+	-- Once done, check if stack is empty --> Push all chnages in the from stack to ans.
+	
+Logical:
+	-- Container with most Water [Max Rain Water Collection problem] --> Problem for Stack...
+	-- Group Anagrams
