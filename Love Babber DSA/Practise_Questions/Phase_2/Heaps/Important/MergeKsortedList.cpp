@@ -10,6 +10,7 @@ struct ListNode
 {
     int val;
     ListNode *next;
+    ListNode(int x) : val(x), next(NULL) {}
 };
 
 // A custom Comparator Class theat helps me sort the Heads based on it's Respective Values...
@@ -25,26 +26,29 @@ public:
 class Solution
 {
 public:
-    // Approach: A MinHeap that takes Node by Node and gradually Sort it...
+    // Approach: use MinHeap => stores the node in sorted order. 
     ListNode *mergeKLists(vector<ListNode *> &lists)
     {
-        ListNode *mergedListHead = NULL; // Something to store my newMergedListHead...
-        ListNode *mergedListTail = NULL;
+        // Track my answer list...
+        ListNode* headNode = new ListNode(-1);
+        ListNode* tailNode = headNode;
 
-        // A MinHeap who stores the Nodes Form the LinkedList a Node will be stored...
-        priority_queue<ListNode *, vector<ListNode *>, compare> min_heap;
+        // using c++ lambda funtion to define comparator function ==> min heap, so if l1 val > l2 val => it should return true.
+        auto cmp = [](ListNode* l1, ListNode* l2) {
+            return l1->val > l2->val;
+        };
 
-        // Now lets put the head of all the K Lists into the heap...
-        // NOTE: Here lists[0] i.e head of first list, lists[1] i.e head of second List and so on...
-        for (int i = 0; i < lists.size(); i++)
-        {
-            if (lists[i] != NULL)
-            { // Push in heap only if the lists[i] has some Nodes...
-                min_heap.push(lists[i]);
+        // using minHeap => stores the nodes
+        priority_queue<ListNode *, vector<ListNode *>, decltype(cmp)> min_heap;
+
+        //push all heads inside the heap...
+        for(ListNode* it : lists) {
+            if(it != NULL) {
+                min_heap.push(it);
             }
         }
 
-        // Lets process the minHead, pop the queue, insert the next Node...
+        // till heap is empty => pop the top => add in ans => push the next elememt.
         while (!min_heap.empty())
         {
             // 1. Take out the top min Node Info From heap and pop the heap..
@@ -52,28 +56,17 @@ public:
             min_heap.pop();
 
             // 2. Add the new min Node to the mergedList...
-            if (mergedListHead == NULL && mergedListTail == NULL)
-            {
-                // First Node we are about to insert...
-                mergedListHead = minNode;
-                mergedListTail = minNode;
-            }
-            else
-            {
-                // we are adding a new Node at the end...
-                mergedListTail->next = minNode;
-                mergedListTail = minNode;
-            }
+            tailNode->next = minNode;
+            tailNode = tailNode->next;
 
-            // 3. Now put the next node of the minNode inside the heap..
+            // 3. if next node after minNode exists, push in heap.
             if (minNode->next != NULL)
-            {                                      // Check if the nextNode exist for the minNode..
-                ListNode *newHead = minNode->next; // updating the head of the List...
-                min_heap.push(newHead);            // pushing the newHead into the queue..
+            {                                    
+                min_heap.push(minNode->next);
             }
         }
 
-        return mergedListHead;
+        return headNode->next;
     }
 };
 

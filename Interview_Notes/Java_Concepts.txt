@@ -1,13 +1,149 @@
 ** Interview preparation For Core Java Devs ***
 
--- Topic to cover:
-    1. Core Java Concepts --> OOPs
-    2. java Collections and Streams APIs.
-    3. Java Multi-threading Concepts.
-    4. Java Exception Handling concepts.
-    5. Java 8 features.
-    6. Java frameWork Knowledge --> Spring and SpringBoot.
+1. Core Java.
+    1. OOP => Encapsulation, Inheritance, Polymorphism.
+    2. JavaBaisc => DataTypes, Variables, Loops, Arrays, TypeCasting.
+    
+    3. Object Class & Wrapper Class => equals(), hashcode(), toString(), AutoBoxing/Unboxing.
+    4. Java Memory Management => Stack vs Heap, Garbage Collection, Finalize, System.get().
+    5. Exception Handling => Checked vs UnChecked, try-catch-Finally, Custom Excpetion.
+    6. Collection FrameWork => List, Set, Map, Queue, Iterator, Comparables vs Comparator.
+    7. Multi-Threading & Concurrancy => Thread class, Runnable, Synchronization, ExecutorService
+    8. Immutable Objects & String Pool => String, StringBuilder, StringBuffer, Interning
+    9. Access Modifiers & Keywords =>	static, final, this, super, transient, volatile
+    10. Interfaces & Abstract Classes =>	default, static methods in interfaces, multiple inheritance
+    11. Inner Classes =>	Static, Non-static, Anonymous, Lambda context
+    12. Enum, Annotations, Reflection =>	Real use cases, runtime inspection
+    13. Design Principles & Patterns	=> SOLID, Factory, Singleton, Builder (intro for now)
+    14. Best Practices & Common Pitfalls => Null handling, equals/hashCode contracts, immutability
+			
+		
+	
+2. Java 8
+    1. Lambdas
+    2. Stream
+    3. function Interfaces.
+    4. Optional
+    5. Method References.
+    
+3. Springboot.
+    1. Annotations.
+    2. Dependency Injection.
+    3. Rest APIs.
+    4. Spring Data JPA.
+    5. Profiles.
+		
+		
+
+### Java Core:
+
+-> OOPS:
+    1. Encapsulation => Class [bundling data + method] => use Private variable, getters and setters to access it.
+    2. Inheritance => Code sharing => use "extend" to access other class and their methods eg: single, Multilevel, Hierarchical [Supports Multiple Inheritance only with interfaces => avoid ambiguity]
+    3. Polymorphism =>
+        1. Static  => Method Overloading. => same fun name but different return type and params type.
+        2. Dynamic => Method Overriding. => In Inheritance => you override the method that you inherite.
+    -> Static Method belong to class, not to it's Object. ==> You cannot Override it.
+    4. Abstraction.
+        -> hide complex implementaion and show only needed details.
+        -> supports: Abstract class & Inheritance.
+    eg:
+        1. Abstract Class Implementation:   [A template for vehicle => all vehicle has engine, each defined how it starts. => ** code sharing **]
+            abstract class Vehicle {
+                int speed;
+
+                // Constructor
+                Vehicle(int speed) {
+                    this.speed = speed;
+                }
+
+                // Concrete method
+                void applyBrakes() {
+                    System.out.println("Brakes applied at speed: " + speed);
+                }
+
+                // Abstract method
+                abstract void start();
+            }
+            
+            
+            class Car extends Vehicle {
+
+                Car(int speed) {
+                    super(speed);
+                }
+
+                @Override
+                void start() {
+                    System.out.println("Car started with speed: " + speed);
+                }
+            }
 
 
-** Core Java Concepts **
+        2. Interface Implementation:  ["Rechargeable" => Any vehicle using this, Must define how it charge. We dont care how. => **featuers whoever using, must define it**]
+        
+            interface ElectricVehicle {
+                int getBatteryLevel(); // abstract method by default
+                void charge();
+
+                // default method from Java 8
+                default void showBatteryStatus() {
+                    System.out.println("Showing battery status...");
+                }
+
+                // static method from Java 8
+                static void plugInfo() {
+                    System.out.println("Use Type-C charging port.");
+                }
+            }
+            
+            class ElectricScooter implements ElectricVehicle {
+                private int battery = 80;
+
+                public int getBatteryLevel() {
+                    return battery;
+                }
+
+                public void charge() {
+                    battery = 100;
+                    System.out.println("Scooter charged to " + battery + "%");
+                }
+            }				
+        
+    -> When to use which one ? [** NOTE **]
+        1. want to share code => use abstract class, interface with default [Java 8 onwards]
+        2. you need state or construtor => use abstract class.
+-> 	commonly used DataTypes => byte, int, long, float [float fb = 10.5f], double[double d = 10.4], char, boolean.
+    -> Type Conversion & casting.
+        int a = 10;
+        double d = a; // allowed.
+
+        double d = 10.5;
+        int a = (int) d; // manually casted.
+    -> Arrays: 
+        -> Arrays are Objects in Java. ==> Stored in heap => get length as arr.length [length is a property of Array Object]
+        -> define:
+            int[] arr = new int[5];
+            int[] arr = {1, 2, 3, 4};
+    -> Strings:
+        -> Immutable in Java => Once define cannot update it. [thread safe, slowest performance]
+        eg: 
+            String a = "Hi";
+            a.concat(" Thanks");
+            sysout(a);  // Prints "Hi" => the same variable cannot be updated.
+
+        -> StringBuilder => Mutable, not thread-safe, faster Performance.
+        -> StringBuffer => Mutable, thread-safe, medium Perfromance. [** Preferred **]
+    -> == vs .equals()
+        -> == : Checkes reference equality.
+        -> equals => Checkes for value equality.
+    -> main() 
+        -> main method can be overloaded => JVM only calls main with args => String[] args.
+NOTE:
+    -> Java is strictly pass-by-value.
+    -> For Objects => reference value is passed by value ==> Any change with the params inside the function won't effect the original val of params.  ==> return the updated value from the function.
+-> 
+
+
+    
 

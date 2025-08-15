@@ -94,10 +94,11 @@
 ------------------------------
 🔹 9. Heap / Priority Queue [Concepts: MinHeap/MaxHeap, k-largest/smallest]
 ------------------------------
-[ ] Kth Largest Element in an Array (Medium)
-[ ] Top K Frequent Elements (Medium)
-[ ] Merge K Sorted Lists (Hard)
-[ ] Sliding Window Maximum (Hard)
+[ ] Kth Largest Element in an Array (Medium) => minHeap --> push items into minHeap, maintain only k elements in the queue, pop rest if it's exceed k. the top is the answer.
+[ ] Top K Frequent Elements (Medium) => freqMap + min heap ==> make freqMap, push in minheap <freqCount, numItem> => maintain only k items in queue, pop if it's exceed. => print the numItems left in queue. [ O(k.log n) ] OR use Bucket sort: make a freq map, now add it in a fixed arr whole index is the freq and value is all elments which has that freq. look from right to left, list k elements. [O(n)]
+[ ] Merge K Sorted Lists (Hard)  => use minHeap with custom List's val compare. => you have heads of all k Lists. => push them in a min heap => till heap is empty, popout => store the top Node in answer list => if top node's next node exists => push inheap [Heap will take care of maintaining the nodes in sorted order].
+[ ] Sliding Window Maximum (Hard) => use dequeue => O(n) => In the dequeue => if a larger val is coming, pop out smaller values, If a smaller val is coming put in inside + If window moves, remove from the queue's front too if left pointer movers ahead => in k window, front will be max val in that window.
+[ ] Minimum no of Refueling Strops (Hard) => try max heap, Travel with car till you can, when you run out of fuel => take fuel from Petrol pump with max fuel and continue the journey. [Count stops]
 
 
 ------------------------------
@@ -141,6 +142,7 @@
 [ ] Assign Cookies (Easy)
 [ ] Jump Game (Medium)
 [ ] Partition Labels (Medium)
+[ ] Gas Station (Medium) => cond: sum of total gas must be >= to cost to travel each node => If not there is no way. ==> Travel each node, track total gas, If toal becomes negative => That node is not starting pos => make it next node.
 [ ] Merge Intervals (Hard)
 [ ] Minimum Number of Arrows to Burst Balloons (Hard)
 

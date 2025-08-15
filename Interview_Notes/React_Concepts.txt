@@ -461,6 +461,7 @@
     -- ref usecases:   
         1. want to access the DOM directly.
         2. Performance oriented for reducing re-renders in component.
+    
     -- React Router:
         -> Standard way for Routing in React Application.
         -> Core Concepts:
@@ -499,6 +500,26 @@
                 1. As the Route starts => Layout is called by default for every re-direction.
                 2. If the auth is success => <Outlet /> will render the nested route under the current Route url.
                 3. If auth fails ==> It will re-direct to user-Auth and also clears out the navigation history [using replace keyword in <Naviagte>]
+
+        [Important NOTE]
+            -> Problem: If we use react-router-dom to manage routes => In production [either render.vercel], If you at a page and you try reloading it => Gives 404 Error.
+            -> Why ?
+                -> React is a Single Page Application [SPA], ==> Their is only 1 HTML File [index.html] that is served to backend.
+                -> In first render => index.html file paints the screen => then react-router-dom takes over and handles all the Navigation.
+                -> When reload page => The browser trys to fetch content for that route => But server doesn't know what page to sent => Thus it shows 404. 
+            -> Why not in local ?
+                -> In local, vite's dev server by default serves the index.html by default. 
+                -> In prod the above magic is gone.
+            -> Solution:
+                -> It's a issue from the Front-end side ==> Since React Serves the whole content on a single page i.e index.html [SPA]
+                -> In render => Add a rewrite for the route /* => index.html [For any unknown routes it will fallback to index.html] -> once index.html comes, router-dom will take care of the navogation.
+                -> In vercel => You need to add a vercel.json config file to handle SPA
+                    {
+                        "rewrites": [
+                            { "source": "/(.*)", "destination": "/index.html" }
+                        ]
+                    }
+
     -- HOC:
         -> Takes a component as input and return a new component with updated state or props.
         -> structure of HOC:
@@ -543,7 +564,75 @@
                 {(user) => (user ? <UserCard {...user} /> : <p>Loading...</p>)}
             </DataProvider>
         NOTE: here render is passed as function that handles the UI JSX to show i.e either UserCard component or Loading...
-        
+
+
+## Additional Topics:
+    -- React Virtualization [react-window]
+        -> Rendering optimization tech where only the elements visible in the viewport are rendered to the DOM, instead of rendering the entire dataset at once.
+        -> Problem: Why we need Visualization ?
+            -- Thousands of elements to render ==> slow dom creation. [Poor Performance]
+            -- Reconciliation is faster, But DOM is the bottleneck ===> Reconciliation solves it.
+        -> library: react-window
+            eg: 
+                import React from "react";
+                import { FixedSizeList as List } from "react-window";
+
+                const Row = ({ index, style }) => (
+                    <div style={style}>Row #{index}</div>
+                );
+
+                export default function App() {
+                    return (
+                        <List
+                            height={400}     // height of the container
+                            itemCount={1000} // total items
+                            itemSize={35}    // fixed height of each row
+                            width={300}
+                        >
+                            {Row}
+                        </List>
+                    );
+                }
+        -> NOTE: 
+            => Above react-window's List takes a function props [Row] that takes index and style. 
+            => we dont need to create Row Component here, react-windows takes care of this.
+        -> Possible ways to render Large data-sets and Differnce between them.
+            -- there are 3 options:
+                1. Virtualization:
+                    - All items exists in memory but only visible ones [viewport] are rendered.
+                2. Pagination:
+                    - Data is split into pages => only one page is loaded at a time.
+                3. Infinite-scroll:
+                    - Loads more data as the user scrolls down => new data is added to the old data i.e the data grows with time. => might take a performance hit.
+        -> Performance pitfalls:
+            1. if row height is dynamic => Recalculations become expensive.
+            2. impropper Buffer size => might cause flikering or performance hit.
+    
+    --  Websocket with React.
+        -> Communication channel over a single TCP [Transfer connection Protocal] connection between the client and server.
+        -> Unlink HTTP [Hyper-text Transfer protocal], websocket allows real-time, bi-directional Communication.
+        -> protocal: ws:// or wss:// [secured over TLS - transport layer security] 
+        -> lifecycle => open => Message => Error => Close.
+        -> APIs:
+            1. new WebSocket(url) ==> creates a new connection.  [Natively available in browser API]
+            2. socket.send(data)  ==> Sends data to server.
+            3. socket.close()     ==> close the connection.
+            4. socker.readyState  ==> Connection state (
+                0 -> Connecting
+                1 -> Open
+                2 -> Closing
+                3 -> Closed
+            )
+            5. onopen, onclose, onMessage, onerror  ==> Events that is used to manage the connection. 
+        -> HTTP vs TCP:
+            -> HTTP is uni-directionak and stateless, The client reqs and the server responds.
+            -> TCP -> bi-directional, real-time communication -> maintain persistent connection.
+        -> pitfall:
+            1. no auth/authorization out of the box.
+            2. no REST like semantics.
+            3. no built-in reconnection logic 
+        -> Socket.IO => A library built on-top of websockets that adds fallbacks, reconnection, multiplexing and namespaces.
+
 
 ## React State Management:
     -- Redux ==> helps manage state in a centralized store, especially used for large application where we have deep nested components.
