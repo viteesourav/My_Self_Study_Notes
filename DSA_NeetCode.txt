@@ -9,8 +9,13 @@
 [ ] Valid Anagram (Easy) -> s1 -> populate the charFreqMap, s2 -> reduce the charFreqMap, if all zero -> valid.
 [ ] Group Anagrams (Medium)  -> eat --> [e->1, a->1, t->1] ->a1e1t1 ==> store in map -> {a1e1t1, [eat]}, tea --> [t->1, e->1, a->1] ->a1e1t1 ==> add in map -> {a1e1t1, [eat, tea]} => print the values.
 [ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] OR 2. Manually use quick sort logic to sort. [optimal]
-[ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exit --> One possible consequative seq length.
+[ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exist --> One possible consequative seq length.  [NOTE: iterate in set to ignore duplicates]
 [ ] Subarray Sum Equals K (Medium) -> prefix sum concept, for i > j => if ps[i] - ps[j] = k, then ps[i] - k = ps[j]. So In map, for ps[j], if there exist ps[i] -k, then that is one possible suseq sum from i+1 to j.
+
+### Neetcode Extras:
+[ ] Encode and Decode Strings (Medium) => encode Logic: "lenOfWord#" infront of each word ==> concat into a single string. Decode Logic: get the count => [use i and j] => extract the word.
+[ ] Product of Array Except Self (Medium) => Prefix Prod and Suffix. => populate the ans with Prefix Prods. [ans[i] = ans[i-1] * nums[i-1]] => Next maintain a suffix pointer to keep track of suffix vals => update ans[i] => ans[i] [i.e the prefix prod] * suffix [the suffix val]
+[ ] Valid Sudoku (Medium) => use hashMap to <index, set> => For each rowId, colId and (rowId/3, colId/3) [For each squares] and set to check if the numbers are repeated or not.
 
 
 ------------------------------
@@ -24,6 +29,9 @@
 [ ] Minimum Size Subarray Sum (Medium) => take 2 pointers, since all positives, slides till right if sum >= target, track the length => min length.
 [ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> reduce from freqMap, If any value in freqMap is 0 and exisit in set, remove from set, reduce the window. 
 
+### Neetcode Extras:
+[ ] Longest Repeating Character Replacement (Medium) => 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e we can replace them -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
+[ ] Minimum Window Substring (hard) => 2 pointers window shift + 2 hashMap + formed & required => create refHashMap and it's size as required. => on every char exist in refMAp and freq same => we increment formed. => till left <= right && formed == required, update start and minLen, Move left pointer [since we need min length], update freq map, update formed count.
 
 ------------------------------
 🔹 3. Two Pointers [Concepts: Left and right pointers, moving inward]
@@ -36,6 +44,10 @@
 [ ] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)]
 [ ] 3Sum (hard) => sort it first, loop i => use 2 pointer l = i+1 and r=size-1, find a sum == 0 [valid, now => move one pointer till it's unique (** imp **) ], sum > 0 [r--, since, sorted arr], sum < 0 [l++, since sorted arr]. 
 
+### Neetcode Extras:
+[] Two Sum II Input Array Is Sorted (medium) => 2 pointers at extremes => move inwards, If val[start] + val[end]  is  too high, reduce end pointer, if it's too low move the start pointer. 
+[] Trapping Rain Water (hard) => amount of water stored in at ith index => min(max ht on left, max ht on right) - heigth at index i. ==> use 2 pointer: based on which side is min side => update the pointers and find max of the maxLeft/maxRight height => update ans as the diff of maxht - current bar height. 
+
 
 ------------------------------
 🔹 4. Binary Search [Concepts: Left, right, mid, lower/upper bounds]
@@ -47,6 +59,10 @@
 [ ] Koko Eating Bananas (Medium) => sample space of k: 1 to max pile => find for at k rate -> how many hours koko can finish piles.[ if koko take 1.2 hr -> round it to 2 hr.] => if koko takes less or equal time than h => look left for smaller k value, If koko takes more time -> look right to increase k value and reduce time. 
 [ ] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
 
+### Neetcode Extras:
+[ ] Search a 2D Matrix (Medium)
+[ ] Find Minimum In Rotated Sorted Array (Medium)
+[ ] Time Based Key Value Store (Medium)
 
 ------------------------------
 🔹 5. Stack / Monotonic Stack [Concepts: LIFO, Next Greater Element, stock span]
@@ -58,6 +74,10 @@
 [ ] Asteroid Collision (Medium) =>  collision cond: !st.empty() and top and incoming must be opposite sign => add them => if > 0: make incoming astroid 0, if < 0: pop from stack, if =0: do both. ==> stack holds the ans [convert that into vector]
 [ ] Largest Rectangle in Histogram (Hard) => stack [stores index and height] => start iterate in bar => if the top in stack height > incoming height => pop from stack [the bar in stack cannot be extedned to right], cal the area, update the curr bar's index to this [since curr bar can be extended to left] => Process the element left in stack.
 
+### Neetcode Extras:
+[ ] Evaluate Reverse Polish Notation (Medium)
+[ ] Generate Parentheses (Medium)
+[ ] Car Fleet (Medium)
 
 ------------------------------
 🔹 6. Linked List [Concepts: Pointers, dummy nodes, fast/slow]
@@ -70,6 +90,10 @@
 [ ] Reverse Nodes in K Group (Hard) => use iterative method, reverse the first k nodes, then rest part recursion will handle [returns a head] -> connect old head to recursion's head, and new head will be prev.
 [ ] Copy List with Random Pointer (Hard) => a map maintains the Nodes of original and copied one. 1. copy the nodes normally, then create the random points for each nodes using map's data.
 
+### Neetcode Extras:
+[ ] Reorder List (Medium)
+[ ] Find The Duplicate Number (Medium)
+[ ] LRU Cache (Medium)
 
 ------------------------------
 🔹 7. Trees & Binary Search Trees [Concepts: DFS, BFS, Inorder/Preorder/Postorder, recursion]
@@ -82,6 +106,8 @@
 [ ] Binary Tree Maximum Path Sum (Hard) => At a node => 1. path spliting at node: path = nodeVal + unSplitPath from left + unsplitPath from right, [NOTE: The left and right could be negative, so compare it with 0], 2. path UnSplit at node: => nodeVal + max(leftTree, rightTree) => You have to return this back in the recursive fn. 
 [ ] Serialize and Deserialize Binary Tree (Hard) => PreOrder + c++ string builder ==> 1. Convert the Tree into a Pre-Order traversal [N L R] => using ostringsream out => print in the stream like out << "N " or out << "NodeVal" << " ".  2. To read the string => istringstream in(data) => where data is string => construct using pre-order traversal. [capture stream data like string val; in >> val] => It will store in val till it hits a space. 
 
+### Neetcode Extras:
+[ ]
 
 ------------------------------
 🔹 8. Tries [Concepts: Prefix trees]
@@ -100,6 +126,8 @@
 [ ] Sliding Window Maximum (Hard) => use dequeue => O(n) => In the dequeue => if a larger val is coming, pop out smaller values, If a smaller val is coming put in inside + If window moves, remove from the queue's front too if left pointer movers ahead => in k window, front will be max val in that window.
 [ ] Minimum no of Refueling Strops (Hard) => try max heap, Travel with car till you can, when you run out of fuel => take fuel from Petrol pump with max fuel and continue the journey. [Count stops]
 
+### Neetcode Extras:
+[ ]
 
 ------------------------------
 🔹 10. Graphs (BFS/DFS/Union Find) [Concepts: Traversals, cycle detection, connected components]
@@ -124,6 +152,8 @@
 [ ] Edit Distance (Hard)
 [ ] Regular Expression Matching (Hard)
 
+### Neetcode Extras:
+[ ]
 
 ------------------------------
 🔹 12. Backtracking [Concepts: Explore all possibilities recursively]
@@ -135,6 +165,8 @@
 [ ] N-Queens (Hard)
 [ ] Sudoku Solver (Hard)
 
+### Neetcode Extras:
+[ ]
 
 ------------------------------
 🔹 13. Greedy [Concepts: Locally optimal → globally optimal]
@@ -145,6 +177,9 @@
 [ ] Gas Station (Medium) => cond: sum of total gas must be >= to cost to travel each node => If not there is no way. ==> Travel each node, track total gas, If toal becomes negative => That node is not starting pos => make it next node.
 [ ] Merge Intervals (Hard)
 [ ] Minimum Number of Arrows to Burst Balloons (Hard)
+
+### Neetcode Extras:
+[ ]
 
 
 ------------------------------
@@ -169,7 +204,7 @@ Other Questions:
 6. **Check for palindrome** in a string. --> swap between extremes.
 7. **Find the longest common prefix** among a list of strings. -->  store fist one in ans, iterate from next String,--> find common prefix and update ans..
 8. **Rotate an array** to the right by k steps. --> store first num, shift others left, put first_num at end, repeat k times.
-9. ** Longest SubString with Non-Repeating Character** --> Slinding Window with Variable Window.  [TODO]
+9. ** Longest SubString with Non-Repeating Character** --> Slinding Window with Variable Window.  [DONE]
 10. ** Longest Palindromic SubString** --> expand from Middle. [ToDO]
 
 ### Linked List

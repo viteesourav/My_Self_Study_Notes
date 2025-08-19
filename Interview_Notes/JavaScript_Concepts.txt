@@ -687,7 +687,6 @@ EventLoop Explaination:
   28. Array methods (map, filter, reduce)
 
 
-
 ** Advance Javascript
   Event Handling
     Event listeners
@@ -753,7 +752,7 @@ EventLoop Explaination:
 
 
 
-Important Notes:
+##### Important Notes #####
 
 ## Core JS: 
   -- TDZ [Temporal dead zone]: the time between variable declared and initialization when let or const exist but cannot be access.
@@ -1123,57 +1122,50 @@ Important Notes:
         3. fetch -> intercepts HTTP reqs.
   
 NOTE:
-  What are the drawbacks of using JSON.parse(JSON.stringify(obj)) for performing deep copy ?
-  --> Below mentioned types are completly loss:
-    1. undefined --> lost 
-    2. functions --> lost.
-    3. Date --> converted to string.
-    4. RegExp --> lost.
-    5. If circular ref present --> Crash/Error.
-  --> circular ref --> When inside the obj, there is a key that is pointing to the same object.      
-
-
-    
-
-
-
-
+  1. What are the drawbacks of using JSON.parse(JSON.stringify(obj)) for performing deep copy ?
+    --> Below mentioned types are completly loss:
+      1. undefined --> lost 
+      2. functions --> lost.
+      3. Date --> converted to string.
+      4. RegExp --> lost.
+      5. If circular ref present --> Crash/Error.
+    --> circular ref --> When inside the obj, there is a key that is pointing to the same object.      
 
 
 ## Regrex basic in JS:
 
-Metacharacters:
-1. Special characters with specific meanings:
-  .: Matches any single character (except newline).
-  \d: Matches any digit (0-9).
-  \w: Matches any word character (alphanumeric and underscore).
-  \s: Matches any whitespace character.
-  ^: Matches the beginning of the string.
-  $: Matches the end of the string.
+  `Metacharacters:
+  1. Special characters with specific meanings:
+    .: Matches any single character (except newline).
+    \d: Matches any digit (0-9).
+    \w: Matches any word character (alphanumeric and underscore).
+    \s: Matches any whitespace character.
+    ^: Matches the beginning of the string.
+    $: Matches the end of the string.
 
-Quantifiers:
-2.Define how many times a character or group can appear:
-  *: Zero or more occurrences.
-  +: One or more occurrences.
-  ?: Zero or one occurrence.
-  {n}: Exactly n occurrences.
-  {n,}: At least n occurrences.
-  {n,m}: Between n and m occurrences.
+  Quantifiers:
+  2.Define how many times a character or group can appear:
+    *: Zero or more occurrences.
+    +: One or more occurrences.
+    ?: Zero or one occurrence.
+    {n}: Exactly n occurrences.
+    {n,}: At least n occurrences.
+    {n,m}: Between n and m occurrences.
 
-Character Classes:
-3.Define a set of characters to match:
-  [abc]: Matches 'a', 'b', or 'c'.
-  [0-9]: Matches any digit from 0 to 9.
-  [^abc]: Matches any character not 'a', 'b', or 'c'
+  Character Classes:
+  3.Define a set of characters to match:
+    [abc]: Matches 'a', 'b', or 'c'.
+    [0-9]: Matches any digit from 0 to 9.
+    [^abc]: Matches any character not 'a', 'b', or 'c'
 
-eg: Email Regrex -> /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  eg: Email Regrex -> /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
-BreakDown:
+  BreakDown:
 
-1. ^[a-zA-Z0-9._%+-]+ → Matches the beginning of the email (username part), allowing letters, numbers, dots, underscores, percentage signs, plus, and minus symbols.
-2. @ → Ensures the presence of the @ symbol.
-3. [a-zA-Z0-9.-]+ → Matches the domain name, which can include letters, numbers, dots, and hyphens.
-4. \.[a-zA-Z]{2,}$ → Ensures a valid top-level domain (TLD) with at least two letters, such as .com or .org.
+  1. ^[a-zA-Z0-9._%+-]+ → Matches the beginning of the email (username part), allowing letters, numbers, dots, underscores, percentage signs, plus, and minus symbols.
+  2. @ → Ensures the presence of the @ symbol.
+  3. [a-zA-Z0-9.-]+ → Matches the domain name, which can include letters, numbers, dots, and hyphens.
+  4. \.[a-zA-Z]{2,}$ → Ensures a valid top-level domain (TLD) with at least two letters, such as .com or .org.
 
 
 

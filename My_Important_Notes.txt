@@ -202,6 +202,25 @@ NOTE: For Singly Linked list we use: forward_list
    -- This is implemented using hashTable.(**main**)
    Benefit: TC of insert, delete, search is O(1) [Way Faster than any other DS]
 
+## Important NOTE:
+   HashMap -> uses interanl hashing method for the key for faster lookup and minimise the colloison. ==> Basically uniquly identifying each key.
+   1. Normal HashMap ==> <int/char, T>  
+      => Here key can be either int or char 
+      => HashMap internally will handle the hashing.
+   
+   2. HashMap with custom Hasher. 
+      => we need the following hashMap ==> <pair<int, int>, set<int>>
+      => Here the key is not a int/char that the defualt hashMap can create a unique hash ==> we need to define a custom hasher.
+      eg:
+         
+         //Goal: a function that helps the map to create a unique hash for the key ==> [ inbuiltHash + XOR + leftShift ]
+         auto customHash = [](const pair<int, int>& p){
+            return  hash<int>{}(p.first) ^ (hash<int>{}(p.second) << 1);   //==> (inbuilt default hash for first val  XOR inbuilt default hash for scond val << 1 [to reduce the collusin we shift the bit of second val to left.])
+         };
+
+         unordered_map<pair<int, int>, unordered_set<int>, decltype(customHash)> map;    //customHash ==> defines the customer hasher for the keys.
+
+
 3) Pair:
    -- Used to Store 2 heterogenous data together. eg: pair<int, char> P1.
    -- How to Store Data ?
