@@ -5,17 +5,17 @@
 🔹 1. Arrays & Hashing [Concepts: Frequency map, two pointers, prefix sums]
 ------------------------------
 [ ] Two Sum (Easy)  --> use map, track [reminder-currIndex]
-[ ] Contains Duplicate (Easy) ->  use a set to track already visited items.
+[ ] Contains Duplicate (Easy) ->  use a map to track freq of items > 1.
 [ ] Valid Anagram (Easy) -> s1 -> populate the charFreqMap, s2 -> reduce the charFreqMap, if all zero -> valid.
 [ ] Group Anagrams (Medium)  -> eat --> [e->1, a->1, t->1] ->a1e1t1 ==> store in map -> {a1e1t1, [eat]}, tea --> [t->1, e->1, a->1] ->a1e1t1 ==> add in map -> {a1e1t1, [eat, tea]} => print the values.
-[ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] OR 2. Manually use quick sort logic to sort. [optimal]
+[ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] => create freq map => put {freq, item} in the min heap [maintain only k elements inside heap] => Pop the values, store in ans OR 2. Manually use quick sort logic to sort. [optimal]
 [ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exist --> One possible consequative seq length.  [NOTE: iterate in set to ignore duplicates]
-[ ] Subarray Sum Equals K (Medium) -> prefix sum concept, for i > j => if ps[i] - ps[j] = k, then ps[i] - k = ps[j]. So In map, for ps[j], if there exist ps[i] -k, then that is one possible suseq sum from i+1 to j.
+[*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Item, Logic: check if there exist a prefix sum if we can subtract from the current Prefix sum we get K i.e maintain track of currSum => check if in the map there exist any currSum - k => a possible sol, if not add currSum in map for future use.
 
 ### Neetcode Extras:
 [ ] Encode and Decode Strings (Medium) => encode Logic: "lenOfWord#" infront of each word ==> concat into a single string. Decode Logic: get the count => [use i and j] => extract the word.
 [ ] Product of Array Except Self (Medium) => Prefix Prod and Suffix. => populate the ans with Prefix Prods. [ans[i] = ans[i-1] * nums[i-1]] => Next maintain a suffix pointer to keep track of suffix vals => update ans[i] => ans[i] [i.e the prefix prod] * suffix [the suffix val]
-[ ] Valid Sudoku (Medium) => use hashMap to <index, set> => For each rowId, colId and (rowId/3, colId/3) [For each squares] and set to check if the numbers are repeated or not.
+[*] Valid Sudoku (Medium) => use hashMap to <index, set> => For each rowId, colId and (rowId/3, colId/3) [For each squares] and set to check if the numbers are repeated or not.
 
 
 ------------------------------
@@ -75,9 +75,9 @@
 [ ] Largest Rectangle in Histogram (Hard) => stack [stores index and height] => start iterate in bar => if the top in stack height > incoming height => pop from stack [the bar in stack cannot be extedned to right], cal the area, update the curr bar's index to this [since curr bar can be extended to left] => Process the element left in stack.
 
 ### Neetcode Extras:
-[ ] Evaluate Reverse Polish Notation (Medium)
-[ ] Generate Parentheses (Medium)
-[ ] Car Fleet (Medium)
+[ ] Evaluate Reverse Polish Notation (Medium) => evalute postfix operation with stack => from left to right => push all string in stack, if operator => pop them, perform operation and push the res back.  => at the end stack's top will have result.
+[ ] Generate Parentheses (Medium) => backtrack logic => If openBracketCount = closeBracketCount = N => we have a valid ans [store it], Cond for adding open branket => openBracketCount < N, Cond for adding close bracket => closeBracketCount < openBracketCount.  ==> DO pop the track stack while coming back i.e backtracking. [Techincally we have no stack use here, it's classic backtracking ]
+[*] Car Fleet (Medium) => check for collision cond: <pos, speed> for each car [keep in sorted order of pos], Look from right to left => find time taken to reach dest, add in stack => If the currTime less than time what is there in stack i.e curr car will reach fast i.e it will collide with the car ahaed -> ignore this car as it will form a fleet with the car infront. -> at the end stack size is ans.
 
 ------------------------------
 🔹 6. Linked List [Concepts: Pointers, dummy nodes, fast/slow]

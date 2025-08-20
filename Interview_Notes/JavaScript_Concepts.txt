@@ -1131,6 +1131,15 @@ NOTE:
       5. If circular ref present --> Crash/Error.
     --> circular ref --> When inside the obj, there is a key that is pointing to the same object.      
 
+## Additional Topics:
+  -> Local vs Session Storage and IndexDB
+  -> XSS, CSRF
+  -> CORS
+  -> Accessibility
+  -> ARIA roles
+  -> Semantic HTML
+  -> Webpacks and webpacks 5
+  -> WebSockets
 
 ## Regrex basic in JS:
 

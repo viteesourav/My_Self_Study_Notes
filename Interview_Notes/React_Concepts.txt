@@ -94,6 +94,7 @@
 
 
 ### NextJs Concepts [TODO]
+    -> SSR and CSR and SPR ==> TODO.
 
 
 
@@ -257,6 +258,11 @@
         eg: const [from, setForm] = useState({name: "", email: ""});
         -> In class components, the state Object will get merge automatically.
         -> In Functional Component, the state has to merge manually i.e setForm(prev => {...prev, name: 'test'});
+    NOTE:
+        -> Is useState synchronous or asynchronous ?
+            -- "useState updates are asynchronous in nature — the state doesn’t change immediately. 
+            -- Instead, React batches multiple updates and re-renders later. 
+            -- But the setState call itself is synchronous — it schedules the update, React applies it asynchronously." 
     -- useEffect, uses "shallow comparison" for tracking changes in dependencies array.
         -> avoid this:
             useEffect(()=>{...}, [obj])  // here obj will get new refernce on every re-render.
@@ -479,10 +485,11 @@
                 <Route path="/" element={<Naviagte to="/login" replace />}>
                 NOTE:
                     replace keyword will remove the entires from the url naviagte stack.
-            6. useParams       => hook to extract path param from url.
+            6. useParams       => hook to extract path param from url.  [** dynamic Routing **]
             7. useLocation     => access current URL Info.
             8. Outlet          => Placehold for nested Routes.
 
+        -> using Routes Like:  <Route path="/user/:id" element={<User />} />  ==> Called Dynamic Routing [to access the path param use useParams hook.]
         -> eg for protective Routes/Routes Guarding:
             const Layout = () => {
                 const isAuth = isAuthenticated(); //the service to verify Authentication...
