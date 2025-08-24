@@ -90,7 +90,7 @@
 
     23. React Design Principles and Coding Structure Habits. [https://www.youtube.com/playlist?list=PLApy4UwQM3Updrw-4mOXTwgsWar9bqk6i]
         1. single responsible Component.
-        2. Compound components.
+        2. Compound components. etc.
 
 
 ### NextJs Concepts [TODO]
@@ -813,6 +813,58 @@
             -> preferred for simple use-case ot smaller apps.
 
     
+## React Design Patterns: 
+    1. Single Responsibility Principle.
+        -- Each Component must be designed to hanldes one thing. eg: Either fetch data and maintain the state or Based on props just render the UI.
+        --  example -> HomePage  ==> PostFeed ==> PostCard.
+        -- HomePage Comp:
+            - handles rendering the homePage and it's components.
+            - Manage Posts State and fetching the data.  => Pass it down to PostFeed Component.
+        -- PostFeed Comp:
+            - hanldes rendering the PostFeed UI. => take a list of Posts and render each PostCard Comp.
+            - Pass Post Details => PostCard Comp.
+        -- PostCard Comp:
+            - It's Just a Pure Component. => No fetching or side-effect.
+            - Renders Each Posts.
+    
+    2. Page Components, Feature Components and UI Components:
+        -- Feature Component:
+            - This component handles some actions, includes side-effects like API calls and handling states i.e include the functionality Logic.
+            - eg: SignInForm Comp.
+                -- It is responsible for validating the form inputs.
+                -- Then handle POST API on Form Submit.  
+                -- Includes Functionality and Logic.
+        -- UI Component:
+            - Simply renders the UI => Include no side-effect or state.
+            - Receives Data from Props => Only handles rendering the UI.
+        -- Page Component:
+            - Handles Multiple Side-effects like API calls for different elements not just signIn.
+            - diff between Feature and Page component:
+                -- Feature component handles side-effects related to particular feature.
+                -- Page components handles multiple side-effects that is required in that Page not just a particular feature.
+    
+    3. Compound Components:
+        -- Provide Flexibility on the design of a Particular component.
+        -- uses Context API in Implementation.
+        -- We can dynamically break component's part into smaller module and use them as per our requirement.
+        eg: 
+            <ParentComp>
+                </ParentComp.Child1>
+                </ParentComp.Child2>
+                </ParentComp.Child3>
+            </ParentComp>
+        Here, I have the Flexibility to choose what child to render under ParentComponent.
+        NOTE: the Child Component cannot be used Outside ParentComp as they uses the Context's Value from Parent that binds them to Parent.
+    
+    4. Extracting Codes to Hooks 
+        -- move codes including API calls with useEffect and States  ===> their own custom hooks.  [It abstracts all the Functionality and useEffects]
+        -- Makes the code structure modular and clean.
+
+
+
+
+## Extra Important Notes:
+    -- 
 
 
 

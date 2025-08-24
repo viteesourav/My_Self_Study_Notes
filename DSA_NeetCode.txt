@@ -21,17 +21,17 @@
 ------------------------------
 🔹 2. Sliding Window [Concepts: Fixed & variable length window, frequency counters]
 ------------------------------
-[ ] Maximum Average Subarray I (Easy)  ==> First sum of k element ==> as the window slides, remove i-1th ele, add j+1th element, find max avg. [NOTE: type casting: (double) 2 -> 2.000]
+[ ] Maximum Average Subarray I (Easy)  ==> use PrefixSum for simplicity, First sum of k element ==> as the window slides, remove i-1th ele, add j+1th element, find max avg. [NOTE: type casting: (double) 2 -> 2.000]
 [ ] Best Time to Buy and Sell Stock (Easy) => move left to right, track minPrize => maxProfit = max(maxProfit, currPrize - minPrize);
-[ ] Best Time to Buy and Sell Stock II  => Track up going inclines for total possible profit amount.
-[ ] Longest Substring Without Repeating Characters (Medium)  ==> use set to identify unique substr, update l, r pointer, unitill set content is unique, Find max len possible.
+[ ] Best Time to Buy and Sell Stock II (Medium)  => Track up going inclines for total possible profit amount.
+[ ] Longest Substring Without Repeating Characters (Medium)  ==> use set to identify unique substr, update l, r pointer, untill set content is unique, Find max len possible.
 [ ] Permutation in String (Medium)  ==> s1, make a hasmap, iterate s1.len window in s2, update the hasmap, if all zeros ==> valid permutation.
 [ ] Minimum Size Subarray Sum (Medium) => take 2 pointers, since all positives, slides till right if sum >= target, track the length => min length.
-[ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> reduce from freqMap, If any value in freqMap is 0 and exisit in set, remove from set, reduce the window. 
+[ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> move left i.e shrink the window & reduce count of left char from freqMap, If any value in freqMap is 0 and erase same val from set.
 
 ### Neetcode Extras:
 [ ] Longest Repeating Character Replacement (Medium) => 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e we can replace them -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
-[ ] Minimum Window Substring (hard) => 2 pointers window shift + 2 hashMap + formed & required => create refHashMap and it's size as required. => on every char exist in refMAp and freq same => we increment formed. => till left <= right && formed == required, update start and minLen, Move left pointer [since we need min length], update freq map, update formed count.
+[*] Minimum Window Substring (hard) => 2 pointers window shift + 2 hashMap + formed & required => create refHashMap and it's size as required. => on every char exist in refMAp and freq same => we increment formed. => till left <= right && formed == required, update start and minLen, Move left pointer [since we need min length], update freq map, update formed count.
 
 ------------------------------
 🔹 3. Two Pointers [Concepts: Left and right pointers, moving inward]
@@ -60,9 +60,9 @@
 [ ] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
 
 ### Neetcode Extras:
-[ ] Search a 2D Matrix (Medium)
-[ ] Find Minimum In Rotated Sorted Array (Medium)
-[ ] Time Based Key Value Store (Medium)
+[ ] Search a 2D Matrix (Medium) => Double Binary Search => BS for figuring out the correct Row [use top, bottom pointer for row, and last col of any row as column] => then BS for figuring out the correct value in the row [this is standard]
+[*] Find Minimum In Rotated Sorted Array (Medium) => BS with a bit diff condition => 1. If arr is already sorted i.e return left most ele. 2. If arr is rotated then, IF mid val >= left val i.e we are in sorted part of arr, look right, If mid < left val i.e we are rotated part of arr, look left, ==> at the end left will hold the ans.
+[ ] Time Based Key Value Store (Medium) => use a hashMap <key, vector<{val, timestamp}>> : use the fact that timestamps will be always in ascending order.
 
 ------------------------------
 🔹 5. Stack / Monotonic Stack [Concepts: LIFO, Next Greater Element, stock span]
@@ -91,9 +91,8 @@
 [ ] Copy List with Random Pointer (Hard) => a map maintains the Nodes of original and copied one. 1. copy the nodes normally, then create the random points for each nodes using map's data.
 
 ### Neetcode Extras:
-[ ] Reorder List (Medium)
-[ ] Find The Duplicate Number (Medium)
-[ ] LRU Cache (Medium)
+[ ] Reorder List (Medium) => divide into 2 parts [use slow and fast pointer] => reverse the second half [use pointer] => merge them using 2 pointers.
+[*] LRU Cache (Medium) => LeftNode -><- RightNode [use doublly LinkedList, with LeftNode tracks least Recently used, Right Node tracks most Recently used], use HashMap<key, Node> => Keep track of keys and Node's reference for fater lookup. NOTE: the removeNode and addNode must be proper. keep check if you delete a node and then try to access it in lookup => cause Dangling pointer issue.
 
 ------------------------------
 🔹 7. Trees & Binary Search Trees [Concepts: DFS, BFS, Inorder/Preorder/Postorder, recursion]
@@ -179,6 +178,7 @@
 [ ] Minimum Number of Arrows to Burst Balloons (Hard)
 
 ### Neetcode Extras:
+[ ] Find The Duplicate Number (Medium) => pick the currIndex [pick abs value], check if ele at currIndex is negative => that's ans, If not make it negative. [TC: O(n)] 
 [ ]
 
 
