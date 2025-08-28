@@ -126,7 +126,12 @@
 [ ] Minimum no of Refueling Strops (Hard) => try max heap, Travel with car till you can, when you run out of fuel => take fuel from Petrol pump with max fuel and continue the journey. [Count stops]
 
 ### Neetcode Extras:
-[ ]
+[ ] Kth Largest Element In a Stream (Easy) => use MinHeap => maintain k elements i.e the kth element at the top will be kth largest element always. Add new val inside heap, if size exceeds pop the top most element.
+[ ] Last Stone Weight  (Easy)  => use MaxHeap => at top, take out 2 stones if they are there => perform clash i.e if same move on, If difference is there, push the abs diff between them inside the heap. => at the end, if maxHeap still there => top will be ans if not then 0.
+[ ] K Closest Points to Origin (Medium) => use MinHeap<distance, {x, y}>  ==> distance from origin: sqrt(pow(x, 2) + pow(y, 2)).  NOTE: here you need a custom cmp -> to handle pair comparision.
+[*] Task Scheduler (Medium) => use a maxHeap, dequeue => push the freq of Tasks in the queue, Increment the timer, take the max freq task -> reduce it by 1 -> push it in queue<taskCount, idleTime + currTime> [tells when this task can go back to priority_queue, when the second part is eq to currTime.] => actual TC: O(m [no of tasks] *n [ideal time], worst case: if all are same character)
+[ ] Design Twitter (Medium) => 
+[ ] Find Median From Data Stream (Hard)
 
 ------------------------------
 🔹 10. Graphs (BFS/DFS/Union Find) [Concepts: Traversals, cycle detection, connected components]

@@ -109,6 +109,9 @@ const customDeepClone = (val, keyVisited = new Map()) => {
 }
 
 
+//NOTE: here using a map saves us from circular refernce issue. eg: obj = {}; obj.self = obj;  --> with map the customDeepClone will be stuck in an infinite loop => causes stack overflow.
+// -> visitedMap, remembers all the keys and if the same key comes again, we take is from the map, instead of creating a new clone [Avoid the recurrsion call too..]
+
 const original = {
   name: "Sourav",
   meta: {
@@ -152,10 +155,10 @@ const customDeepMerge = (obj1, obj2) => {
         //case2: If both val1 and val2 are arrays.
         //case3: None of the above --> Overwrite with val2
 
-        if(isObject(val1) && isObject(val2)) {
-            result[key] =  customDeepMerge(val1, val2);      
-        } else if(Array.isArray(val1) && Array.isArray(val2)) {
+        if(Array.isArray(val1) && Array.isArray(val2)) {
             result[key] = [...new Set([...val1,...val2])];
+        } else if(isObject(val1) && isObject(val2)) {
+            result[key] =  customDeepMerge(val1, val2);      
         } else {
             result[key] = val2 !== undefined ? val2 : val1; 
         }
@@ -185,7 +188,79 @@ const flatten = (items) => {
     return result;
 }
 
+
+// iterative Approach: using stack. [if the poped ele is Array => spread it and add back to stack, If not an arr, push into res. =>> DO this till stack is empty]
+const flattenIterative = (items) => {
+  const stack = [...items];
+  const result = [];
+
+  while (stack.length) {
+    const next = stack.pop();
+    if (Array.isArray(next)) {
+      stack.push(...next); // expand arrays
+    } else {
+      result.push(next);
+    }
+  }
+
+  return result.reverse(); // because stack reverses order
+};
+
+
 console.log(flatten([1,[2, [3, 4], 5], 6])); //1, 2, 3, 4, 5, 6
+
+
+// Flattern a Nested Object [System design Question] 
+
+const nestedObj = {
+  id: 1,
+  name: "Alice",
+  address: {
+    city: "New York",
+    zip: 10001,
+    geo: {
+      lat: 40.7128,
+      lng: -74.0060
+    }
+  },
+  hobbies: ["reading", "cycling"]
+};
+
+
+//Logic: keep track of parentKey and result in resurive call for keys that has nested object.
+const flattenObject = (obj, parentKey = "", result = {}) => {
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      const newKey = parentKey ? `${parentKey}.${key}` : key;
+      const value = obj[key];
+
+      // If val is a obj, not null and not an arr...
+      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+        // recurse if value is a nested object
+        flattenObject(value, newKey, result);
+      } else {
+        // assign primitive / array directly
+        result[newKey] = value;
+      }
+    }
+  }
+  return result;
+};
+
+
+
+Output: 
+
+{
+  id: 1,
+  name: "Alice",
+  "address.city": "New York",
+  "address.zip": 10001,
+  "address.geo.lat": 40.7128,
+  "address.geo.lng": -74.0060,
+  hobbies: ["reading", "cycling"]
+}
+
 
 
 5. Custom call, apply and bind with context.
@@ -316,8 +391,8 @@ const myPromise = function (executor) {
 }
 
 //NOTE:
-// In Async mode, first .then executes and then the promise resolves after some time.
-// In Sync mode, First the promise resolves and .then() runs afterward.
+// In Async mode, first .then executes and then the promise resolves after some time. --> here, onResolve will be a function, since .then attach first.
+// In Sync mode, First the promise resolves and .then() runs afterward. -> here, onRsolve will be undefined as .then attach later, resolves runs immediatly.
 
 const expPromise = new myPromise((resolve, reject) => {
     

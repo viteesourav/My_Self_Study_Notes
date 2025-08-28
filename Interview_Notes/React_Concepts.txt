@@ -77,9 +77,7 @@
     21. React Query / SWR
         Data fetching and caching
         Stale-while-revalidate pattern
-
-
-### Other Important Topics:
+6. Other Important Topics:
     22. React Virtualization.
         - Doesnot render stuff that is not in view-port
         - Very useful concept for rendering large List.
@@ -151,7 +149,7 @@
 
 ## Core Concepts:
     -- JSX -> syntax extension to Javascript.
-    -- JSX compiles to React.createElement() under the hood. => Babel [converts JSX to JS so that browser can understand]
+    -- JSX compiles to React.createElement() under the hood with Babel [converts JSX to JS so that browser can understand]
     -- eg: 
         const element = <h1 className="greet"> Hi </hi>  ===> Bable Converts this to ===> const element = React.createElement("h1", {className: 'greet'}, "hi);
     -- functional Component => stateful (we have hooks), takes props and render JSX.
@@ -307,10 +305,10 @@
         -> Pitfall:
             1. No use of using useCallback alone, If the fucntion is not passed inside a memorized Child [React.memo where we force the child to shallow compare the props]
             2. If a function is used as dependency in useEffect, there also useCallback saves to runs the useEffect content on every re-render.
-            3. If the function is event-driven only in the same file, then no need for useCallback.
+            3. If the function is event-driven only in the same file, then no need for useCallback.  -> Perfroms action only in that component, like handleOnChange. [don't memorise it].
             4. anonymous function for event handler for child component.
                 <MemoizedComponent onClick={() => doSomething()} /> // always a new function, will re-render
-                -> This re-reneders the Component on every re-render.
+                -> This re-reneders the Child component on every re-render of parent component.
                 -> fix is: add a useCallback for the click handler. -> as the func is going as a prop to child component.
     --  Custom Hook -> Encapsulate re-usable logic.
         -> Common Pattern of Custom hook:
@@ -337,10 +335,10 @@
 
             2. Local Storage Hook:
                 function useLocalStorage(key, initialValue) {
-                    const [value, setValue] = useState(() => }{
+                    const [value, setValue] = useState(() => {
                         const json = localStorage.getItem(key);
                         return json ? JSON.parse(json) : initialValue;
-                    );
+                    });
 
                     useEffect(() => {
                         localStorage.setItem(key, JSON.stringify(value));
@@ -351,14 +349,14 @@
 
         NOTE:
             1. Always define hooks at the top level -< Out of any loop or condition.
-            2. prefix with use, Dont return JSX just logic.  
+            2. prefix with "use", Dont return JSX just logic.  
 
 
 ## React Advance concepts:
     -- VDOM -> Virtual DOM is a light weight in memory representation of the actual DOM.
-    -- Reconciliation ==> uses to update the DOM when component's stat or porp changes.
+    -- Reconciliation ==> uses to update the DOM when component's state or porp changes.
         Process:
-            1. React creates a new DOM tree.
+            1. React creates a new VDOM tree.
             2. Diffs it against he previous tree.
             3. Figures out the min no. of updates to the actual DOM.
     -- Why use Key prop in List render:
@@ -493,14 +491,17 @@
         -> eg for protective Routes/Routes Guarding:
             const Layout = () => {
                 const isAuth = isAuthenticated(); //the service to verify Authentication...
-                return isAuth ? <Outlet/> : <Route path='/user-Auth' element={<Naviate to='/user-Auth' }
+                return isAuth ? <Outlet/> : <Naviate to='/user-Auth' replace />
             };
 
             <Routes>
+                {/* below are the protected Routes */}
                 <Route element={<Layout />}>
                     <Route path='/' element={<Naviagte to='/home' replace>} />
                     <Route path='/dashboard' element={<Dashboard />} />
                 </Route>
+                {/* below is a public Route */}
+                <Route to='/about-us' element={<About />} />  
             </Routes>
 
             -> Above code:
@@ -509,7 +510,7 @@
                 3. If auth fails ==> It will re-direct to user-Auth and also clears out the navigation history [using replace keyword in <Naviagte>]
 
         [Important NOTE]
-            -> Problem: If we use react-router-dom to manage routes => In production [either render.vercel], If you at a page and you try reloading it => Gives 404 Error.
+            -> Problem: If we use react-router-dom to manage routes => In production [either render or vercel], If you at a page and you try reloading it => Gives 404 Error.
             -> Why ?
                 -> React is a Single Page Application [SPA], ==> Their is only 1 HTML File [index.html] that is served to backend.
                 -> In first render => index.html file paints the screen => then react-router-dom takes over and handles all the Navigation.
@@ -601,7 +602,7 @@
                     );
                 }
         -> NOTE: 
-            => Above react-window's List takes a function props [Row] that takes index and style. 
+            => Above react-window Provides a functional Component [Row] that takes index and style. 
             => we dont need to create Row Component here, react-windows takes care of this.
         -> Possible ways to render Large data-sets and Differnce between them.
             -- there are 3 options:
@@ -736,10 +737,13 @@
                         decrement: (state) => {
                             state.value -= 1;
                         },
+                        incrementByAmount: (state, action) => {
+                            state.value += action.payload; // 👈 payload used here
+                        },
                     },
                 });
 
-                export const { increment, decrement } = counterSlice.actions;   //createSlice -> automatically creates actions.
+                export const { increment, decrement, incrementByAmount } = counterSlice.actions;   //createSlice -> automatically creates actions.
                 export default counterSlice.reducer;                            //createSlice -> automatically creates reducers.
 
             NOTE: Immer is used above that allows us to mutate the state directly i.e state.value += 1 ==> under the hood it takes care of the immutability.    
@@ -747,7 +751,7 @@
             3. create AsyncThunk:  ==> handles aasync actions like fetching data...
                 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-                // Async thunk
+                // Async thunk => signature => <sliceName/actionName, asyncFun>
                 export const fetchUser = createAsyncThunk('user/fetchUser', async (userId) => {
                     const res = await fetch(`/api/user/${userId}`);
                     return res.json();
@@ -773,7 +777,7 @@
                     },
                 });
             NOTE: 
-                1. Here we are making an API call ==> We are adding cases on the API fetch status inside extraReducers.
+                1. Here we are making an API call ==> We are adding cases on the API fetch status inside extraReducers + builder.addCase
                 2. How to call thunk actions with dispatch:
                     const dispatch = useDispatch();
                     onClick={() => dispatch(fetchUser(id))}  ==> Triggers Async Thunk actions. => Once it fulfilled, state is updated.
@@ -810,7 +814,224 @@
 
                 const fetcher = url => fetch(url).then(res => res.json())
                 const { data, error, isLoading } = useSWR('/api/user', fetcher)
-            -> preferred for simple use-case ot smaller apps.
+            -> preferred for simple use-case of smaller apps.
+
+
+## React Router:
+    - Must wrap <App /> with <BrowserRouter> inside main.jsx
+    - What is <Outlet> from react-router-dom ?
+        - Let say you have defined Routes with some nested routes inside.
+        - using Outlet will render the matching nested route's element there.
+    - Types of Routes useCase:
+        1. Default Landing page Route => Checks the Authentication and redirect to Home or SignIn page.
+        eg: 
+        const Layout = () => {
+            //Runs the authenticated service...
+            return isAuthenticated ? <Outlet /> : <Naviagte to="user-auth" replace />
+        }
+
+        Inside AppRouter.tsx :    
+            <Routes>
+                <Route element={<Layout />}>
+                    // all your application Routes...
+                <Route>
+                <Route path="user-auth" element={<Auth />} />
+            </Routes>
+        NOTE:
+            - Above, The layout component will run authentication Logic and every app url re-direction ==> If authenticated then <Outlet /> i.e it will render the protected application routes. 
+            => If not authenticated ==> It will naviagte to user-auth route for authentication.
+        
+        2. Routes that are nested [use Naviagte and Outlet and LinkNav for this]
+            -> <NavLink to="path-name">Link-Name</NavLink> 
+            -> used to navigate from within the application.
+            
+        3. Routes with params and queries => [useParams and useSearchParams hook provided by react-router-dom]
+        4. Fallback Route => If no Route matches => fallback to the deafult screen [NOTE: write at the end with path="*" or directly add element <Route element={<NotFound />} />].
+
+    eg: 
+        <Route path="/dashboard" element={<DashboardLayout />}>
+            <Route path="overview" element={<Overview />} />
+            <Route path="settings" element={<Settings />} />
+        </Route>
+
+        Inside the component DashboardLayout: 
+            const DashboardLayout = () => {
+                return (
+                    <div>
+                        <h1>Dashboard Layout</h1>
+                        <Outlet />
+                    </div>
+                );
+            };
+    NOTE: Now Outlet will render either /dashboard/overview or /dsahboard/settings.
+
+
+## Using Hooks Like: 
+
+        1. Context API Hook.
+            -- You need to create a contextAPI with React.createContext().
+            -- Wrap your Parent Component with contextAPI.provider and pass the value.
+            NOTE: Do the above in a seperate File, and upLift the state from Parent to here.
+            -- Now all the children below that parent will have access to the value. Saves us from Prop drilling and unnecessary re-renders.
+        
+        2. Reducer Hook.
+            -- Make more sense when you use it in Redux state.
+            -- It take 2 params: 
+                1. a callback with 2 params: state and action [action will have type and payload]
+                2. the initial state.
+            -- Helps us to manage Complex state updates based on conditions.
+
+        3. Imperative Hook.
+            -- Very interestion hook.
+            -- In the child component you have ref that hold an Input or Aggrid Context. 
+            -- You want to expose few custom methods to parent so that it can handle actions from outside.
+            -- useImperative Hook provides a way you can expose your custom method from child to parent.
+            NOTE: 
+                1. In child a ref must be there that holds the context of a particular DOM element.
+                2. Child component has to be of React.forwardRef type.
+                3. In child component you have to decalre the useImperative hook to expose the methods to parents.
+                4. From the parent, the ref that hold the context of this Child will have these exposed method.
+
+        4. useId hook.
+            -- Rarely used hook but good functionality.
+            -- we can bind an Input and Label in HTML using name field from Input and HTMLFor field in label.
+            -- We need to provide a name here for the above to work. ==> useId generates a Random Name for us to use.
+            NOTE: 
+                Never use useId generated ids in Key prop in looping logic.
+
+        5. useTransition:
+            -- use to efficiently handle functions that are expensive [takes lot of time to Execute] ==> slows the UI => bad user Experience .
+            -- useTransition returns 2 things:
+                1. isPending => will be ture, untill the expensive function done executing. ==> based on this show a loading indicator.
+                2. startTransition => callback function that takes the expensive function.
+
+        6. useDeferredValue:
+            -- Similar to useTransition but it will show the older value untill new data is fetched.
+            -- It takes a value and returns a deferredValue. 
+                    const[query, setQuery] = useState('');
+                eg: const deferredQuery = useDeferredValue(query);
+            -- Here,
+                1. Initially both query and deferredQuery will be same.
+                2. the query will update immediatly as the input changes ==> but deferredQuery will be still old untill the new data is fetched.
+                3. Once new data is fetched ==> It updates the ui and shows New data that is fetched.
+
+            NOTE:
+                - until we get the new data from the response with the updated val, useDeferredValue will keep the old value and result, once new value comes => It loads the same in UI.
+
+        7. useActionState (React 19)
+            -- Handle Form actions efficiently.
+            -- eg: const [state, formAction, isPending] = useActionState(fn, initialState);
+            -- useCase:
+                1. pass the formAction from above in form's "action" attribute.
+                2. fn --> This specify the action needs to be perform when the form is submitted.
+                    -> it takes 2 params: previousStae and queryParms.
+                    -> we can extract formData using name field. eg: queryParms.get("filed_name")                    
+                3. If the it takes time ==> isPending can be used to show loading Indicator.
+
+        8. useFormStatus (React 19)
+        9. useOptimistic (React 19)
+        10. Custom Hooks.
+            -- Seperatation of Logic is implemented using Custom Hook.
+            -- eg: 
+                An API logic can be seperated out in form of a custom hook that can be return latest Value and a API state.
+
+
+## React Queries:   [*** IMP ***] 
+    What ?
+        - It is a data-fetching and caching library for React that 
+            1. Manages remote data state.
+            2. Caches API calls.
+            3. Offer utils like refetch, retries, pagiantion etc...
+    
+    -- Basically,
+        It handles fetching data automatically or manually, also provide caching of the data, handles loading and error state too.
+
+    -- To use React queries:
+        1. You must add @tanstack/react-queries in dependency.
+        2. Then wrap the Parent Componet under QueryClientProvider and client as new QueryClient.
+    
+    -- example:
+        const {data, isLoading, refresh, isError, error} = useQuery<T>({
+            queryKey: ['uniqueKeyName'],
+            queryFn: fetchAPI,
+            stateTime: 5 * 60 * 1000, // 5 min caching.
+            retry: 2,
+            refreshOnWindowFocus: true,
+            enabled: true,
+        })
+    -- Life Cycle:
+        As the app loads ==> query checks in cache ==> If not make a call => fetch data and show.
+    -- Params:
+        1. queryKey => Under this name caching is done.
+        2. queryFn => this is the api call that fetches data.
+        3. staleTime => upto this time => data stay fresh.
+        4. retry => If API fails, this max no o times it will try again.
+        5. enabled --> a flag that decides if it should fetch data or not.
+
+    -- Refresh the data that is fetched..
+        queryClient.invalidateQueries(['queryKeys']);
+
+    --usecases:
+        1. Fetch data based on any state changes.   
+            const [name, setName] = useState("");
+
+            const { data, isLoading } = useQuery({
+                queryKey: ['user', name], // key includes name to make it dynamic
+                queryFn: () => fetchUserByName(name),
+                enabled: !!name, // only runs when name is truthy
+            });
+
+
+        2. Fetch data on component loads.
+            const { data, isLoading } = useQuery({
+                queryKey: ['todos'],
+                queryFn: fetchTodos,
+            });
+
+
+        3. Fetch data after update.
+        const queryClient = useQueryClient();
+        const addTodoMutation = useMutation({
+            mutationFn: addTodoApi,
+            onSuccess: () => {
+                queryClient.invalidateQueries(['todos']); // triggers re-fetch
+            },
+        });
+
+
+        
+        4. Fetch data strictly based on a flag.
+        const { data, refetch, isFetching } = useQuery({
+            queryKey: ['report'],
+            queryFn: fetchReport,
+            enabled: false, // prevent the APi call to run on Mounting phase.
+        });
+
+        // On button click
+        <button onClick={() => refetch()}>Get Report</button>
+
+    -- Automatically Fetching data Vs Manual fetching data with React Query.
+        1. when enable -> true.
+            React Query will automatically fetch:
+            ✅ On component mount
+            🔁 When query becomes stale (e.g. after staleTime)
+            🔄 When window/tab regains focus (unless disabled)
+            🔁 On network reconnect
+            ♻️ If invalidated via invalidateQueries
+
+            NOTE: we dont need refetch() method at all.
+        
+            usecase:
+                React Query auto-fetch on:
+                    1.Mount
+                    2.Tab focus
+                    3.Reconnect
+                    4.Stale data
+
+        2. When enable -> false.
+            React does nothing ==> It only fetch data when you we call refetch().
+            usecase:
+                If your data is optional, conditional, or user-triggered, go with manual fetching (enabled: false + refetch()).
 
     
 ## React Design Patterns: 
@@ -859,6 +1080,7 @@
     4. Extracting Codes to Hooks 
         -- move codes including API calls with useEffect and States  ===> their own custom hooks.  [It abstracts all the Functionality and useEffects]
         -- Makes the code structure modular and clean.
+
 
 
 

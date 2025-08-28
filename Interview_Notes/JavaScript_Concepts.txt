@@ -75,6 +75,28 @@ Within a given scope:
 -- Redeclaration of var is allowed but for let and const not allowed. 
 -- Var is hoisted with undefined. But let and const hoisted with no Intialization.(throw error).
 
+## Famous Interview question:
+for (var i = 0; i < 10; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// Prints 10 -- 10 times.  ==> by the time loop ends and callback starts running, i is 10 and since 'var' is shared between everyone, all prints 10.
+
+//Fix1:
+for (var i = 0; i < 10; i++) {
+  (
+    function(j) {
+      setTimeout(() => console.log(j), 100);
+    }
+  )(i)
+}
+
+//Fix2:
+for (let i = 0; i < 10; i++) {
+  setTimeout(() => console.log(i), 100);
+}
+// Prints 1 to 10.  ==> each block has it's own scope of 'let'  => it prints it one by one as callback queue empties.
+
+
 implicit type coercion ?
 -- Automatic Conversion of Value from one data Type to another.(while using +,-, ||, && or ==).
 -- '+' convert both operands to String and then concat them.
@@ -264,7 +286,7 @@ Why we needed bind ?
 
 2) To Borrow fun from other methods.
   -- you have obj1 with fly() and obj2 with run().
-  -- If you want obj2 also to have run() eg: const newFly = obj1.fly.bind(obj2); newFly();
+  -- If you want obj2 also to have fly() eg: const newFly = obj1.fly.bind(obj2); newFly();
 
 exec() vs test()
   -- Both are RegExp methods in JS.
@@ -324,6 +346,37 @@ const newFun = myFun();
 console.log(obj1);  //This will fail, 
 newFun(); //This has still access to obj1
 
+
+### Famous interview question on closure... 
+
+const perform  = (val) => {
+    let init = val;
+    
+    return {
+        add: function(...args) {
+            init += args[0];
+            return this;
+        },
+        multiply: function(...args) {
+            init = init * args[0];
+            return this;
+        },
+        value: function() {
+            return init;
+        }
+    }
+}
+
+const action = perform(34);
+console.log(action.add(2).multiply(5).value());  // (34 + 2) * 5 ==> 180.
+
+
+Other example of Closures:
+  1. Loop with var keyword.  => the value is shared between all.
+  2. Currying operations => sum(2)(3)();
+
+
+
 Object Prototypes ?
   -- This are basically Blueprint of any Object in JavaScript.
   -- we have Object.prototype, That has property and methods for all the Prototypes supported in JS.
@@ -338,6 +391,7 @@ When you call a method for an Object,
   -- Then it looks for the defination in its protoype ? If not..
   -- then it looks into Object's prototype ? If not..
   -- then it throws error.
+
 
 Callbacks in JavaScript ?
   -- Functions that are used as arguments to another funtions are called as callbacks.
@@ -450,7 +504,7 @@ BOM ?
   -- Browser Object Model. i.e The Window Object available in the browser.
   -- a huge list of property and methods for the current page.
   -- Contains tones of functionality for browser related work, has access to methods like setTimeOut, propmpt and many more.
-  -- document, screen, naviagator, location and other attributes are avialble in BOM.
+  -- document, screen, naviagator, location and other attributes are avialble in BOM. [WebAPis]
 
 
 NOTE:
@@ -516,7 +570,7 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
 
   NOTE: Diff between Debouncing and Thorttling  
     -- Notice, Debouncing delays the execution of a function like API service call untill the specified time. [OnSearch Functionality]
-      But, Thorttling limits the execution of the event handler function itself, till the sepecified time. --> [Infinite Scrolling event]
+      But, Thorttling limits the execution of the event only after the sepecified time, irrespective of how many times the event is triggered. --> [Infinite Scrolling event]
 
 
 *** IMP ***
@@ -524,9 +578,45 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
   -- This gives rise to redunduncy because of the Re-renders and how colsures and Async state updates works in React.
   -- Solution: 
       -- Pass the payload for service call in params.
-      -- InputField --> OnChangeEventHandler [update the field state and call debouceCallback method along with new FieldValue i.e e.target.value] 
+      -- InputField --> OnChangeEventHandler [update the field state and call debouceCallback(e.target.value)] 
       --> then call the function That do useCallback of the debounce method pass the params[ preseve the state during re-renders]
       --> then call the accutal debounse method [library: lodash] [use the paramaters to preapre the paylod]
+
+  EXample of the above Scenerio:  --> always the pass the latest i.e evt.target.val to debounce func.
+
+    import React, { useState, useCallback } from "react";
+    import { _.debounce } from "lodash";
+
+    function SearchBox() {
+      const [query, setQuery] = useState("");
+      const [results, setResults] = useState([]);
+
+      const fetchData = async (q) => {
+        return new Promise((res) =>
+          setTimeout(() => res([`Result for ${q}`]), 500)
+        );
+      };
+
+      // debounceCallback --> In the callback (async) we make the call and set the data.
+      const debouncedSearch = useCallback(
+        _.debounce(async (searchText) => {
+          console.log("API call with:", searchText);
+          const resp = await fetchData(searchText);
+          console.log(resp);
+          setResults(resp);  //safe..
+        }, 500),
+        []
+      );
+
+      //NOTE: here we are setting the state and calling debounce callback search with the latest val.
+      const handleChange = (e) => {
+        const val = e.target.value;
+        setQuery(val);
+        debouncedSearch(val);
+      };
+
+      return <input value={query} onChange={handleChange} />;
+    }
 
 
 
@@ -762,13 +852,30 @@ EventLoop Explaination:
       console.log(x); // undefined.
   -- var, let, const --> scope, reassignable, hoisted, initialized.
   -- Shadowing: 
-    With let if inside a nested block, If the variable is declared again [defined and initialized], for that block, the value changes.
+    if "let" is present inside a nested block i.e the variable is declared again [defined and initialized], for that block, the value changes.
   -- Function expression like var greet() = () => {console.log("hi")} 
     -> Here greet will be hoisted and initialized as undefined.
     -> NOTE: If we have greet() {...} => here the whole function will get hoisted.
+  Example:
+    1. var + arrow Function: 
+      greet();
+      var greet = () => { console.log('Hiii') };   
+
+    The above doesnot work ==> only "var greet;" goes up. ==> which is undefined i.e not a function that we can call.
+    NOTE: using let and const + arrow function --> It will fall under TDZ => Reference error.
+
+    2. use Function defination:
+      greet();
+
+      function greet() {
+        console.log('Hi');
+      }
+
+    The above works ==> the full function defination is hoisted.
+  
   -- typeof null --> Object [** JS legacy bug **]
   -- NaN === NaN -> false , [] == false -> true.
-  -- prmitive data types are stored in "stack", Reference type data are stored in "heap"
+  -- prmitive data types are stored in "stack", Reference type data are stored in "heap".
   -- Arrays:
       1. reverse arr without using .reverse(). [ use .reduce([acc, item] => [item, ...acc], [])]
       2. flatten nested arr. [.flat(_nested-level_), use Recusrion: consider if the ele is array, call the fn again else push the val inside the arr.]
@@ -778,6 +885,10 @@ EventLoop Explaination:
     arr["test"] = "fool";
     console.log(arr); // print ["test": fool]
     console.log(arr.length); // length ==> 0
+  NOTE:
+    - Arrays are special type of objects in JS.
+    - case1: when we add arr[key] = property -> It just stores in Obj. ==> arr length will be zero.
+    - case2: When we arr.push(val) => It addes a numeric key and val in Obj ==> arr length will be 1.
   -- false + 1 ==> 1 [false will become 0], true + '1' ==> true1 [true will be string].
   -- Type Coercion:
       1. Implicit --> automatically [using + or -]
@@ -792,7 +903,7 @@ EventLoop Explaination:
   -- First class citizens:
       3 things are allowed -> can be stored in varaible, passed as params, or returned from function.
       NOTE: Functions are first class citizens.
-  --  When you using "this" inside a function ==> You must call the fun like: new fun() --> The fun will be a constructor function.
+  --  When you using "this" inside a function ==> You must call the fun like: const newFun = new fun(param1, parm2) --> The fun will be a constructor function.
   -- var loop trap fixed using closure...
       for (var i = 0; i < 3; i++) {
         (function(j) {
@@ -816,7 +927,7 @@ EventLoop Explaination:
   -- Object.create(fn) --> creates a new Object with prototype set to proto. [using Object.create is manual inheritance]
   -- using extend keyword with classes --> [Syntactic Sugar on the way we inherit properties of other classes]
   eg:
-    - a class Animal, a class dog extends animal, then we create an object for the class dog.
+    - a class Animal, a class Dog extends Animal, then we create an object for the class Dog.
     - d.__proto__ == Dog.prototype // true
       Dog.prototype.__proto__ === Animal.prototype // true [extends create a link between dog class and animal class]
   -- In ES6 classes,
@@ -971,11 +1082,13 @@ EventLoop Explaination:
       -> you can iterate using map.forEach()
     -> weakSet:
       -> like set but it only stores objects. [not any primitive data-type]
-      -> cannot iterate, no methods like .size, .clear, .keys.
+      -> Allows Garbage Collection.
+      -> cannot iterate, no methods like .size, .clear, .keys.  --> Insert into weakSet useing .add(obj), check if any obj exists .has(obj).
     -> WeakMap:
-      -> keys must be object here.
-      -> usecase: memory-safe caching or private data storage. 
-      -> you have access to method like .set, .get, .has
+      -> keys must be object here or any value.
+      -> Not iterable, allows Grabage Collection.
+      -> usecase: memory-safe caching [When keys are objects] or private data storage. 
+      -> you have access to method like .set(), .get(), .has()
   -- Design Patterns:
     1. Singleton Pattern:
       -> A class must have only 1 instance, and provides global access point to that instance.
@@ -1089,13 +1202,13 @@ EventLoop Explaination:
       -> Allows JS to run in a background thread without blocking the main ui-thread.
       -> communication with main thread via --> .postMessage()
       -> usecase:
-        1. Long running loops or cals.
-        2. Imag/video processing.
+        1. Long running loops or calls.
+        2. Image/video processing.
         3. parsing large JSON.
         4. complex filtering/sorting.
       -> NOTE: 
           1. no access to dOM.
-          2. comminication via post message.
+          2. comminication via post message only.
           3. each worker will have it's own file.
       eg: 
         In worker.js:
