@@ -11,6 +11,7 @@
 [ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] => create freq map => put {freq, item} in the min heap [maintain only k elements inside heap] => Pop the values, store in ans OR 2. Manually use quick sort logic to sort. [optimal]
 [ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exist --> One possible consequative seq length.  [NOTE: iterate in set to ignore duplicates]
 [*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Item, Logic: check if there exist a prefix sum if we can subtract from the current Prefix sum we get K i.e maintain track of currSum => check if in the map there exist any currSum - k => a possible sol, if not add currSum in map for future use.
+[*] Maximum SubArray (Medium) => Either use Kadane's Algo [iterate, if sum < 0, reset it to 0, track the maxSum] Or Divide and Conquer [Sum might lie in the left part, right part or across the mid]
 
 ### Neetcode Extras:
 [ ] Encode and Decode Strings (Medium) => encode Logic: "lenOfWord#" infront of each word ==> concat into a single string. Decode Logic: get the count => [use i and j] => extract the word.
@@ -30,7 +31,7 @@
 [ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> move left i.e shrink the window & reduce count of left char from freqMap, If any value in freqMap is 0 and erase same val from set.
 
 ### Neetcode Extras:
-[ ] Longest Repeating Character Replacement (Medium) => 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e we can replace them -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
+[*] Longest Repeating Character Replacement (Medium) => 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e we can replace them -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
 [*] Minimum Window Substring (hard) => 2 pointers window shift + 2 hashMap + formed & required => create refHashMap and it's size as required. => on every char exist in refMAp and freq same => we increment formed. => till left <= right && formed == required, update start and minLen, Move left pointer [since we need min length], update freq map, update formed count.
 
 ------------------------------
@@ -54,10 +55,10 @@
 ------------------------------
 [ ] Binary Search (Easy) => a simple binary search logic. [remember the condition l<=h and updaiting h to mid-1]
 [ ] Guess Number Higher or Lower (Easy) => just simple binary search logic.
-[ ] Search in Rotated Sorted Array (Medium) => mid can be wither on the sortedside [ if target > mid or target > l => look right, else look left] or rotated side. [if target < mid or target > h => look left else look right] 
+[ ] Search in Rotated Sorted Array (Medium) => mid can be wither on the sortedside [ if target >= l or target < mid => look left, else look right] or rotated side. [if target > mid or target < h => look right else look left] 
 [ ] Find Peak Element (Medium) => check if left neighbour is up, check if the right neighbour is up..
 [ ] Koko Eating Bananas (Medium) => sample space of k: 1 to max pile => find for at k rate -> how many hours koko can finish piles.[ if koko take 1.2 hr -> round it to 2 hr.] => if koko takes less or equal time than h => look left for smaller k value, If koko takes more time -> look right to increase k value and reduce time. 
-[ ] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
+[*] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
 
 ### Neetcode Extras:
 [ ] Search a 2D Matrix (Medium) => Double Binary Search => BS for figuring out the correct Row [use top, bottom pointer for row, and last col of any row as column] => then BS for figuring out the correct value in the row [this is standard]
@@ -71,7 +72,7 @@
 [ ] Min Stack (Easy) => use pair in stack<currVal, minVal> => minVal will hold the minValue in the entire stack. [decide when you push new element in stack]
 [ ] Daily Temperatures (Medium) => stack<temp, index>, If stack empty or temp is less than top => push in stack. => If greater them coming => pop from stack one by one and find diff in index, store in ans[popped ele's index]. [** a bit simple, Just let the stack maintain indxes]
 [ ] Next Greater Element II (Medium) => arr is circular, loop for 2*n => access index, i%n, Now in stack[maintain indexes] pop till the top is less that incoming value, allow push in stack only in first iteration.
-[ ] Asteroid Collision (Medium) =>  collision cond: !st.empty() and top and incoming must be opposite sign => add them => if > 0: make incoming astroid 0, if < 0: pop from stack, if =0: do both. ==> stack holds the ans [convert that into vector]
+[*] Asteroid Collision (Medium) =>  collision cond: !st.empty() and top and incoming must be opposite sign => add them => if > 0: make incoming astroid 0, if < 0: pop from stack, if =0: do both. ==> stack holds the ans [convert that into vector]
 [ ] Largest Rectangle in Histogram (Hard) => stack [stores index and height] => start iterate in bar => if the top in stack height > incoming height => pop from stack [the bar in stack cannot be extedned to right], cal the area, update the curr bar's index to this [since curr bar can be extended to left] => Process the element left in stack.
 
 ### Neetcode Extras:
@@ -102,11 +103,21 @@
 [ ] Diameter of Binary Tree (Medium) => diameter at a node = max of (dia , dept of left tree + dept of right tree) ==> use recusrion to find the dept of the tree -> take diameter as a param and update it as we visit each node => TC: O(n)
 [ ] Path Sum (Medium) => a currSum --> at each node, find sum, If that node is leaf => compare to target. If not -> Either the right-tree will have the sum or the left-tree.
 [ ] Lowest Common Ancestor of BST (Medium) => If BST: p,q value < curr => look in left, p,q val > curr => look in right, else => curr node is the common ancestor , If normal-Tree [iterative method]: node is null => return null, node is either p or q => return node, now from left and right of curr Node you receive some node. => If both are null -> return null, if either one is null => return non-null one, If both are not null -> return curr node.
+[ ] Lowest Common Ancestor of Tree (Medium) => [Recursive method]: node is null => return null, node is either p or q => return node, now from left and right of curr Node you receive nodes using recursion => cases: If both are null -> return null, if either one is null => return non-null one, If both are not null -> return curr node i.e the ancestor node.
 [ ] Binary Tree Maximum Path Sum (Hard) => At a node => 1. path spliting at node: path = nodeVal + unSplitPath from left + unsplitPath from right, [NOTE: The left and right could be negative, so compare it with 0], 2. path UnSplit at node: => nodeVal + max(leftTree, rightTree) => You have to return this back in the recursive fn. 
 [ ] Serialize and Deserialize Binary Tree (Hard) => PreOrder + c++ string builder ==> 1. Convert the Tree into a Pre-Order traversal [N L R] => using ostringsream out => print in the stream like out << "N " or out << "NodeVal" << " ".  2. To read the string => istringstream in(data) => where data is string => construct using pre-order traversal. [capture stream data like string val; in >> val] => It will store in val till it hits a space. 
 
 ### Neetcode Extras:
-[ ]
+[ ] Invert Binary Tree (Easy) => DFS basic => Recursion, swap the child nodes at each Root.
+[*] Balanced Binary Tree (Easy) => DFS<isBalanced, height> => Balance Cond => Left Tree balanced + right Tree Baclanced + abs(left Tree height - right Tree Height) <= 1, height at a node => 1 + max(leftTree Height + right Tree Height).
+[ ] Same Tree (Easy) => Recursive check left child tree and right child tree => at curr Node => if LeftChild tree same + if right child tree same + curr Node [Are the val same ?] => Do this recursively.
+[*] Subtree of Another Tree (Easy) => use same Tree logic + Recursion => For subTree => check if the at root node it is the same Tree ? If not check if either left or right is is a subTree ? [Take care of edge case: If subTree is NUll [valid case], IF root is Null [Not a valid case]]
+[ ] Binary Tree Level Order Traversal (Medium) => standard BFS traversal with Queue. => push root into queue => till queue is empty, Iterate the elements in Queue, as we pop them, add their children in queue,
+[ ] Binary Tree Right Side View (Medium) => Level order traversal using BFS [Queue] => Take the right most Node from each level.
+[*] Count Good Nodes In Binary Tree (Medium) => DFS with maxVal track => Good Node-> at any node if the val is greater than or equal to maxVal so far else Bad Node. keep track of max(maxVal, node->val), From left and right tree get the count, add it to result.
+[*] Validate Binary Search Tree (Medium) => dfs logic => check is every node is in between [min, max] => For root Node, boundary will be [-Inf, Inf] => as we traverse, this range changes if we traversing in left [maxVal must update] or right tree [minVal must update] NOTE: [use LONG, LONG_MIN, LONG_MAX to track range]
+[*] Kth Smallest Element In a Bst (Medium) => use Morrise Traversal of BST => gives nodes in sorted order. TC: O(1) => Logic: If curr Node left doesnot exist, check currNode val, store ans, move left, If currNode's left exist, mark it as PreNode => traverse right till you can, then check if preNode's right is null, point to currNode, If it exist, Make it NULL, Check the currNode' val, store ans, and move right.  OR  Recursive way-> use INorder Traversal. [Traverse Left Tree, store curr nodes in a vector, Traverse Right Tree]
+[*] Construct Binary Tree From Preorder And Inorder Traversal (Medium) => PreOrder, we get the roots, InOrder tells what comes in left and right Tree. useHashMap -> to fetch the index of each element from Inorder [optimization] => use Preorder to make roots =>  recursively calls left and right with updated start and end index of inorder list.
 
 ------------------------------
 🔹 8. Tries [Concepts: Prefix trees]
@@ -121,48 +132,54 @@
 ------------------------------
 [ ] Kth Largest Element in an Array (Medium) => minHeap --> push items into minHeap, maintain only k elements in the queue, pop rest if it's exceed k. the top is the answer.
 [ ] Top K Frequent Elements (Medium) => freqMap + min heap ==> make freqMap, push in minheap <freqCount, numItem> => maintain only k items in queue, pop if it's exceed. => print the numItems left in queue. [ O(k.log n) ] OR use Bucket sort: make a freq map, now add it in a fixed arr whole index is the freq and value is all elments which has that freq. look from right to left, list k elements. [O(n)]
-[ ] Merge K Sorted Lists (Hard)  => use minHeap with custom List's val compare. => you have heads of all k Lists. => push them in a min heap => till heap is empty, popout => store the top Node in answer list => if top node's next node exists => push inheap [Heap will take care of maintaining the nodes in sorted order].
+[*] Merge K Sorted Lists (Hard)  => use minHeap with custom List's val compare. => you have heads of all k Lists. => push them in a min heap => till heap is empty, popout => store the top Node in answer list => if top node's next node exists => push inheap [Heap will take care of maintaining the nodes in sorted order].
 [ ] Sliding Window Maximum (Hard) => use dequeue => O(n) => In the dequeue => if a larger val is coming, pop out smaller values, If a smaller val is coming put in inside + If window moves, remove from the queue's front too if left pointer movers ahead => in k window, front will be max val in that window.
 [ ] Minimum no of Refueling Strops (Hard) => try max heap, Travel with car till you can, when you run out of fuel => take fuel from Petrol pump with max fuel and continue the journey. [Count stops]
 
 ### Neetcode Extras:
 [ ] Kth Largest Element In a Stream (Easy) => use MinHeap => maintain k elements i.e the kth element at the top will be kth largest element always. Add new val inside heap, if size exceeds pop the top most element.
 [ ] Last Stone Weight  (Easy)  => use MaxHeap => at top, take out 2 stones if they are there => perform clash i.e if same move on, If difference is there, push the abs diff between them inside the heap. => at the end, if maxHeap still there => top will be ans if not then 0.
-[ ] K Closest Points to Origin (Medium) => use MinHeap<distance, {x, y}>  ==> distance from origin: sqrt(pow(x, 2) + pow(y, 2)).  NOTE: here you need a custom cmp -> to handle pair comparision.
+[ ] K Closest Points to Origin (Medium) => use MaxHeap<distance, {x, y}>  ==> distance from origin: sqrt(pow(x, 2) + pow(y, 2)).  NOTE: here you need a custom cmp -> to handle pair comparision.
 [*] Task Scheduler (Medium) => use a maxHeap, dequeue => push the freq of Tasks in the queue, Increment the timer, take the max freq task -> reduce it by 1 -> push it in queue<taskCount, idleTime + currTime> [tells when this task can go back to priority_queue, when the second part is eq to currTime.] => actual TC: O(m [no of tasks] *n [ideal time], worst case: if all are same character)
-[ ] Design Twitter (Medium) => 
-[ ] Find Median From Data Stream (Hard)
+[*] Design Twitter (hard) => For tracking followers => use map<userID, list of userIDs>, For tracking tweets => use map<userId, list of <timer, tweetId>>, For getting TweetFeed => For all Followee, push the [time, tweetId, followeeId, next left index] inside the heap, => till heap is not empty and you collected 10 latest tweet, take out top, store tweetId in res, pick the next lastes tweet of the followee, push inside heap. [System Design Question]
+[ ] Find Median From Data Stream (Hard) => Median will exist in a ordered list => Left (maxheap) and Right (minHeap) eg: [1, 2, 3] -> Left part (maxHeap)  [4, 5, 6] -> Right Part (minHeap), Balance Condition: size of both heap cannot be more than 1 and left heap Top must always <= right heap Top,  At the end, If both heap same size => take average of the top. If not, whichever holds more element's it's top is ans.  [Adding or removing from heap -> TC: O(log n), Balancing also takees O(logn)]
 
 ------------------------------
 🔹 10. Graphs (BFS/DFS/Union Find) [Concepts: Traversals, cycle detection, connected components]
 ------------------------------
-[ ] Number of Islands (Easy)
+[ ] Number of Islands (Easy) => use BFS/DFS traversal => iterate each node, at each valid node -> run BFS[Queue + iterative] => push current (r, c) in queue, mark visited i.e make it 0, then check in all 4 directions [left, right, up, down] => find new coordinate, check if they are in grid's bound and valid island, => If yes-> push new coordiante in queue, mark them as visited / DFS [Recursion]. => same BFS logic, we use a baseCase for recursuion [same as valid node in BFS], mark the node as visited, then all 4 direction, use recursion. 
 [ ] Flood Fill (Easy)
-[ ] Clone Graph (Medium)
-[ ] Course Schedule (Medium)
+[ ] Clone Graph (Medium) =>  have a hashMap to track original and new node -> Iterate each node, if exisits in map, take it or create a copy, add in map -> Do the same for neighours. TC: O(N)
+[*] Course Schedule (Medium) => Adjacency Map Logic in Graph => use DFS logic with HashMap and visitedNodeSet => visit the node from 0 to n-1, put them in visitedSet [If we visit a node again, Loop exists] If pre-req List is empty => we can complete that course, check current course's pre-requist => call Recursive DFS on them. [While coming back, Do remove from visited node] => Do this for all the courses from 0 to n-1. TC: O(N+P) => No of node + no of pre-requesites
 [ ] Pacific Atlantic Water Flow (Medium)
 [ ] Word Ladder (Hard)
 [ ] Alien Dictionary (Hard)
 
+### Neetcode Extras:
+[ ] Course Schedule (Medium) => Topological Sort => Adjacency Map + VistiedNodes + cycleTrack => create the Adjacency Map first => Iterate each course => Call Recursive DFS => If a course is already in the current cycle -> return false, If alreday visted once i.e recorded in ans -> return true, else add currNode in cycle, Loop through all it's pre-reqs and Check if any of them is false, If it passes, remove currNode from cycle as all pre-req processed, add the same in visited node and put in ans => for curr Node return true.
+[ ]
+[ ]
 
 ------------------------------
 🔹 11. Dynamic Programming (DP) [Concepts: Memoization, Tabulation]
 ------------------------------
 [ ] Climbing Stairs (Easy) => use DP memorization bottom up appraoch. start from nth step to 0th step and track how many ways we can reach to top step, stepway(n) = stepways(n+1) + stepways(n+2) [Practically O(n)] <> Alteranative recursion approach is O(2^n).
-[ ] House Robber (Easy)
-[ ] Coin Change (Medium)
+[ ] House Robber (Easy) => classic DP problem => maintain 2 pointer + either you rob a house or not rob it, secondLastHouse, lastHouse, => Now iterate => case1: If robber decide to rob currHouse then he robs => currHouse + secondLastHouse. Case2: If robber decide not rob currHouse => the he robs lastHouse. => Take the max, move secondLastHouse and LastHouse to right i.e update their values and check the next House. TC: O(n)
+[*] Coin Change (Medium) => logic is => we can choose one coin, then again we have to choose from the coins to fill the reminder -> forms a big tree, with same sub-problem and repeated calculation. Sol using DP => Bottoms up appraoch -> from O to amount we build the dp array. eg: If we choose coin 3: then dp[4] = 1 [coin 3 is choosen] + dp[4-3]  //we need to know dp[1] as that will give us the possibilities. 
 [ ] Longest Palindromic Substring (Medium)
 [ ] Maximum Subarray (Medium)
 [ ] Edit Distance (Hard)
 [ ] Regular Expression Matching (Hard)
 
 ### Neetcode Extras:
-[ ]
+[*] Word Break (Medium) => 1D DP => maintain a dp<bool> for (len+1, false) => Look from right to left, for last letter i.e dp[len] => true, as for empty string. For each index, loop each word in dict, check if we have enough words [i.e substr is not going out of bound], we find a match => and if dp[i + len of word] is also true, mark dp[i] as true. => One word satisfy, break the words search loop.  dp[0] is ans as we explored all letters.
+[ ] Coin Change 2 (Medium) => Memorization method using 1D DP => take a coin, For every coin, update the dp map from coin till amount => with dp[curr] = dp[curr] (curr count) + dp[curr-coin] i.e possible ways for reminder sum
+[*] Longest Increasing Subsequence (medium) => Bottom's Up Memorization: strat looking from right to left => for each element: Either we can take the curr ele i.e 1  and 1 + Longest Increasing Subseq of every element after it [cond: this comes only if the element is > than the curr element then only it will strictly increasing ] => take the max of all this. => for that index => this will be dp[index] TC: O(n^2)  OR  Appraoch2: Greedy BS using lower_bound. => Iterate and if any ele < last pushed elemnet -> use BS to find the immediate greater element and replace that. -> track's size will be max LIS. TC: O(nlogn)
 
 ------------------------------
 🔹 12. Backtracking [Concepts: Explore all possibilities recursively]
 ------------------------------
-[ ] Subsets (Easy)
+[ ] Subsets (Easy) => use Recursion, include/Exclude => at an index => case1: call recursion by not including the curr element i.e with the next index, case2: add in the track and call recursion for the next element. If you reach the end -> store the ans.
 [ ] Combination Sum (Medium)
 [ ] Word Search (Medium)
 [ ] Palindrome Partitioning (Medium)
@@ -191,8 +208,8 @@
 🔹 14. Intervals [Concepts: Sorting + merging or overlapping logic]
 ------------------------------
 [ ] Insert Interval (Medium)
-[ ] Merge Intervals (Medium)
-[ ] Meeting Rooms II (Medium)
+[ ] Merge Intervals (Medium) => sort the intervals then push first interval in ans, then iterate the other intervals, check can we merge interval ? If yes -> merge them and update at last index in ans. else push in ans.
+[ ] Meeting Rooms II (Medium) => sort the start and end time. use 2 pointer. we need to find max overlapping meeting. Iterate in start time, If startTime < endTime i.e the next meeting started before the previous ended so roomCount++, else you reduce the room count. -> keep track of the max room count. 
 
 
 
