@@ -41,13 +41,14 @@
 [ ] Merge Sorted Array (Easy) => start tracking from behind, k tracks the largest element.. => arr will be sorted with O(m+n);
 [ ] Remove Duplicates from Sorted Array (easy) => 2 points l and r, move r till size => ele at r is a distinct ele at l => move l and replace ele at l with ele at r. => return the final len.
 [ ] Container With Most Water (Medium) => 2 pointers at extremes, max area, whicher side height is smaller -> move inside from that side.
-[ ] Remove Duplicates from Sorted Array II (Medium)   => allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r].
-[ ] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)]
+[*] Remove Duplicates from Sorted Array II (Medium)   => allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r].
+[*] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)]
 [ ] 3Sum (hard) => sort it first, loop i => use 2 pointer l = i+1 and r=size-1, find a sum == 0 [valid, now => move one pointer till it's unique (** imp **) ], sum > 0 [r--, since, sorted arr], sum < 0 [l++, since sorted arr]. 
 
 ### Neetcode Extras:
 [] Two Sum II Input Array Is Sorted (medium) => 2 pointers at extremes => move inwards, If val[start] + val[end]  is  too high, reduce end pointer, if it's too low move the start pointer. 
 [] Trapping Rain Water (hard) => amount of water stored in at ith index => min(max ht on left, max ht on right) - heigth at index i. ==> use 2 pointer: based on which side is min side => update the pointers and find max of the maxLeft/maxRight height => update ans as the diff of maxht - current bar height. 
+[] Backspace String Compare (Medium) => Intuative way => use a stack, pop elements when '#' is encountered, compare the string. TC: O(m+n), SC: O(m+n) | Optimised way:  2 pointers from right to left => find the next valid character i.e count the backspace characters and skip characters => Once you have the index -> Compare them if they are not equal -> return false. => If we are able to compare all characters => return true.
 
 
 ------------------------------
@@ -156,7 +157,7 @@
 [ ] Alien Dictionary (Hard)
 
 ### Neetcode Extras:
-[ ] Course Schedule (Medium) => Topological Sort => Adjacency Map + VistiedNodes + cycleTrack => create the Adjacency Map first => Iterate each course => Call Recursive DFS => If a course is already in the current cycle -> return false, If alreday visted once i.e recorded in ans -> return true, else add currNode in cycle, Loop through all it's pre-reqs and Check if any of them is false, If it passes, remove currNode from cycle as all pre-req processed, add the same in visited node and put in ans => for curr Node return true.
+[ ] Course Schedule II (Medium) => Topological Sort => Adjacency Map + VistiedNodes + cycleTrack => create the Adjacency Map first => Iterate each course => Call Recursive DFS => If a course is already in the current cycle -> return false, If alreday visted once i.e recorded in ans -> return true, else add currNode in cycle, Loop through all it's pre-reqs and Check if any of them is false, If it passes, remove currNode from cycle as all pre-req processed, add the same in visited node and put in ans => for curr Node return true.
 [ ]
 [ ]
 
@@ -192,16 +193,15 @@
 ------------------------------
 🔹 13. Greedy [Concepts: Locally optimal → globally optimal]
 ------------------------------
-[ ] Assign Cookies (Easy)
-[ ] Jump Game (Medium)
-[ ] Partition Labels (Medium)
+[ ] Assign Cookies (Easy) => 2 pointers, greedy pick => Sort the given arrs => iterate the greedArr and CookieArr => Pick the cookie that satisfy the child and move ahead...
+[ ] Jump Game (Medium) => Greedy appraoch => start from right to left => see if you can move the goal closed to start. cond: i + nums[i] >= goalIndex => If true, we move the goal towards left. At end if goal is zero -> we reached the start, else we didn't make it.
+[ ] Partition Labels (Medium) => make a map [char -> lastIndex], -> have size [keep track of current Partition] and end [keep track of the index of the fartest character possible] => iterate the str, update size, if this char last occur index > end => update end too. => If index exceeds end => One partion is over [save the value, reset size to zero] 
 [ ] Gas Station (Medium) => cond: sum of total gas must be >= to cost to travel each node => If not there is no way. ==> Travel each node, track total gas, If toal becomes negative => That node is not starting pos => make it next node.
-[ ] Merge Intervals (Hard)
-[ ] Minimum Number of Arrows to Burst Balloons (Hard)
+[ ] Minimum Number of Arrows to Burst Balloons (Medium) => Interval based => sort the intervals => Have a arrowCount & range for the arrow rangeX1, rangeX2 => iterate all the intervals, For each interval if they are bounded in range i.e update the range, If not => then we need Additional arrow and new range will be the curr Interval's range.
 
 ### Neetcode Extras:
 [ ] Find The Duplicate Number (Medium) => pick the currIndex [pick abs value], check if ele at currIndex is negative => that's ans, If not make it negative. [TC: O(n)] 
-[ ]
+[*] Jump Game 2 (Medium) => Recursive Solution => at currPos => try all the possiblePath, baseCase: If we reached the end, then 0 or If we already explored this path-> take the min jump from it. (TC: O(n^2)) OR Greedy [Preferred] => Linear BFS Solution => Each Jump takes us to a new level i.e range between l and r. => Find the max jump we can make, update l -> r + 1 and r -> max distance we can jump, If r already reached the end -> We are done. [TC: O(N)] 
 
 
 ------------------------------
@@ -210,8 +210,11 @@
 [ ] Insert Interval (Medium)
 [ ] Merge Intervals (Medium) => sort the intervals then push first interval in ans, then iterate the other intervals, check can we merge interval ? If yes -> merge them and update at last index in ans. else push in ans.
 [ ] Meeting Rooms II (Medium) => sort the start and end time. use 2 pointer. we need to find max overlapping meeting. Iterate in start time, If startTime < endTime i.e the next meeting started before the previous ended so roomCount++, else you reduce the room count. -> keep track of the max room count. 
+[ ] Non-overlapping Intervals (Medium) => sort the intervals based on start time => Keep track of the PrevEndtime, iterate from next interval onwards, If startTime > prevTime => update prevEndTime to curr EndTime else, we have clashing intervals i.e update the prevEndTime as min of prevEndTime or currTime, also keep track of how many times you are doing it. -> return this ans.
 
 
+🔹 15. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
+[ ] Burst Balloons (Hard Hard) => Intuation Appraoch -> BruteForce Recursion => Iterate each ballon and check how much coin we can get if we pop it. | Optimal: Trick is at any index i, consider what if we burst this ballon at the last [Defining subproblem] => If ith ballon is burst last => Total coins = num[i-1] * num[i] * num[i+1] + dp[i+1][R] [Left part of the arr which is already burst] + dp[l][i-1] [Right part of the arr which is also burst]. => Recursively Find the max possible coin we can collect. TC: O(n^2 * n) -> total no of subarray * looping inside, SC: O(n2) -> 2D DP space dp[l][r]
 
 
 
