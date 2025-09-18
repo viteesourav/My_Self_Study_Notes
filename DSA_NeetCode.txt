@@ -180,15 +180,18 @@
 ------------------------------
 🔹 12. Backtracking [Concepts: Explore all possibilities recursively]
 ------------------------------
-[ ] Subsets (Easy) => use Recursion, include/Exclude => at an index => case1: call recursion by not including the curr element i.e with the next index, case2: add in the track and call recursion for the next element. If you reach the end -> store the ans.
-[ ] Combination Sum (Medium)
-[ ] Word Search (Medium)
-[ ] Palindrome Partitioning (Medium)
+[ ] Subsets (Easy) => use Recursion, include/Exclude => at an index => case1: call recursion by not including the curr element i.e with the next index, case2: add in the track and call recursion for the next element. If you reach the end -> store the ans. TC: O(n * 2^n) i.e we are visiting all element and for each element we have 2 choices.
+[ ] Combination Sum (Medium) => Recursion + Backtracking => Keep track of elements and currsum, At each element either you chose to include the element or skip it totally to avoid -> Each Recursive call goes with same index as we are allowed to choose the same element again, finding sum for duplicates i.e [2, 2, 3] and [3, 2, 2] will have same sum in the Decision Tree, We avoid it by make sure, It is included in one decision branch and totally ignored for the other one. TC: O(2^target)
+[ ] Word Search (Medium) => A classic backtrack problem => Try all the path and see if the word exists or not. TC: O(m * n * 4^len(word)) -> m*n as we visit each element in the board, for each element matched with the word, The decision tree branch out in 4 direction i.e 4^n.
+[*] Palindrome Partitioning (Medium) => backtracking logic => use Recurisve Decision tree, check for each substring from start index in str => If it is a palindrom, store in vector<> part, check for next index, Since we maintain 1 copy of part -> use backtrack i.e remove the last added element from part -> If we reach the end, store the ans and return. TC: O(n * 2^n) => 2^n as we are using decision tree, n as we are iterating for each substring.
 [ ] N-Queens (Hard)
 [ ] Sudoku Solver (Hard)
 
 ### Neetcode Extras:
-[ ]
+[*] Subsets II (Medium) => Here, input may contains duplicates i.e avoid duplicates => sort it, ignore same value during case 2 of not considering the curr Ele because this element we have already considered in case 1 so will skip it => create the decision tree. TC: (n * 2^n), nlogn for sorting can be ignored infront of n * 2^n.
+[ ] Permutations (Medium) => Recusive + Backtracking => for currIndex -> for each Recurisve call, Swap the currIndex with every other index and call Recursivly. => After each Recurision since we are modifying the actual nums, we need to reverse the swap that we performed before i.e backtrack to rollback to original state. TC: O(n! * n) SC: O(n) [Recursion dept] if ignoring the space to store output.
+[*] Combination Sum II (Medium) => Recursive + Backtracking => same as Combination Sum Logic => NOTE: Sort the arr +  Here we are not allowed to choose the same ele, So each recursive call go with index + 1 i.e consider the next element + Also two avoid duplicates, use while loop to skip same elements in order to skip that element completly for the case where we dont consider that ele in decision tree. TC: O(n*2^n) [n for while loop and 2^n for because at each element it branches out into 2 options i.e either we consider it or dont consider it at all]
+[ ] Letter Combinations of a Phone Number (Medium) => Classic backtracking => Maintain a track through recursive calls -> track all possiblities and store in ans. TC: O(4^n * n) i.e at worst case, we have 4 options so 4^n and n as we will iterate each options for a digit.
 
 ------------------------------
 🔹 13. Greedy [Concepts: Locally optimal → globally optimal]

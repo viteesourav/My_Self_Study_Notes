@@ -220,6 +220,10 @@ NOTE: For Singly Linked list we use: forward_list
 
          unordered_map<pair<int, int>, unordered_set<int>, decltype(customHash)> map;    //customHash ==> defines the customer hasher for the keys.
 
+   3. In C++:
+      -- std::pair works fine in set and map because they rely on ordering (operator<), which is already defined for std::pair.
+      -- But unordered_set (and unordered_map) require hashing, and the STL does not provide a default hash specialization for std::pair.
+
 
 3) Pair:
    -- Used to Store 2 heterogenous data together. eg: pair<int, char> P1.
