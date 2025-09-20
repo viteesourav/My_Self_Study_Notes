@@ -3,66 +3,111 @@
 ### JS Core Challenges code for Reference ###
 
 1. Debouncing function:  -> trigger event only after d ms.
+    NOTE:
+        1. tailing Option: This is the default debounced method, where each trigger will be executed only after d delay. 
+        2. Leading Option: This is like for the very first call => executes immediately, then next call onwards it will delay execution by d delay.
 
-const debounce = (fn, delay) => {
-    
-    let timer = 0;
-
-    return function (...args) {
+// use closure to store the timer instance...
+const debounce = (cb, delay, options = {}) => {
+    let timer;
+    let lastArgs;
+    const {leading = false, tailing = true} = options;
+    return (...args) => {
+        // keep track of the last passed args...
+        lastArgs = args;
         
-        // If timer is present already -> clear it...
-        if(timer) {
-            clearTimeout(timer);
+        //check do we need to call the function now => Leading is true and timer is not defined.
+        const callNow = leading && !timer;  
+        
+        if(callNow) {
+            cb(...args);
         }
-
-        timer = setTimeout(()=>{
-            fn(...args);
+        
+        // If tailing -> we want to clear any already running timer...
+        clearTimeout(timer);
+        
+        // your timer dealy...
+        timer = setTimeout(()=> {
+            //this runs only in case -> tailing and isCallNow is not true.
+            if(tailing && !callNow) {
+                cb(...args);
+            }
         }, delay);
     }
-};
+}
 
-const debouncedLog = debounce(() => console.log("Search triggered!"), 500);
 
-debouncedLog();
-debouncedLog();
-debouncedLog();
-// // Only one log will appear after 500ms
+// This cancels any timer that is still active..  [eg: cleanUp on unMounting of any component in React]
+debounce.cancel = () => {
+    clearTimeout(timer);
+    timer = null;
+}
 
+// This cancels timer and executes the callback with the last passed args. [eg: before submitting a form, last typed searched Item executes immediately]
+debounce.flush = () => {
+    clearTimeout(timer);
+    cb(...lastArgs);
+    timer = null;
+}
+
+
+const log = () => console.log("Called!");
+const debouncedLog = debounce(log, 500, {leading: true});
+
+debouncedLog(); // called immediately
+debouncedLog(); // cancels previous, resets timer
+debouncedLog(); // cancels previous, resets timer
+debouncedLog(); // cancels previous, resets timer
+debouncedLog(); // only this call will fire after 500ms
+
+
+### Followup questions:
+1. Leading vs Trailing Execution
+    Right now, your debounce fires only on trailing edge (after delay).
+    Can you extend it to allow leading edge execution (run immediately on first call, then debounce others)?
+
+2. Cancel & Flush
+    Suppose you want to cancel any pending execution (like user canceled typing).
+    Or flush immediately (force execution of last queued call).
+    👉 How would you design your debounce to support debouncedFn.cancel() and debouncedFn.flush()?
+
+3. Practical Scenario
+
+    Imagine using debounce in a React search bar (typing API calls).
+    Why would debounce be better than throttle here?  debouce usecase [limits the no of executions] and throttle usecase is different [limits rate of executions]
+    When would you prefer throttle instead? [Scroll events or resize events]
+
+
+### NOTE: 
+ 1. Use debounce for “grouping events” (user stops typing).
+ 2. Use throttle for “rate limiting” (scroll, resize, mouse move).
 
 
 2. Throttle fucntion: -> trigger event at d ms interval.
 
-const throttle = (cb, d) => {
-    let last = 0; // Keeps track of the last event occur time.
+//Implemented using a tracker for the start and end time...
+const throttle = (cb, delay) => {
+    let lastTime = 0;
     
     return (...args) => {
-        let now = new Date().getTime();
-         // dont do anything if any event occurs before d ms.
-         console.log(now-last);
-        if(now - last < d) return; 
-        last = now;
-        return cb(...args);
+        const currTime = Date.now();
+        
+        //check the diff => If < delay i.e triggered too soon, > delay i.e exectute cb and update lastTime.
+        if(currTime - lastTime < delay) {
+            return; 
+        }
+        
+        lastTime = currTime;
+        cb(...args);
     }
 }
 
-const throtleLog = throttle(() => console.log("Search triggered!"), 500);
+const log = () => console.log("Called!");
+const throttledLog = throttle(log, 1000);
 
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-throtleLog();
-// event logs only at an interval of 2 ms.
-
+throttledLog(); // executes immediately
+throttledLog(); // ignored if called within 1s
+throttledLog(); // executes only after 1s has passed
 
 
 
@@ -118,12 +163,18 @@ const original = {
     age: 28,
     skills: ["React", "JS"],
   },
+  test: undefined,
+  fun: function () {
+      console.log('Hii');
+  }
 };
 
 const copy = customDeepClone(original);
 console.log(original);
 console.log(copy);
 console.log(JSON.parse(JSON.stringify(original))); // With this, function, regexp, undefined will be lost. 
+
+
 
 
 Deep Merge --> Merge nested object with Recursion.
@@ -166,6 +217,43 @@ const customDeepMerge = (obj1, obj2) => {
     
     return result;
 };
+
+
+const userProfile = {
+  id: 1,
+  name: 'Alex',
+  details: {
+    age: 30,
+    city: 'New York'
+  }
+};
+
+const userSettings = {
+  id: 1,
+  details: {
+    theme: 'dark',
+    notifications: true
+  },
+  preferences: {
+    language: 'en'
+  }
+};
+
+Output:
+{
+  "id": 1,
+  "name": "Alex",
+  "details": {
+    "age": 30,
+    "city": "New York",
+    "theme": "dark",
+    "notifications": true
+  },
+  "preferences": {
+    "language": "en"
+  }
+}
+
 
 
 
@@ -271,6 +359,7 @@ Output:
     }
 
     function describe(msg) {
+        console.log(this);
         console.log(`Message from ${this.name} of age ${this.age}: ${msg}`);
     }
 
@@ -447,8 +536,7 @@ Promise.allPolyfill = (promises) => {
         let result = [];
         
         if(!promises.length) {
-            resolve(result);
-            return;
+            return resolve(result);
         }
         
         let pending = promises.length; // track if all promises resolved
@@ -476,6 +564,78 @@ Promise.allPolyfill([
 ]).then((res) => {
     console.log(res);
 }).catch(err => console.log(err));
+
+
+
+### NOTE:
+    1. Promise.all => rejects fast if any Promise rejects.
+    2. Promise.allSettled => waits for all the promise to settle (fullfilled or rejected), returns array of {status, value/rejectReason}.
+    3. Promise.race => resolve or reject with the first settled promise (success or error).  
+    4. Promise.any =>  resolves with the first fullfilled promise, rejects if all reject.
+
+### IMP => How would you handle huge arrays of Promises without flooding the system (like 10K API calls) ? 
+    Sol:
+        -> Implement concurrency-limited Promise.all, using a queue and only running N promises in parrallel.
+
+// Logic -> Loop fills slots → task finishes → triggers runTask → fills the freed slot → repeat until all done.  [ wait Queue implementation ] TC: O(limit) at a time.
+
+const delay = (ms, val) => {
+  return () =>
+    new Promise((resolve) => setTimeout(() => resolve(val), ms));  
+};
+
+const tasks = [
+  delay(1000, "A"),
+  delay(500, "B"),
+  delay(300, "C"),
+  delay(400, "D"),
+  delay(200, "E"),
+];
+
+const promiseAllWithLimit = (taskList, limit) => {
+    return new Promise((resolve, reject) => {
+        const res = [];
+        
+        let i = 0;
+        let completed = 0;
+        let running = 0;
+        
+        function runTask() {
+            
+            // check if all tasks are completed ?
+            if(completed == taskList.length) {
+                return resolve(res);
+            }
+            
+            // Loop runs for limit no of task at a time and i is bounded...
+            while(running < limit && i < taskList.length) {
+                const currIndex = i;
+                const task = taskList[i];
+                
+                i++;
+                running++;
+                
+                task()
+                    .then((result) => {
+                        res[currIndex] = result;
+                        running--;
+                        completed++;
+                        
+                        runTask(); //Triggers the next batch of tasks.
+                    })
+                    .catch(reject);
+            }
+        }
+        
+        runTask();
+        
+    });
+}
+
+promiseAllWithLimit(tasks, 2).then(console.log);
+// Expected: ["A", "B", "C", "D", "E"] but tasks run max 2 at a time
+
+
 
 
 7. Currying...
