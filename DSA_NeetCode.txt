@@ -167,7 +167,7 @@
 [ ] Climbing Stairs (Easy) => use DP memorization bottom up appraoch. start from nth step to 0th step and track how many ways we can reach to top step, stepway(n) = stepways(n+1) + stepways(n+2) [Practically O(n)] <> Alteranative recursion approach is O(2^n).
 [ ] House Robber (Easy) => classic DP problem => maintain 2 pointer + either you rob a house or not rob it, secondLastHouse, lastHouse, => Now iterate => case1: If robber decide to rob currHouse then he robs => currHouse + secondLastHouse. Case2: If robber decide not rob currHouse => the he robs lastHouse. => Take the max, move secondLastHouse and LastHouse to right i.e update their values and check the next House. TC: O(n)
 [*] Coin Change (Medium) => logic is => we can choose one coin, then again we have to choose from the coins to fill the reminder -> forms a big tree, with same sub-problem and repeated calculation. Sol using DP => Bottoms up appraoch -> from O to amount we build the dp array. eg: If we choose coin 3: then dp[4] = 1 [coin 3 is choosen] + dp[4-3]  //we need to know dp[1] as that will give us the possibilities. 
-[ ] Longest Palindromic Substring (Medium)
+[*] Longest Palindromic Substring (Medium) => 
 [ ] Maximum Subarray (Medium)
 [ ] Edit Distance (Hard)
 [ ] Regular Expression Matching (Hard)
@@ -185,7 +185,7 @@
 [ ] Word Search (Medium) => A classic backtrack problem => Try all the path and see if the word exists or not. TC: O(m * n * 4^len(word)) -> m*n as we visit each element in the board, for each element matched with the word, The decision tree branch out in 4 direction i.e 4^n.
 [*] Palindrome Partitioning (Medium) => backtracking logic => use Recurisve Decision tree, check for each substring from start index in str => If it is a palindrom, store in vector<> part, check for next index, Since we maintain 1 copy of part -> use backtrack i.e remove the last added element from part -> If we reach the end, store the ans and return. TC: O(n * 2^n) => 2^n as we are using decision tree, n as we are iterating for each substring.
 [ ] N-Queens (Hard) => Backtracking in 2D matrix => use set to keep track of Queens in rows (r), negative-diag [top-left to bottom right] i.e r-c, positve-diag [bottom-left to top-right] i.e r+c, Place the Queen and check, Move to the next column. --> Store the ans once you cover all columns. NOTE: we will place Qs as column wise i.e Recursive params -> Inside, we will see which row we can place the Q using while loop.  TC: O(N!) 
-[ ] Sudoku Solver (Hard) => Backtracking => try backtracking row wise, one by one column ==> If we get a free space => we have 9 options to fill, check for each one of them. It is safe to add a value only if That value is not in the whole row, whole column and in that 3x3 matrix.
+[*] Sudoku Solver (Hard) => Backtracking => try backtracking row wise, one by one column ==> If we get a free space => we have 9 options to fill, check for each one of them. It is safe to add a value only if That value is not in the whole row, whole column and in that 3x3 matrix.
 
 ### Neetcode Extras:
 [*] Subsets II (Medium) => Here, input may contains duplicates i.e avoid duplicates => sort it, ignore same value during case 2 of not considering the curr Ele because this element we have already considered in case 1 so will skip it => create the decision tree. TC: (n * 2^n), nlogn for sorting can be ignored infront of n * 2^n.
@@ -214,12 +214,49 @@
 ------------------------------
 [ ] Insert Interval (Medium)
 [ ] Merge Intervals (Medium) => sort the intervals then push first interval in ans, then iterate the other intervals, check can we merge interval ? If yes -> merge them and update at last index in ans. else push in ans.
-[ ] Meeting Rooms II (Medium) => sort the start and end time. use 2 pointer. we need to find max overlapping meeting. Iterate in start time, If startTime < endTime i.e the next meeting started before the previous ended so roomCount++, else you reduce the room count. -> keep track of the max room count. 
-[ ] Non-overlapping Intervals (Medium) => sort the intervals based on start time => Keep track of the PrevEndtime, iterate from next interval onwards, If startTime > prevTime => update prevEndTime to curr EndTime else, we have clashing intervals i.e update the prevEndTime as min of prevEndTime or currTime, also keep track of how many times you are doing it. -> return this ans.
+[*] Meeting Rooms II (Medium) => sort the start and end time. use 2 pointer. we need to find max overlapping meeting. Iterate in start time, If startTime < endTime i.e the next meeting started before the previous ended so roomCount++, else you reduce the room count. -> keep track of the max room count. 
+[*] Non-overlapping Intervals (Medium) => sort the intervals based on start time => Keep track of the PrevEndtime, iterate from next interval onwards, If startTime > prevTime => update prevEndTime to curr EndTime else, we have clashing intervals i.e update the prevEndTime as min of prevEndTime or currTime, also keep track of how many times you are doing it. -> return this ans.
+
+### Neetcode Extras:
+[ ] Meeting Rooms (Medium)
+[ ] Minimum Interval to Include Each Query (Hard)
 
 
 🔹 15. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
 [ ] Burst Balloons (Hard Hard) => Intuation Appraoch -> BruteForce Recursion => Iterate each ballon and check how much coin we can get if we pop it. | Optimal: Trick is at any index i, consider what if we burst this ballon at the last [Defining subproblem] => If ith ballon is burst last => Total coins = num[i-1] * num[i] * num[i+1] + dp[i+1][R] [Left part of the arr which is already burst] + dp[l][i-1] [Right part of the arr which is also burst]. => Recursively Find the max possible coin we can collect. TC: O(n^2 * n) -> total no of subarray * looping inside, SC: O(n2) -> 2D DP space dp[l][r]
+
+
+
+### Extras [Questions from contests/Practise]: 
+[*] Split and Merge Array Transformation => Brute Force way, use BFS for the finding shortest Path to reach the desired combination, Vistied keeps track of all paths and avoid checking duplicates.
+
+
+## NOTES:
+	1. For Finding the shortest Path to a particualr node in Graph problem --> BFS preferred over DFS.
+		=> Reason: BFS is level order so, -> It doesnot go and explore paths randomly like DFS. DFS more like explore all path in the dept of the Graph.
+	2. vector methods:
+		1. erase:
+			std::vector<int> v = {1, 2, 3, 4, 5};
+			v.erase(v.begin() + 2); // removes element at index 2 (value 3)  ---> > v = {1, 2, 4, 5}
+			v.erase(v.begin() + 1, v.begin() + 4); // removes elements at indices [1,4) => {2,3,4} --> v = {1, 5}
+		
+		2. subArray using Iterators:
+			std::vector<int> v = {10, 20, 30, 40, 50};
+			int l = 1, r = 4; // want subarray from index 1 to 3
+
+			std::vector<int> sub(v.begin() + l, v.begin() + r);   // Range is [start, end)
+			// sub = {20, 30, 40}
+
+		3. vector insert function:
+			std::vector<int> v = {1, 2, 4};
+			v.insert(v.begin() + 2, 3);   // Insert single element =>     v = { 1, 2, 3, 4}  --> adds an element at the specified pos.
+			
+			std::vector<int> v = {1, 2, 4};
+			v.insert(v.begin() + 2, 2, 3); // Insert multiple elements <pos, copies, value> => v = {1, 2, 3, 3, 4}  --> Insert 2 copies of 3 at pos 2.
+			
+			std::vector<int> v = {1, 2, 5};
+			std::vector<int> extra = {3, 4};
+			v.insert(v.begin() + 2, extra.begin(), extra.end()); // Inser a range inside vector =>  v = {1, 2, 3, 4, 5}
 
 
 
