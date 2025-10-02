@@ -147,3 +147,474 @@ NOTE:
 
     
 
+
+
+
+
+
+#### Java Interview Notes:
+## Java Interview Notes:
+	1. Constructors.
+		-> Initialize the Object for any class with default values or custom values using parameterized constructors.
+		-> Always called when the object is initialized for a class..
+		-> In Inheritance, the flow is from parent first and then child consutructors are invoked.
+		
+	2. Aggregation in Java
+		-> Any class that have Entity Reference. 
+		-> Represents a relationship.
+		-> Basically, using another class reference Object inside a class.
+		   -> Employee Obj has details like name, id, age etc, along with that it also has Object name Address -> [a seperate class which has details includes city, state, country]
+	
+	3. Inheritances.
+		-> Properties of parents can be reused in by the child class. [Code Reuseablity]
+		-> Types: 
+			1. single-level -> A->B
+			2. Hierarchical  -> A->B, A->C.
+			3. Multi-level -> A->B->C
+			4. Multiple.  [A,B -> C  => Not supported by  Java -> can cause method ambiguity in child class]
+	
+	4. Data Structures:
+		1. Arrays
+			-> Sorting program in Java.
+			  1. Go with standard int[] arr = {}, Arrays.sort() // sorts in O(n logn).
+			  2. use List<Integer> nums = Arrays.asList(...) => buuble sort Logic O(n^2).
+					-> Shorter tech: use Collections.sort().
+					-> Write logic for bubble sort. 
+		NOTE: 
+			- primitive dataType like int[] arr = {1, 2, 4} -> has .length, and can access elements like arr[5];   //O(1)
+			- Non-primitive dataType like List<Integer> arr = Arrays.asList(....)  --> Here to access the element .get(index) //O(N), .size() for length.
+			
+	5. Encapsulation & Abstraction [Explain via code]
+		1. Encapsulation
+			-> Wrapping up of data + methods in a single unit (i.e class), restrict direct access using, exposed using getter and setters.
+			-> Define:
+				1. Class.
+				2. private data members.
+				3. Constructors.
+				4. getters with proper return type.
+				5. setters with proper void as return type.
+				
+		2. Abstraction 
+			-> Data Hiding, hide details and expose only essential features -> using abstract classes and interfaces.
+			-> Define:
+				1. interface class
+					-> field will be public static final (constants)
+					-> Methods are implicitly public.
+					-> No constructors allowed.
+					-> Java 8 Enhancements:
+						1. default:
+							-> methods can be defined with: default void method_name() {...};
+							-> This methods can be acessed by the child class directly.
+						2. static:
+							-> static void method_name() {...};
+							-> belongs to the interface, not to an instance.
+							-> can be called with the interface_name.method_name() in Main class directly.
+				2. Child classes implementing the interfaces 
+					-> Methods must be public. By default access scope is package-private [accessible in the same package]
+					-> use @Override annotation to override the implementing methods.
+			Alternative:
+				-> using Abstract classes.
+					1. Define abstract class {}.
+					2. Define the Abstract method with public abstract void method_name();
+					3. Define the Concrete method: public void method_name() {....};
+				NOTE:
+					-> Can have constructors too..
+				-> Child Classes will extend the abstract class.
+					-> use @Override to overwrite the abstract methods.
+					-> can directly access the concrete class.
+
+    NOTES:
+		1. Why do we still need Abstract classes when we already have default with Interfaces in Java 8 onwards.
+			1. Fields in Abstract class can be (public/private/protected), In Interface it can only be public static final i.e constact.
+			2. Constructors are there with Abstract class. Interface has nothing.
+			3. methods can be (public/private/protected) with Abstract class, In Interfaces, methods are implicitly public.
+			4. useCase:
+				Interfaces can be very generic -> there not necessary we have a strong bind with the child class. i.e interface vehicle -> class Car [Both have same functionality]
+				Abstract classes are more strongly binded with the child class -> abstract class Vehicle -> Car [More similarities]
+			5. Multiple Inheritance:
+				Abstract classes -> class Child extends A, B {...}
+					-> this is wrong, As it will create ambiguity/Confusion as in which method we are overriding !
+					-> Not allowed in abstract classes.
+				Interfaces: class Child implements A, B {...}
+					-> this is allowed, as it doesnot hold any state and method conflict can be resolved.
+					-> Conflict method_name case:
+						-> Assumed, in both the interfaces we used default void method_name() {...} i.e same method name but different implementation
+						-> Resolution in child class: 
+							@override
+							public void method_name() {
+								A.super.method_name();   // This specify which interface's method we are calling 
+							}
+		2. Difference between "static final" and "final":
+			-> public static final int constVal = 56;
+				-> This belongs to the class not to the instance.
+				-> Can be accessed with the class name directly.
+				-> Value is shared across all instance.
+			
+			-> public final int constVal;
+				-> belongs to the instance not to the class.
+				-> It's value must be set using a constructor.
+				-> Each Instance can have, it's own copy of constant value.
+        3. Function Interfaces [TODO]:
+            -> interface with only single abstract method.
+            -> Advantages: 
+                -> before we need to create an Anonymous class to implement the method of the interface
+                -> with Function interface we can directly access the method using lambda expressions.
+        4. How can we create Immutable class ?
+            -> Define the class as final.
+            -> Just define the getter methods.
+            -> Declare the variables as final.
+        5. Exception Handling with Java [TODO]
+            -> Checked [handled using try-catch block] and unChecked Exceptions [Runtime Exceptions, handled using "throw" keyword]
+        6. What is Maven ? How we use it in Application ? [TODO]
+            -> 
+	
+
+	6.  Collections in Java
+		-> Baically taking about Data structure supports in Java: List, Set, Map, PriorityQueue, Comparables vs Comparator
+		-> Comparable Vs comparators:
+			1.Comparable
+				-> It is defined inside the class.
+				-> method overridden: compareTo(T obj);
+				-> Only 1 natural order allowed inside the class.
+				-> uses Java.lang
+				-> used in: Collections.sort();
+				-> eg: 
+					class Person implements Comparable<Person> {
+						String name;
+						int age;
+
+						@Override
+						public int compareTo(Person other) {
+							return this.age - other.age; // natural order = by age
+						}
+					}
+					Collections.sort(list); // uses compareTo(), list => contains list of Person objs...
+
+			2. Comparators
+				-> It is defined outside the class.
+				-> Method used: compareTo(T obj1, T obj2);
+				-> can be used for multiple custom ordering.
+				-> uses Java.util
+				-> used in: Collections.sort(list, comp)
+				-> eg:
+					// By name
+					Collections.sort(list, (a, b) -> a.name.compareTo(b.name));   // list => Contains list of person objs..
+
+					// By descending age
+					Collections.sort(list, (a, b) -> b.age - a.age);
+
+		-> Notes:
+			1. Null values with Linear data structurs: 
+				-> List, LinkedList, => allows null inside them.
+				-> HashSet -> allows only 1 null.
+				-> TreeSet -> Doesnot allow null atall, as it needs compareTo to sort.
+			2. Difference between ArrayList & LinkedList ?
+				1. ArrayList:
+					-> Internally uses dynamic array.
+					-> ArrayList class can act as List only.
+					-> implements randomAccess interface. i.e Retrival is faster with ArrayList. O(1)
+					-> insertion in the middle or Random places is slower.
+                    -> Binary Search is faster in case of ArrayList -> O(log n)
+					
+				2. LinkedList:
+					-> Internally uses doubly Linked List.
+					-> LinkedList class can act as List and queue. [implements List and dequeue Interfaces]
+					-> No implementation of randomAccess Interface i.e Retrival takes O(n) time. => slower.
+					-> Insertion/Deletion in the middle or random places is faster with LinkedList. O(1).
+			3. No Random Access in case of String Manupulation.
+				-> Reverse a string directly is not possible as Strings are immutable in Java.
+				-> First convert the string in charArray. -> Perfrom operations.
+				-> Then convert charArray into String using new String(charArray).
+				-> Alternativly use -> StringBuffer, can use append() to add chars/strings into existing str. Bonus: It also have .reverse() to reverse the whole str.
+			4. Super Keyword in Java.
+				1. call the constructor of the immediate parent class. 
+				2. In case of Overriden method => super.method_name(); --> Calls the parent class method. [access original logic]
+			5.  .equals() Vs == in Java
+				-> ArrayList or int[] list => compares list items element by element.
+				-> String's content we can compare i.e str1.equals(str2).
+				-> "==" -> compares memory refeneces, comapre values directly for primitive data types.
+				-> .equals() => Defined in Object Class, overriden by String, Integer, ArrayList classes to comapre Content.
+				NOTE:
+					1. String str = new String("name") -> Heap + pool
+						-> This always creates new object in the heap.
+					2. String str = "name";
+					   String str2 = "name";
+					   -> "name" will go inside the string pool and it's reference will be reused.
+					   -> str == str2 [same reference, true]
+					3. String str = new String("name");  [** Important **]
+					   String str2 = "name";
+					   -> str == str2 [One is in heap, other one is in pool i.e false]
+					   -> str.equals(str2) [true, as the content is same]
+			6. How do you compare 2 object's content not their Refrences [TODO]
+                -> 
+            7.  TreeMap Over HashMap ?
+				-> HashMap stores elements in non-structured way [due to Hashing].
+				-> TreeMap stores elements in a stored in a ordered manner, based on the comparator we define.
+            8. How HashMap Works in Java ?
+                -> 3 steps:
+                    1. Hashing: use the hash funtion to get the hashcode.
+                    2. Initialize the bucket
+                    3. Storing in the bucket.
+                -> what are HashMap collisions ? How they are handled ? Before Java 8 and After Java 8 scenario.
+            9. User Session data in hashMap ? How do you ensure Thread Safety ?
+                -> use concurrent HashMap.
+
+
+
+	7. Stream API in Java
+        1. 
+	
+
+	8. Memory Management in Java
+		1. How to identify Memory leaks in long running applications ?
+		2. Memory Leaks issues inspite of having Garbage Collection Concept ?
+			-> Static references has to be manually cleared out.
+			-> if Multi-threading is not done carefully, variables not pointing to null references.
+		3. How design a theread pull that adjust size based on System load ?
+			-> using thread pool executor. [In older Versions like Java 8], with Java 21 we have virtual threads
+			-> using dynamic pools or execution handlers. [Need to look into it]
+        4. Java Memory Model ?
+	
+	
+
+	9. Multi-Threading Concept in Java
+		1. Concurrency Risk with HashMap in Multi-threaded Env
+		   -> use Concurrent HashMap [Thread Safe]
+		   -> Concurrent HashMap before Java 8 and after Java 8
+				-> Before Java 8, the whole Map is blocked if one thread is trying to access it.
+				-> After Java 8, only the key-value pair the thread is accessing is blocked, Other thread can still access the Map.
+		2. Volatile Keyword guarntee thred-safety ?
+		3. Synchronise Vs Volatile ?
+		4. Why creating thread through service executor is Preferred over runnable executors ?
+        5. How do we decide the number of thread for an appliction ?
+        6. Deadlocks ? Example with code ?
+		
+
+
+
+	10. Spring Boot With Java
+		1. Diference between All spring terms Like Spring, Spring MVC, Spring boot ?
+            -> Spring Boot Actuators ?
+		2. What are Srping Beans? Spring Beans Life cycle.
+		3. Why Spring prefers Constructor injection over other any other Injections.
+			-> Can we have Circular dependency with Constructor Injection ?
+            -> usecase of Constructor Injection and Setter Injection ? When to use ?
+		4. Custom conditional Annotations ?
+			-> creates Beans based on when a condition is satisfied.
+		5. SpringBoot Auto-Configuration feature ? How it works ?
+            -> @SrpingBootApplication Annotation ? Why it is used ?
+		6. How does @Scope Annotation behaves in a multi-threaded REST Controllers ?
+			-> Creates a new Bean on every http requests. It is not shared between the threads.
+		7. Approach to follow if you want to update specific fields in a class.
+			-> use POJO Classes with getters and setters.
+		8. Difference between PUT and PATCH Methods ?
+			-> PUT: we update the entire Object.
+			-> PATCH: we can update any particular column, we can do that.
+		9. Calling 3 mincroservices in parallel, combine the result, What Appraoch to use ?
+		10. How do you implement distributed Tracing ? How do you track the life cycle of an API ?
+			-> use SAGA Pattern -> Tracks all ongoing API calls across the microservices.
+		11. JWT call is expired mid-way. How this situation can be handled ?
+			-> It will call the refresh Token. 
+		12. How do you implement IP-rate limiting in Springboot for public APIs ? [*IMP*]
+            -> How do you optimize your connection to database where to limit the no. of hits to DB to fetch data ?
+		13. SOLID Principles Implementation usecase in a real Enterprice level Application.
+        14. Caching in Springboot for faster response ? What different ways to implement it ?
+            -> Different Caching strategices ?
+        15. Database connection realted annotations with SpringBoot. Like @Transactional Annotation and Singleton Principle.
+            -> Why @Transactional is Preferred on method level ? Why not defined it at class level ?
+            -> How to handle a rollback of a transaction due to operation failure at remote service -> SAGA Patterns, Compensation or Distributery Pattern.
+            -> How to use @transaction with Spring Data JPA
+        16. What are the servers provided by Springboot ? 
+            -> Which is the default one ? And how can we update it ?
+        17. Springboot Data JPA ? Why it is Preferred over normal JPA ?
+            -> How do you implement Search functionality ? 
+            -> custom Query usecases And in-built Queries usecases ?
+        18. Concept of Repository with Sping Data JPA ?
+            -> Limitations/Disadvantages for Repository.
+        
+	
+
+	11. Kubes concepts:
+		1. While deploying a micro-service -> How do implements zero-downtime rolling deployments.
+
+
+
+
+
+
+
+
+
+
+
+### Coding Practices backup:
+
+import java.util.*;
+
+// Encapsulation Example...
+class BankAccount {
+    // declare private variables..
+    private String accountNo;
+    private double balance;
+    // decalre constructors..
+    public BankAccount(String account, double amount) {
+        this.accountNo = account;
+        this.balance = amount;
+    }
+    // declare getters..
+    public String getAccountNo() {
+        return this.accountNo;
+    }
+    
+    public double getBalance() {
+        return this.balance;
+    }
+    
+    // declare setters...
+    public void setAccountNo(String acc) {
+        this.accountNo = acc;
+    }
+    
+    public void setBalance(double amount) {
+        this.balance = amount;
+    }
+}
+
+// Abstraction example...
+interface Vehicle {
+    void start(); // implicitly public
+    void stop();
+    default void run() {
+        System.out.println("Vehicle is running");
+    }
+    static void intro() {
+        System.out.println("This is vehicle interface !");
+    }
+}
+
+class Car implements Vehicle {
+    // By default access is package-private [accessible inside the same package ], must define public.
+    @Override
+    public void start() {
+        System.out.println("Car Starts");
+    }
+    @Override
+    public void stop() {
+        System.out.println("Car Stops");
+    }
+}
+
+class Bike implements Vehicle {
+    @Override
+    public void start() {
+        System.out.println("Bike Starts");
+    }
+    @Override
+    public void stop() {
+        System.out.println("Bike Stops");
+    }
+}
+
+class Main {
+    public static void bubbleSortAlgo(List<Integer> nums) {
+        int n = nums.size();
+        boolean swapped;
+        
+        for(int i=0; i<n; i++) {
+            swapped = false;
+            for(int j=0; j < n-1-i; j++) {
+                if(nums.get(j) > nums.get(j+1)) {
+                    Collections.swap(nums, j, j+1);
+                    swapped = true;
+                }
+            }
+            
+            // Already sorted for this ith index...
+            if(!swapped) {
+                break;
+            }
+        }
+    }
+    public static void main(String[] args) {
+        
+        // Can directly call in main class..
+        Vehicle.intro();
+        
+        Car myCar = new Car();
+        Bike myBike = new Bike();
+        
+        myCar.start();
+        myBike.start();
+        
+        myCar.run();
+        
+        
+        // BankAccount bac = new BankAccount("67789", 56000.98);
+        // System.out.println(bac.getAccountNo());
+        // bac.setBalance(8900.0);
+        // System.out.println(bac.getBalance());
+        
+        // int[] arr = {5, 2, 9, 7, 1};
+        // List<Integer> nums = Arrays.asList(5, 2, 9, 7, 1);
+        // // Arrays.sort(arr);  // O(n logn)
+        // bubbleSortAlgo(nums);
+        // System.out.println(nums);
+        
+        
+        
+    }
+}
+
+
+
+
+
+### Anangram code....
+
+import java.util.*;
+
+public class App {
+
+    public static boolean checkAnagram (String str1, String str2) {
+        Map<Character, Integer> freqMap = new HashMap<>();
+        
+        for(char ch : str1.toCharArray()) {
+            freqMap.put(ch, freqMap.getOrDefault(ch, 0) + 1);
+        }
+
+        for(char ch : str2.toCharArray()) {
+            if(!freqMap.containsKey(ch)) return false;
+            freqMap.put(ch, freqMap.getOrDefault(ch, 0) - 1);
+            if(freqMap.get(ch) == 0) freqMap.remove(ch);
+        }
+
+        return freqMap.isEmpty();
+    }
+
+    public static void main(String[] args) throws Exception {
+       System.out.println(
+        checkAnagram("listen", "silent")
+       );
+
+    }
+}
+
+
+
+### Reverse a string...
+import java.util.*;
+
+public class App {
+    public static void main(String[] args) throws Exception {
+        
+        String name = "Sourav";
+        StringBuffer str = new StringBuffer();
+
+        int r = name.length() - 1;
+        while(r >=0 ) {
+            str.append(name.charAt(r));
+            r--;
+        }
+        System.out.println(str);
+    }
+}
