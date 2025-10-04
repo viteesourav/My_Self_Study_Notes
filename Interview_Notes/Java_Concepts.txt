@@ -156,14 +156,47 @@ NOTE:
 ## Java Interview Notes:
 	1. Constructors.
 		-> Initialize the Object for any class with default values or custom values using parameterized constructors.
-		-> Always called when the object is initialized for a class..
+		-> Always called when the object is initialized for a class.
+            -> If any constructor is defined, compiler won't create default one.
+            -> Can call one constructor from another using "this()" 
 		-> In Inheritance, the flow is from parent first and then child consutructors are invoked.
+            -> Every child's class Constructor implicitly calls super() -> parent's default constructor by default.
+            -> Java ensures Object is fully constructed from top (Parent) to bottom (child).
+            -> If Parent has only parameterized constructor, Child must call it explicitly.
+        -> Super() keyword is used to call the Parent's constructor -> Must be first line.
+        -> If class has any final variable -> Constructor must set the value during object creation.
+            -> NOTE: If the variable is static final => variable belongs to the class directly can have constant value across all Objects for the class.
 		
 	2. Aggregation in Java
 		-> Any class that have Entity Reference. 
 		-> Represents a relationship.
 		-> Basically, using another class reference Object inside a class.
 		   -> Employee Obj has details like name, id, age etc, along with that it also has Object name Address -> [a seperate class which has details includes city, state, country]
+        -> Weak Association i.e Child class can exists without Parent Class [Address can be used as an independent class without employee class]
+    
+    2.1 Composition in Java
+        -> Relationship between Classes where the child lifecycle is strongly bounded with Parent class. [Strong Association]
+        -> useCase: Car -> Engine or Human -> Heart  [here the one cannot exist with it's child]
+        eg: 
+            class Engine {
+                void start() {
+                    sysout("Start the Engine");
+                }
+            }
+
+            class Car {
+                private Engine engine;   //strongly coupled..
+
+                public Car() {
+                    this.engine = new Engine();   //consturctor we have initialize the engine.
+                }
+
+                public void start() {
+                    this.engine.start();  // calling the method from Enginee class -> Has to be here othewise no point of car.
+                    sysout("Car is moving");  
+                }
+
+            }
 	
 	3. Inheritances.
 		-> Properties of parents can be reused in by the child class. [Code Reuseablity]
@@ -171,7 +204,8 @@ NOTE:
 			1. single-level -> A->B
 			2. Hierarchical  -> A->B, A->C.
 			3. Multi-level -> A->B->C
-			4. Multiple.  [A,B -> C  => Not supported by  Java -> can cause method ambiguity in child class]
+			4. Multiple.  [A,B -> C  => Not supported for normal class in Java -> can cause method ambiguity in child class]
+                -> Can be acheived using Interfaces
 	
 	4. Data Structures:
 		1. Arrays
@@ -182,7 +216,8 @@ NOTE:
 					-> Write logic for bubble sort. 
 		NOTE: 
 			- primitive dataType like int[] arr = {1, 2, 4} -> has .length, and can access elements like arr[5];   //O(1)
-			- Non-primitive dataType like List<Integer> arr = Arrays.asList(....)  --> Here to access the element .get(index) //O(N), .size() for length.
+			- Non-primitive dataType like List<Integer> arr = Arrays.asList(....)  --> Here to access the element .get(index) //O(1), .size() for length.
+            - For LinkedList<Integer> => Random access is not possible i.e O(N)
 			
 	5. Encapsulation & Abstraction [Explain via code]
 		1. Encapsulation
@@ -205,27 +240,32 @@ NOTE:
 						1. default:
 							-> methods can be defined with: default void method_name() {...};
 							-> This methods can be acessed by the child class directly.
+                            -> default methods in an interface can be overridden -> No Issues.
 						2. static:
 							-> static void method_name() {...};
-							-> belongs to the interface, not to an instance.
+							-> belongs to the interface, not to an instance of the implenting class.
 							-> can be called with the interface_name.method_name() in Main class directly.
 				2. Child classes implementing the interfaces 
 					-> Methods must be public. By default access scope is package-private [accessible in the same package]
 					-> use @Override annotation to override the implementing methods.
+                    -> In case of conflict while override methods in case of multiple implementation of interfaces i.e 
+                        class A implements B, c {...}
+                        -> This will cause ambiguity, as it is not sure which interface method we are overriding. 
+                        -> If interfaces have default methods -> You can call specific interface's method using interface_name.super.method_name() [call's show method from B interface]
 			Alternative:
 				-> using Abstract classes.
 					1. Define abstract class {}.
 					2. Define the Abstract method with public abstract void method_name();
 					3. Define the Concrete method: public void method_name() {....};
 				NOTE:
-					-> Can have constructors too..
+					-> Can have constructors too.. [** IMP **]
 				-> Child Classes will extend the abstract class.
 					-> use @Override to overwrite the abstract methods.
 					-> can directly access the concrete class.
 
     NOTES:
 		1. Why do we still need Abstract classes when we already have default with Interfaces in Java 8 onwards.
-			1. Fields in Abstract class can be (public/private/protected), In Interface it can only be public static final i.e constact.
+			1. Fields in Abstract class can be (public/private/protected), In Interface it can only be public static final i.e constant.
 			2. Constructors are there with Abstract class. Interface has nothing.
 			3. methods can be (public/private/protected) with Abstract class, In Interfaces, methods are implicitly public.
 			4. useCase:
@@ -252,21 +292,71 @@ NOTE:
 			
 			-> public final int constVal;
 				-> belongs to the instance not to the class.
-				-> It's value must be set using a constructor.
+				-> It's value must be set using a parameterized constructor.
 				-> Each Instance can have, it's own copy of constant value.
-        3. Function Interfaces [TODO]:
+        3. Function Interfaces:
             -> interface with only single abstract method.
+            -> example: 
+                1. Runnable interface [method run()]
+                2. Callable interface [method call()]
+                3. Comparator interface [method compare()]
             -> Advantages: 
-                -> before we need to create an Anonymous class to implement the method of the interface
-                -> with Function interface we can directly access the method using lambda expressions.
+                -> before Java 8, we need to create an Anonymous class to override the method of the interface.
+                    eg: Sort the list of strings, based on their length: [old ways]
+                        Collections.sort(list, new Comaparator<String>() {
+                            @Override
+                            public int compare(String a, String b) {
+                                return a.length() - b.length();
+                            }
+                        });
+                -> with Function interface we can directly access the method using lambda expressions. [Since we know only 1 method is there anyways]
+                    eg: eg: Sort the list of strings, based on their length: [new ways]
+                        Collections.sort(list, (a, b) -> a.length() - b.length());   [Here comparator is a functional Interface]
         4. How can we create Immutable class ?
-            -> Define the class as final.
-            -> Just define the getter methods.
-            -> Declare the variables as final.
-        5. Exception Handling with Java [TODO]
-            -> Checked [handled using try-catch block] and unChecked Exceptions [Runtime Exceptions, handled using "throw" keyword]
-        6. What is Maven ? How we use it in Application ? [TODO]
-            -> 
+            -> A class whose fields cannot be changed after the Object is created.
+                eg: String, Integer, LocalDate are immutable class.
+            -> Defination: 
+                1. declare the class as final.   eg: final class Config {...};
+                2. declare the fields are private and final:  eg: private final String variable_name;  [set value using constructor]
+                3. declare the get_methods alone.
+            -> Advantages of Immutable objects:
+                1. Complete Thread Safety [As fields value never changes]  usecase: shared configurations, constants, caching.
+                2. Keys in hashMap/Hashset => need to have a fixed hashcode() for a particular key. eg: Strings as keys in HashMap, hashCode for the key never changes.
+                3. Caching => JVM uses String pool to cache immutable String value -> Saves Memory
+        5. Exception Handling with Java
+            -> Checked [handled using try-catch block] and unChecked Exceptions [Runtime Exceptions, handled using "throws" keyword]
+            -> eg:
+                1. checked Exception [try-catch, Compile time]  --> extended from Exception Class.
+                    1. IOException
+                    2. SQLException
+                    3. ClassNotFoundException
+                2. unChecked Exception [throws, throw - run time exception] -> exctended form RuntimeException Class.
+                    1. ArrayIndexOutOfBoundException
+                    2. NullPointerException
+                    3. ArithmeticException
+            -> Notes:
+                1. Multiple catch blocks are possible but the order also matters. [Catch specific exceptions first and then at the end "Exception e" i.e generic one]
+                2. Finally block will always executes, except if we have used "System.exit(0)".
+                3. throw vs throws
+                    -> throw: used "inside the method" to explictly throw execeptions.
+                    -> throws: used in the "method signature" to declare exceptions that can be thrown.
+                eg: 
+                    void readFile() throws IOException {
+                        throw new IOException("file is missing");
+                    }
+                4. Custom Exceptions:
+                    -> we can create out own custom exception by extending the Exception class. 
+                        -> it's Constructor can be called using super(msg).
+        6. What is Maven ? How we use it in Application ?
+            -> A build automation and project management tool.
+            -> uses POM file -> manages Project dependencies, plugins, build configs. [ maven has centralised repo for all dependency Jars]
+            -> Handle build life cycle => [complie -> test -> package -> install -> deploy]
+            -> Difference between Maven install vs maven package
+                -> maven install -> install dependency jars into local repo [.m2 folder]
+                -> maven package -> create Jar/War file inside target dir of the project.
+                -> maven clean  => clens the target dir from previous builds.
+                -> maven compile => compile the source code.
+
 	
 
 	6.  Collections in Java
@@ -308,6 +398,7 @@ NOTE:
 				-> List, LinkedList, => allows null inside them.
 				-> HashSet -> allows only 1 null.
 				-> TreeSet -> Doesnot allow null atall, as it needs compareTo to sort.
+                -> For primitive type array i.e int[] arr => It will not take null value [compile error]
 			2. Difference between ArrayList & LinkedList ?
 				1. ArrayList:
 					-> Internally uses dynamic array.
@@ -329,7 +420,7 @@ NOTE:
 			4. Super Keyword in Java.
 				1. call the constructor of the immediate parent class. 
 				2. In case of Overriden method => super.method_name(); --> Calls the parent class method. [access original logic]
-			5.  .equals() Vs == in Java
+			5. .equals() Vs == in Java
 				-> ArrayList or int[] list => compares list items element by element.
 				-> String's content we can compare i.e str1.equals(str2).
 				-> "==" -> compares memory refeneces, comapre values directly for primitive data types.
@@ -345,75 +436,465 @@ NOTE:
 					   String str2 = "name";
 					   -> str == str2 [One is in heap, other one is in pool i.e false]
 					   -> str.equals(str2) [true, as the content is same]
-			6. How do you compare 2 object's content not their Refrences [TODO]
-                -> 
+			6. How do you compare 2 object's content not their Refrences
+                -> We must override the "equals()" from the object class inside the class's body.
+                -> For using the Object of the class inside hashed-based collection like HashMap or Hashset -> we must override "hashcode()" also. [IMP]
+                eg: 
+                    class Employee {
+                        private int empId;
+                        private String name;
+
+                        public Employee(int id, String name) {
+                            this.empId = id;
+                            this.name = name;
+                        } 
+
+                        //Override the equals method to comapre instances of this class..
+                        @Override
+                        public boolean equals(Object obj) {
+                            if(this == obj)  return true;  //If the same instance is used.
+
+                            Employee emp = (Employee) obj;
+                            return this.id == emp.id && Object.equals(this.name, emp.id);
+                        }
+
+                        //For using Employee instance as a key in Hashed-based containers...
+                        @Override
+                        public int hashcode() {
+                            return Object.hash(id, name);   //using name + id field to create unique hashvalue for each instance of this class.
+                        }
+                    }
+                ***NOTE:
+                    -> "==" this compares the refernce in the memory, Not the content.
+                    -> equals() method from Object class must be overriden to compare the content of an instance of any class.
+                    -> usecase and example:
+                        String class's .equals() already is overriden => thus it compare ths content.
+                        Integer class's .equals() is also already overriden => this is comapares the value ! not the reference.
+                    -> Dont Forget to override the hashcode method from Object class too -> If this instance will be used as key in Hashed based DS -> specify fiels used to generate unique hash.
             7.  TreeMap Over HashMap ?
-				-> HashMap stores elements in non-structured way [due to Hashing].
-				-> TreeMap stores elements in a stored in a ordered manner, based on the comparator we define.
+				1. HashMap:
+                    -> HashMap stores elements in non-structured way [due to Hashing].
+                    -> Operations are faster i.e get/remove/update all are O(1).
+                    -> Allows 1 null value as key.
+                    -> Internal Implementation: Hashtable + LinkedList/Bucket (hashing)
+                    -> usecase: faster lookup, insertion/deletion.
+                    eg:
+                        Map<Integer, String> map = new HashMap<>();
+                        map.put(56, "testing");
+				2. TreeMap:
+                    -> TreeMap stores elements in a stored in a ordered manner, based on either natural Ordering or Custom comparator.
+                    -> Operations are slower i.e get/remove.update all are O(log n) -> as order updates after each action in red-black tree.
+                    -> No Null keys are allowed due to comparator's ordering.
+                    -> Internal Implementation: Red-black tree. [self-balancing tree]
+                    -> usecase: ordered key set.
+                    eg:
+                        1. Map<Integer, String> treeMap = new TreeMap<>(
+                            (a, b) -> b-a
+                        )
+                        -> Defining TreeMap with custom comparator => "b-a" orders the keys in descending order.
+                        2. Map<String, Integer> treeMap = new TreeMap<>(
+                            Comparator.comparingInt(String::length)
+                        )
+                        -> Keys are sorted based on the length of the key. [Note who we used function reference like String::length and Comparator.comparingInt to comapre 2 integer values]
+                        3. Map<Employee, Integer> treeMap = new TreeMap<>(
+                            (e1, e2) -> e1.name.comapreTo(e2.name)
+                        )
+                        -> In case keys are Object instance -> we need to use custom comparator like above or in class you must implement Comparable interface and override comapreTo for default natural Ordering.
             8. How HashMap Works in Java ?
                 -> 3 steps:
                     1. Hashing: use the hash funtion to get the hashcode.
-                    2. Initialize the bucket
+                    2. Initialize the arrays of bucket i.e "Node<K, V>[] table"  -> Each bucket is like a slot where entries are stored.
                     3. Storing in the bucket.
-                -> what are HashMap collisions ? How they are handled ? Before Java 8 and After Java 8 scenario.
-            9. User Session data in hashMap ? How do you ensure Thread Safety ?
-                -> use concurrent HashMap.
+                -> Working: 
+                    -> Find the hash of the key --> find the bucket corresponded to that hashcode -> If empty, directly insert, if not [colloision case] -> resolve using LinkedList [< java 8] OR Tree [>= Java 8].
+                -> Collosion Case:
+                    -> When 2 keys have the same hash [Colloision occurs]
+                    1. Before Java 8:
+                        -> Each Bucket is a LinkedList of Node<K,V>.
+                        -> On Colloision a new entry is inserted in the List.
+                        -> Problem: With too many colloisions -> The LinkedList grows, lookup will be O(N).
+                    2. After Java 8:
+                        -> If LinkedList size > 8 --> Then it will converted to balanced Red-black tree.
+                        -> solutions: Lookup are Tree Operations with O(log n) [** improvement **]
+                        -> Can handle heavy collisions.
+                -> NOTE:
+                    1. Default size is 16, with LoadFactor: 0.75 [means, On 75% full, the capacity becomes 2 times of original]
+                    2. Problem: Expensive operation -> Since all keys must be re-hashed again.
+                -> HashMaps are not thread-safe. 
+                    -> multiple thread waiting to access the HashMap can result in data-loss or overwrite or Infite loops causing deadlocks.
+            9. ConcurrentHashMap/ Collections.SynchronizedMap(new HashMap<>()) for thread Safety. 
+                -> SynchronizedMap used to lock the whole map on every operation => very slow in multi-threaded env.
+                -> ConcurrentHashMap is designed for high Efficiency.
+                    1. Before Java 7:
+                        -> It used to have segements internally -> threads can parallelly write to different segements at a time.
+                        -> But if 2 threads writing the same segment -> One has to wait.
+                    2. After Java 8 onwards:
+                        -> Segmentation removed.
+                        -> Locking is implemented at bucket level for write actions -> better concurrency.
+                        -> Read operation is never blocked.
+                        -> It doesnot accept null keys or Values.  [To avoid ambiguity in multi-threading]
+                ->  useCase:
+                    -> Caching DB result in services => multiple thread can read/write concurrently.
+                eg: 
+                    ConcurrentHashMap<Integer, String> newMap = new ConcurrentHashMap<>();
+                    newMap.put(23, "test1");
+                    newMap.put(34, "test2");
+                    newMap.put(56, "test3");
+
+                    // thread-safe Iteration.
+                    for(Integer key : newMap.keySet()) {
+                        System.out.println(key + ":" + newMap.get(key));   // Pring key: value pairs...
+                    }
+            10. WeakHashMap:
+                -> In weakHashMap -> keys are stored as weak reference [i.e If they are not referenced anywhere then GC will automatically remove them]
+                -> In HashMAp, keys are strong reference i.e Unitll we remove the keys, it wont be removed.
+                -> Keys must be Objects (Why? weak reference works only on Objects !!)
+                eg: 
+                    Map<Object, String> newMap = new WeakHashMap<>();
+                    Object key = new Object();
+                    
+                    newMap.put(key, "test");
+
+                    // Make the key as null...
+                    key = null;
+                    system.gc();  //request GC to perform cleanup.
+
+                -> Since Key lost it's reference, It will automatically collected by the GC.
+            11. LinkedHashMap:
+                -> Maintains Insertion Order or access order.'
+                -> useCase: LRU Cache.
+                eg: 
+                    class LRUCahe<K, V> extends LinkedHashMap<K, V> {
+                        private final int capacity;
+
+                        public LRUCache(int capacity) {
+                            super(capacity, 0.75f, true);   //Calling the constructor of parent class.
+                            this.capacity = capacity;
+                        }
+
+                        // Overrides method for removing the old entry when the size exceeds..
+                        @Override
+                        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
+                            return size() > capacity;   //remove the last recently used entry.
+                        }
+                    }
 
 
 
 	7. Stream API in Java
-        1. 
+        -> Steams are seq of elements supporting functional style operations. 
+        -> Streams are not DS like Collections [eg: ArrayList, HashMap], they are more like pipeline view for data.
+        -> Streams are lazy -> Without terminal Operator, they won't executes.
+        1. Stream Operations:
+            1. intermediate (return another stream) -> map, filter, sorted, distinct, limit
+            2. terminal (produce Result) -> collect, forEach, reduce, count.
+        2. How to create Stream ?
+            1. From Collection:  list.stream()
+            2. From Arrays: Arrays.stream()
+            3. using Straem.of(...)
+        3. Frequently used Stream Methods:
+            1. filter(s -> s.startsWith("s"))  -> filter the data 
+            2. Map(String::toUpperCase)        -> Return modified stream data -> Map(s -> s.toUpperCase())
+            3. reduce(0, Integer::Sum)         -> Reduces the data <startVal, (acc, curr) -> {...}>
+            4. faltMap -> flattern the nested List/streams.
+            5. collect() -> eg: Collectors.toList() -> Collects the the stream into List, Map, Set etc.
+            6. sorted() -> sort stream as per natural order or custom Order based on Comapartor used.
+            7. distinct -> remove duplicates.
+            8. anyMatch(), allMatch(), nonMatch() -> Conditional checks.
+        4. ParallelStream:
+            -> can split the workload across thread. 
+            -> use only if data is too big. Dont use for smaller data set.
+        5. Collectors [** IMP **]:
+            -> toList(), toSet(), toMap()
+            -> groupingBy()
+            -> PartitioningBy()
+            -> joining()
+        eg: Group Employee with highest salary by department.
+            Map<String, Optional<Employee>> topEmpByDept = 
+                employeeList.stream()
+                    .collect(
+                        Collectors.groupingBy(Employee::getDept, 
+                            Collectors.maxBy(Comparator.comparingInt(EMployee::getSalary));
+                        )
+                    );
+            -> NOte the above, First, you group the employees based on dept, then use comparator to find the maxSalary employee in that dept using Colelctors.maxBy() and .comapringInt(salaryField).
+        NOTES:
+            -> Why streams ? why not loops ?
+                -> Consise, Functional-style, ParallelStream support.
+                -> Loops has more control and preferred for smaller data-sets.
+            -> Limit() behaive differently in ordered and unordered streams. [TODO]
+            -> forEach, Dont do any side-effects like API calls or anything..
+            -> How can we short-circuit a Stream ?
+                -> use limit(), findFirst() or anyMatch() -> When this satisfy, .ifPresent(System.out::println) -> will catch the output and print it.
+            -> Problems useCases: [TODO]
+                1. Find duplicates in a list using streams. [groupBy and counting + using entryset and Map.entries, to iterate map items]
+                2. Find top N records in a List of instances. (eg: top highest salaries).  [limit]
+                3. Convert List<Employee> --> Map<Dept, Employee> as per highes salary per dept. [groupBy + maxBy + comparingInt]
 	
 
 	8. Memory Management in Java
 		1. How to identify Memory leaks in long running applications ?
 		2. Memory Leaks issues inspite of having Garbage Collection Concept ?
-			-> Static references has to be manually cleared out.
-			-> if Multi-threading is not done carefully, variables not pointing to null references.
+			-> Causes for a Memory Leaks:
+                1. Static Reference still holding objects
+                    -> static fields lives for the lifetime of the classloader. -> If we don't clean it up, it causes memory leak
+                    eg: 
+                        class Cache {
+                            private static List<String> cache = new ArrayList<>();
+
+                            public static void addData(String data) {
+                                cache.add(data);   // this will stay in the cache forever, if not manully cleaned....
+                            }
+                        }
+                2. Unclosed Resources
+                    -> Database Connections, file straems or sockets etc -> If not closed stays in memory for long time.
+                    -> Sol: use try-catch resources block to check if the connection exists.
+                3. Listners and Callbacks
+                    -> If Listners are published and never cleaned --> It's reference stays in memory..
+                4. Improper Equal() and hashcode() implementation
+                    -> If equals() is overriden, but hashcode() is not overridden then it will never get removed from hashMap/hashSet. 
+                5. ThreadLocal Misuse
+                    -> ThreadLocal stores values per thread, if not removed explicitly, it will stay for the entire thread life-cycle.
+                6. Large Collections Growing unboubed 
+                    -> Collections like ArrayList, Map, tend to grow while storing data, If not cleared for the data which are not in use -> Can cause memory leaks.
+            -> Tools:
+                -> use VisualVM, JProfiler or YourKit to identify the memory leak issues.
 		3. How design a theread pull that adjust size based on System load ?
 			-> using thread pool executor. [In older Versions like Java 8], with Java 21 we have virtual threads
 			-> using dynamic pools or execution handlers. [Need to look into it]
-        4. Java Memory Model ?
+        4. Java Memory Model ?  [** IMP **]
+            -> It defines how threads interact through memory i.e How changes done by one thread is visible to others.
+            -> Problems to be addressed in multi-threaded programs:
+                1. Visibility Issues
+                    -> Thread A updates a variable, But Thread B doen't see the change.
+                2. Reordering issues
+                    -> CPU or compiler might reorder instructions for optimizations.
+                3. Atomicity issues 
+                    -> operations like i++ might not be atomic.
+            -> Component of JVM:
+                1. Heap
+                    -> shared between all the threads.
+                    -> All objects and instances variables lives here. 
+                2. thread Stack
+                    -> Each thread has it's own stack.
+                    -> Local variable, Function call frames and primitive type lives here.
+                3. Working Memory (thread Cache)
+                    -> Thread may cache variable locally -> For Performace optimization.
+            -> Concepts:
+                1. Volatile
+                    -> variable updated by one thread is immediatly visible to other threads.
+                    eg: 
+                        class Shared {
+                            volatile boolean flag = false;
+                        }
+                2. Synchronized
+                    -> Ensures mutually exclusion + visibility.
+                    -> blocking a block ensures atomicity, visibility.
+                3. Happens-Before Relationship
+                    -> Rules that defines memory visibility order between threads.
+                    -> eg: 
+                        writing to a volatile -> happens-before reading from it.
+            -> Notes:
+                1. Why volatile works ? Why preferred over Synchronized ?
+                    -> volatile ensures visibility but not atomicity.
+                    -> for flags, status variables, single variable upates => use volatile.
+                    -> for incrementing a counter i.e i++, Or updating a list  -> use Synchronized as we need atomicity here. i.e 1 thread to perform action, other must wait.
+                2. analogy:
+                    1. heap -> shared whiteboard [all threads can see changes]
+                    2. thread stack -> personal notebook [Each thread has it's own stack]
+                    3. volatile -> notes on whiteboard [all can see any update to any variable] 
+                    4. Synchronise -> meeting room -> Only 1 thread can see do the updates, others need to wait.
 	
 	
 
 	9. Multi-Threading Concept in Java
 		1. Concurrency Risk with HashMap in Multi-threaded Env
-		   -> use Concurrent HashMap [Thread Safe]
-		   -> Concurrent HashMap before Java 8 and after Java 8
-				-> Before Java 8, the whole Map is blocked if one thread is trying to access it.
-				-> After Java 8, only the key-value pair the thread is accessing is blocked, Other thread can still access the Map.
+		    -> Risks of 2 threads reading and updating the hashMap.
+                1. Data Loss -> (loss updates or overwritten values)
+                2. Infinite loop -> (due to resizing and rehashing, if 2 threads perfrom this action -> creates a circular linkedList inside the bucket)
+                3. Unexpected Null values -> (changes of one thread is not visible to other, possible null values)
+            -> Solution:
+                -> For Read operation from multiple thread -> HashMap will work [no threads are blocked]
+                -> For Read and Write operations from multiple thread => ConcurrentHashMap [build for efficiency because of bucket level locks]
 		2. Volatile Keyword guarntee thred-safety ?
+            -> Volatile Ensures : Visiblity [changes by 1 thread is visible to others] + Happens-before relationship [a write to variable happens-before read from that variable by another thread]
+            -> Drawback:
+                1. Doesnot guarntee Atomicity i.e increment operator like "count++" are unsafe
+            eg: 
+                class ShareData {
+                    private volatile boolean running = true;
+
+                    public void runTask() {
+                        while (running) {.. Do some task...}
+                        Sysout("Task Stopped")'
+                    }
+
+                    public void stop() {
+                        running = false;
+                    }
+                }
+
+                main() {
+                    SharedData data = new SharedData();
+                    Thread t1 = new thread(data::runTask);   //thread starts with the run action...
+                    t1.sleep(1000);  // thread is paused for 1ms.
+                    data.stop();  // update running to false --> Since volatile, thread catch this update and stop the runTask() method.
+                }
 		3. Synchronise Vs Volatile ?
-		4. Why creating thread through service executor is Preferred over runnable executors ?
+            -> Volatile is just for 1 variable and it's visibility, Synchronized is for both of method for visibility + Atomicity.
+            -> Volatile doesnot have any locking concept, Synchronized do have locking concept.
+            eg: 
+                class SharedData {
+                    private volatile int count = 0; 
+
+                    public void incrementVolatile() {
+                        count++;    // Not-thread safe -> multiple thread can update this count, and no thread can determine the correct value. [Atomicity issue]
+                    }
+
+                    private int SynchroniseCount = 0;
+
+                    public Synchronise void incrementSync() {
+                        SynchroniseCount++;   // thread-safe -> Since only 1 thread at a time can access this method => others will wait, once done, other can read correct value. [Atomicity ensured]
+                    }
+                }
+		4. Why creating thread through ExectorService is Preferred over thread/Runnable ?
+            -> Ways to Spin up threads in Java: 
+                1. extend the thread Class.
+                    Issue:
+                        -> If you want to extend Thread to other class, you cannot do that => Multiple Inheritance is not allowed for classes.
+                2. implement Runnable Interface.
+                    -> with Interfaces, we can implement for as many classes as we want -> Flexible.
+                    eg: 
+                        class MyThread implements Runnable {
+                            public void run() {
+                                sysout("Thread is running");
+                            }
+                        }
+
+                        Main() {
+                            Thread t1 = new Thread(new MyThread());
+                            newthread.start();  // starts the thread...
+                        }
+                3. implemtns Callable interface.
+                    -> Unlike Runnable Interface, Callable interface does return a result and throws exception.
+                    eg: 
+                        class MyTask implements Callable<Integer> {
+                            public Integer call() throws Exception {
+                                return 42;
+                            }
+                        }
+
+                        Main() {
+                            ExecutorService service = ExectorService.newSingleThreadExecutor();
+                            Future<Integer> result = service.submit(new MyTask());
+                            sysout(result.get());
+                            service.shutdown();
+                        }
+
+            -> Why do we use ServiceExecutor instead of using Thread/Runnable ?
+                -> Problems with Thread():
+                    1. Too many thread can crash JVM. -> out of Memory
+                    2. Each task creates a new thread -> expensive
+                    3. hard to mange life-cycle.
+                    4. with Runnable, you dont even get return values.
+
+                -> Advantages of ServiceExecutor:
+                    1. Thread Pooling  -> reuses fixed no of threads -> better resource management.
+                    2. Task Submission -> submit(), invokeAll(), invokeAny() more flexible that thread.start().
+                    3. Callable + Future Support. -> get result from Thread.
+                    4. Better Resource management -> shutdown() can terminate the thread.
+                    5. Scalability -> can use different pool size.
+                eg: 
+                    Main() {
+                        ExecutorService exec = Executors.newFixedThreadPool(3);   //fixed the thread count to 3.
+
+                        for(int i=0; i<5; i++) {
+                            final int taskId = i;
+                            exec.submit(() -> {
+                                sysout(taskId + Thread.currentThread().getName());
+                            })
+                        }
+
+                        exec.shutdown();   //orderly shutdown.
+                    }
+                NOTE: thread pool is fixed to 3 thread but it handling all 5 tasks. -> Efficient.
         5. How do we decide the number of thread for an appliction ?
-        6. Deadlocks ? Example with code ?
-		
+            -> Cases:
+                1. For CPU bound tasks -> Thread count should be equal to the number of cores, extra thread only cause context-switching overheating.
+                2. For I/O tasks -> Most of the tasks will be blocked waiting for input or output, we need more threads -> Formula: N_thread = N_Cores * (1 + wait/compute);
+            -> This can only provide the starting value, with testing dependin upon the load, thread count can be managed.
+        6. Thread Deadlocks ? Example with code ?
+            -> Deadlocks situation occurs when 2 threads are waiting for each-other's resources -> none of them can proceed.
+            eg:
+                Main() {
+                    Resource r1 = new Resource();
+                    Resource r2 = new Resource();
+
+                    // Thread 1 -> locks r1 and then looks for locking r2.
+                    Thread t1 = new Thread(() -> {
+                        Synchronized(r1) {
+                            sysout("r1 is locked now...");
+                            Synchronized(r2) {
+                                sysout("r2 is locked now...");
+
+                            }
+                        }
+                    });
+
+                    // Thread 2 -> locks r2 and then look for locking r1.
+                    Thread t2 = new Thread(() -> {
+                        Synchronized(r2) {
+                            sysout("r2 is locked now...");
+                            Synchronized(r1) {
+                                sysout("r1 is locked now...");
+
+                            }
+                        }
+                    });
+
+                    t1.start();
+                    t2.start();
+                }
+        NOTE: This ends up into a deadlock situation with Thread 1 and Thread 2 locking each other resources and none of them can proceed.
+        7. What exactly are Threads ? Life-cycle of Threads ?
+            -> What ?
+                -> threads are the smallest unit of execution in a process. [Smallest unit of any running Task -> called thread]
+            -> lifecycle:
+                1. New -> Thread is created but not started yet i.e Thread t1 = new Thread()
+                2. Runnable -> Ready to run, waiting for CPU. t1.start()
+                3. Running -> thread is running, doing some work. "run()"
+                4. Blocked/waiting/sleeping -> thread is paused, because either it is sleeping ["sleep(ms)"], waiting [wait()] or blocked i.e waiting for some other resource to complete.
+                5. Terminated -> Thread has finsihed the task, can't restart again.
+            
 
 
 
 	10. Spring Boot With Java
 		1. Diference between All spring terms Like Spring, Spring MVC, Spring boot ?
-            -> Spring Boot Actuators ?
-		2. What are Srping Beans? Spring Beans Life cycle.
+            1. Spring Boot Actuators ?
+            2. Spring Boot Profiles (application-dev.yml, application-prod.yml)
+		2. What are Srping Beans? Spring Beans Life cycle ? How bean Discovery Works ?
 		3. Why Spring prefers Constructor injection over other any other Injections.
-			-> Can we have Circular dependency with Constructor Injection ?
-            -> usecase of Constructor Injection and Setter Injection ? When to use ?
+			1. Can we have Circular dependency with Constructor Injection ?
+            2. usecase of Constructor Injection and Setter Injection ? When to use ?
 		4. Custom conditional Annotations ?
-			-> creates Beans based on when a condition is satisfied.
+			1. creates Beans based on when a condition is satisfied.
 		5. SpringBoot Auto-Configuration feature ? How it works ?
-            -> @SrpingBootApplication Annotation ? Why it is used ?
+            1. @SpringBootApplication Annotation ? Why it is used ?
+            2. Springboot Annotations like @SpringBootApplication, @Component, @ Service, @Repository, @Configurations etc.
 		6. How does @Scope Annotation behaves in a multi-threaded REST Controllers ?
-			-> Creates a new Bean on every http requests. It is not shared between the threads.
+			3. Creates a new Bean on every http requests. It is not shared between the threads.
 		7. Approach to follow if you want to update specific fields in a class.
-			-> use POJO Classes with getters and setters.
+			4. use POJO Classes with getters and setters.
 		8. Difference between PUT and PATCH Methods ?
-			-> PUT: we update the entire Object.
-			-> PATCH: we can update any particular column, we can do that.
+		    1. Difference between @RestController & @Controller
+            2. SpringBoot Rest REST API flow.
+            3. PUT: we update the entire Object.
+			4. PATCH: we can update any particular column, we can do that.
 		9. Calling 3 mincroservices in parallel, combine the result, What Appraoch to use ?
 		10. How do you implement distributed Tracing ? How do you track the life cycle of an API ?
 			-> use SAGA Pattern -> Tracks all ongoing API calls across the microservices.
-		11. JWT call is expired mid-way. How this situation can be handled ?
+		11. JWT token is expired mid-way. How this situation can be handled ?
 			-> It will call the refresh Token. 
 		12. How do you implement IP-rate limiting in Springboot for public APIs ? [*IMP*]
             -> How do you optimize your connection to database where to limit the no. of hits to DB to fetch data ?
@@ -425,12 +906,12 @@ NOTE:
             -> How to handle a rollback of a transaction due to operation failure at remote service -> SAGA Patterns, Compensation or Distributery Pattern.
             -> How to use @transaction with Spring Data JPA
         16. What are the servers provided by Springboot ? 
-            -> Which is the default one ? And how can we update it ?
+            1. Which is the default one ? And how can we update it ?
         17. Springboot Data JPA ? Why it is Preferred over normal JPA ?
-            -> How do you implement Search functionality ? 
-            -> custom Query usecases And in-built Queries usecases ?
+            1. How do you implement Search functionality ? 
+            2. custom Query usecases And in-built Queries usecases ?
         18. Concept of Repository with Sping Data JPA ?
-            -> Limitations/Disadvantages for Repository.
+            3. Limitations/Disadvantages for Repository.
         
 	
 
