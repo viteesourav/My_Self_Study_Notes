@@ -871,26 +871,255 @@ NOTE:
 
 	10. Spring Boot With Java
 		1. Diference between All spring terms Like Spring, Spring MVC, Spring boot ?
+            -> Differences between different Spring terms:
+                1. Spring FrameWork
+                    -> This is the core tech for building loosly coupled Java application using Dependency Injection and aspect-oriented framework.
+                    -> feat:
+                        1. IOC (Inversion of Control) / Dependency Injection 
+                        2. Aspect Oriented Programming -> cross-cutting concerns like logging and transaction.
+                        3. Data Base Layer (JDBC, ORM Ikntegration)
+                    -> Foundation framework to manager beans, dependencies and cross-cutting concerns.
+                2. Spring MVC
+                    -> MVC (Model-view-controller) is web framework build on top of Spring MVC. --> Helps building web applications -> Handle HTTP req, contollers and view.
+                    -> feat: 
+                        1. DispatchServelt -> Front controller for all incmong traffic.
+                        2. Controller -> Handles user input and returns model data.
+                        3. ViewResolver -> Maps model data to UI (JSP).
+                    -> Spring MVC = Web layer built on top of Spring Core, handling HTTP request/response flow.
+                3. Spring Boot 
+                    -> Production-Ready extension of Spring that simplifies setup and configurations.
+                    -> feat: 
+                        1. Auto-Configuration -> automatically configure beans based on classpath dependencies.
+                        2. Embedded Servers -> Tomcat/Jetty/undertow - no need to deploy wars
+                        3. Starter Dependencies -> pre-packaged dependencies like "spring-boot-starter-web"
+                        4. PRoduction Tools -> Actuators, metric, health checks etc
+                    -> Spring boot -> No Tomcat config, no XML -> Just run the app directly as a Java Application.
+            ->  What is IOC and DI ?
+                -> Problem:
+                    -> Traditional way (without Spring) -> In Java application, We create Objects for any dependent class directly inside the dependent class.
+                    -> eg: Inside EmployeeService class, you create new object from Employee and save it.
+                    -> Strongly binded, hard to test, maintain or replace dependencies.
+                    -> Solution: IOC -> instead of us manually maintaining the dependencies, Let the Container (IOC container of Spring) manage it.
+                1. IOC [Inversion of Control]
+                    -> we don't manually create dependencies, Instead we tell spring container what we need and it insert it for us.
+                2. DI  [Dependency Injection]
+                    -> This is a design pattern use to implement IOC.
+                    eg: 
+                        class EmployeeService {
+                            private final EmployeeRepository empRepo;
+
+                            // Here the dependency is inserted using Constructor..
+                            @Autowired 
+                            public EmployeeService(EmployeeRepository empRepo) {
+                                this.empRepo = empRepo;
+                            }
+                        }
+                    NOTE: Here Spring creates and Inject EmployeeRepository automatically into EmployeeService.
+                    -> Types Of DI in Spring:
+                        1. Constructor Injection [@Autowired on Constructor] -> Recommeneded
+                        2. Setter Injection [@Autowired on setter method] -> Optional dependencies
+                        3. field Injection [@Autowired on field]  -> Quick but less testable.
+                -> IOC Container
+                    -> Heart of spring framework.
+                    -> role:
+                        1. create and managing beans.
+                        2. Inject dependencies
+                        3. Manage bean life-cycle and scope.
+                    -> Common Container:
+                        1. ApplicationContext (used majorly)
+                            eg: 
+                            ApplicationContext appcontext = new AnnotationConfigApplicationContext(AppConfig.class);
+                            EmployeeService empService = appcontext.getBean(EmployeeService.class);
+                -> Analogy:
+                    1. without IOC: You as chedf, buy, cook, clean the dish all by yourself.
+                    2. with IOC : The restaurent (Spring) supplies whatever you need. You just cook the dish you want using what injected in your application.
+
             1. Spring Boot Actuators ?
+                -> Prod ready feature of Spring boot that provides Monitoring, metrics, health-checks and application-insights.
+                -> Add dependency in POM.xml -> Spring-boot-starter-actuator.
+                -> url: http://localhost:8080/actuator/[health [application running status] or info [custom app info] or metrics [JVM, memory] or loggers [view/ change log level] or beans [shows all spring beans and dependncies] or shutdown [gracefully shutdown] or envs [show env properties]]
+                -> By default: health and info is exposed, for other, need to add in application.properties: management.endpoints.web.exposure.include=* 
             2. Spring Boot Profiles (application-dev.yml, application-prod.yml)
+                -> It segregates env specific configurations in spring-boot application.
+                -> Instead of manully updating the env properties for Prod, dev or QA -> use application-{profileName}.properties.
+                -> During run-time, spring boot picks the active profile form application.properties with: spring.profile.active=dev
+                -> for Beans also, we can use @Profile("dev") --> This create the bean for a particular service only for the mentioned profile.
 		2. What are Srping Beans? Spring Beans Life cycle ? How bean Discovery Works ?
+            -> Spring beans are Objects created, managed and controlled by Spring IOC Controller (ApplicationContext).
+            -> creation: whenever you define a class as @Service, @Repository, @Controller, @Component -> Spring takes over the class
+                1. Create a single object of that class (singleton bydefault)
+                2. Inject any dependencies if any
+                3. Manage it's life-cycle (initialize to destruction)
+            -> usecase:
+                1. without Spring, we need to manuall create the instance: EmployeeService empService = new EmployeeService.
+                2. With spring, we tell Spring we need it: [Constructor Injection of bean]
+                   class Employee {
+                        private EmployeeService empservice;
+
+                        @Autowired
+                        Employee(EmployeeService empservice) {
+                            this.empService = empService;
+                        }
+                   }
+                NOTE: we have other ways like setter injection or field injection but the above one is more preferred.
+            -> How Spring discovery works ?
+                1. using @SpringBootApplication includes @ComponentScan, @EnbaleAutoConfigurations, @Configurations.
+                2. ComponentScan -> Tells spring to search all files in the current Package and sub-packages for components.
+                3. Type of components it picks up:
+                    1. @Component  -> generic spring-banged beans
+                    2. @Service    -> business logic layer beans
+                    3. @Repository -> DAO (Database Access Object) Layer bean.
+                    4. @Contorller / @RestController -> Web API Controller bean.
+                    5. @Configuration -> Beclared using @Bean method.
+            -> Bean Life-cycle:
+                1. Bean Defination loaded -> Spring reads bean meta-data from @configurations/@Config files. 
+                2. Bean Instantiation -> Object is created using constructor.
+                3. Dependency injection => Dependency is injected if any.
+                4. @PostConstruct -> runs the logic like connection to DB or loading cache.
+                5. Bean Ready -> bean is now available to the application.
+                6. Bean Cleanup -> Before conatiner shutdown, bean cleanup is performed.
+            -> Bean Scopes :
+                1. singleton -> One instance per spring IOC container. (by default)
+                2. prototype -> New instance everytime, we request the bean.
+                3. request -> one instance per HTTP request (web only)
+                4. session -> one instance per HTTP session (web only)
+                5. application -> one instance per ServletContext (web only)
+            eg:
+                @Scope("prototyp")
+                @Component
+                public class TaskProcessor {....}
 		3. Why Spring prefers Constructor injection over other any other Injections.
-			1. Can we have Circular dependency with Constructor Injection ?
-            2. usecase of Constructor Injection and Setter Injection ? When to use ?
+            -> Types of DIs:
+                1. Constructor -> via class constructor    -> injected at object creation.
+                2. Setter      -> via public setter method -> injected after object creation.
+                3. Field       -> via @Autowired on fields -> injected into fields directly after reflection.
+            -> Reasons to prefer Constructor method ?
+                1. immutability 
+                    -> dependencies once set using constructor -> can be marked as final.
+                    -> This is safer and easy.
+                2. Ensure Mandatory Dependencies
+                    -> You cannot create object without including it's dependencies -> as it is used in the Object constructor.
+                    -> If the dependencies are not found, App fails to start -> "fail-fast behaviour" ensured.
+                3. Helps unit testing
+                    -> Easy to mock dependency and inject them using mockito.
+                4. Avoid Null prointer exceptions. 
+                    -> Since dependenies are added in constructor -> They cannot be null like field or setter methods.
+            -> Usecase for Setter Injection:
+                1. For optional dependencies.
+                2. Reconfigurable beans -> may change later.
+            eg: 
+                class NotificationService {
+                    private EmailService email;
+
+                    @Autowired(required = false)
+                    public void setEmailService(EmailService email) {
+                        this.email = email;  //optional dependency.
+                    }
+                }
+            -> Usecase for Field Injection:  [Not Recommeneded to use atall]
+                1. Testing is difficult, cannot mock fields.
+                2. Hidden dependencies. (not visible to constructors)
+                3. breaks encapsulation and SRP [Single responsibility principle]
+            eg: 
+                public class Order {
+                    @Autowired
+                    private PaymentService payservice;
+                } 
+            NOTE: use this method of injection for small demo or exmaple only. ---> Not for production application.
+			-> Can we have Circular dependency with Constructor Injection ?
+                -> What is circular dependency condition ?
+                    -> When Bean A depends upon Bean B, and Bean B depends upon Bean A [Deadlock scenarios]
+                    -> Since both dependencies are required for creation of each other's object --> Spring cannot create both of them.
+                -> REsult: The aPplication fails to start.
 		4. Custom conditional Annotations ?
-			1. creates Beans based on when a condition is satisfied.
-		5. SpringBoot Auto-Configuration feature ? How it works ?
-            1. @SpringBootApplication Annotation ? Why it is used ?
-            2. Springboot Annotations like @SpringBootApplication, @Component, @ Service, @Repository, @Configurations etc.
+			-> Conditional Annotations decide which beans to create or skip during runtime based on certain conditions on class, present of property val or env values.
+            -> usecase: Spring Boot auto-configuration decide which beans to load during app startup.
+            -> Builtin -> @ConditionsOnProperty, @ConditionOnClass and @Proile are using for dynamic configurations.
+            NOTE: We can create custom Conditions too by implementing the Condition interface [override match method], use annotation bean like: @Conditional(MyCondition.class)
+		5. SpringBoot Auto-Configuration feature ? How it works ? @SpringBootApplication Annotation ? Why it is used ? [** IMP **]
+            -> Auto-config is the key feature that helps Srping boot create production-ready application faster.
+            -> When you add dependency: spring-boot-starter-web, It does the below configs: 
+                1. Embedded Tomcat server.
+                2. DispatchServlet
+                3. WebMvcConfigurerer
+                4. Default page
+                5. Jackson JSON mapper
+                Static resource handling.
+            -> Auto-Configuration working step by step:
+                1. @SpringbootApplication -> Define your on your main Class. -> triggers auto-configuration process.
+                    -> Includes @SpringBootConfiguration or Just @Configuration, @ComponentScan and @EnableAutoConfiguration 
+                2. @SpringBootConfiguration
+                    -> Special version of configurations.
+                    -> Marks the class as the source for bean definations for the Spring context. i.e register current class as configuration classs to applicationContext.
+                3. @ComponentScan
+                    -> Enables Component Scanning starting from the package of the main class.
+                    -> Detects and register beans annoted with @Component, @Service, @Controller, @Repository.
+                4. @EnableAutoConfiguration:
+                    -> the heart of Springboot.
+                    -> Tells Springboot internally to automatically configure the application based on the classPath and exisiting beans.
+                    -> It loads auto-configurations [DispatchServelt, RequestMappingHandlerMapping etc are created and registered] only after user defined beans [@Component, @Service ...] are registered.
 		6. How does @Scope Annotation behaves in a multi-threaded REST Controllers ?
 			3. Creates a new Bean on every http requests. It is not shared between the threads.
 		7. Approach to follow if you want to update specific fields in a class.
 			4. use POJO Classes with getters and setters.
 		8. Difference between PUT and PATCH Methods ?
 		    1. Difference between @RestController & @Controller
-            2. SpringBoot Rest REST API flow.
-            3. PUT: we update the entire Object.
-			4. PATCH: we can update any particular column, we can do that.
+                -> Both are parth of Spring MVC -> Implements differs based on the requirement for HTML view or JSON/XML View.
+                1. @Controller
+                    -> used for returning views (HTML/JSP pages)
+                    -> Returns a view name --> resolved by ViewRenderer.
+                    -> annotation: @Controller
+                    -> usecase: Traditional MVC web applications.
+                    eg:
+                        @Controller
+                        public class HomeController {
+                            
+                            @GetMapping("/home")
+                            public String home(Model model) {
+                                modelt.addAttribute("message", "welcome Home !");
+                                return "home";  //resolved to home.html  --> renders the page directly.
+                            }
+                        }
+                    NOTE: here, "home" is passed to ViewResolver -> Which loads a template related to home.html.    
+                2. @RestController 
+                    -> used for creating RESTful webservices.
+                    -> returns Response Body in from of JSON or XML.
+                    -> annotaion: @Controller + @ResponseBody
+                    -> usecase: Rest APIs / MicroServices.
+                    eg:
+                        @RestController
+                        public class UserController {
+
+                            @GetMapping("/user")
+                            public User getUser() {
+                                return new User("sourav", "developer");
+                            }
+                        } 
+                    NOTE: @Restcontroller -> converts the Enity object into JSON response using Jackson(via HttpMessageConverter).
+            2. SpringBoot REST API flow
+                -> Flow involves:
+                    1. Client Request
+                        -> Client sends a HTTP req to GET: /api/product/101
+                    2. DispatchServlet (Front Controller)
+                        -> All Request goes through this DispatchServelt.
+                        -> It's Job:
+                            1. acts as a front controller -> Intercept every HTTP calls.
+                            2. Delegate reqs to the correct-relevant controller via Handler Mapping.
+                    3. Handler Mapping
+                        -> Spring finds the matching method associated with @RequstController and @GetMapping with "/product/{id}"
+                    4. Handler Adapter
+                        -> handler Adapter invokes the method found.
+                    5. Controller Execution
+                        -> Controller executes and returns a Product Object.
+                    6. HttpMessageConverter
+                        -> This checkes Accept header for "application/json" -> Serialize the product object, -> to JSON (using Jackson) /XML. (using JAXB)
+                    7. Response Returned
+                        -> The serialized JSON is written to HTTP response body and send back to client.
+                Summary:
+                    Client Requst ---> DispatchServelt ----> Handler mapping + Adapter [Find and execute matching method] --> Controller + HttpMessageConverter [response from Entity -> JSON] -> Returned to client.
+            3. REST API: PUT Vs Patch Operations: 
+                1. PUT: we update the entire Object.
+			    2. PATCH: we can update any particular column, we can do that.
 		9. Calling 3 mincroservices in parallel, combine the result, What Appraoch to use ?
 		10. How do you implement distributed Tracing ? How do you track the life cycle of an API ?
 			-> use SAGA Pattern -> Tracks all ongoing API calls across the microservices.
@@ -902,16 +1131,169 @@ NOTE:
         14. Caching in Springboot for faster response ? What different ways to implement it ?
             -> Different Caching strategices ?
         15. Database connection realted annotations with SpringBoot. Like @Transactional Annotation and Singleton Principle.
-            -> Why @Transactional is Preferred on method level ? Why not defined it at class level ?
-            -> How to handle a rollback of a transaction due to operation failure at remote service -> SAGA Patterns, Compensation or Distributery Pattern.
-            -> How to use @transaction with Spring Data JPA
+            1. How to use @transaction with Spring Data JPA
+                -> @Transaction manages database transactions automatically.
+                -> usecase: If a public method is marked as @Transactional  [NOTE: Proxies works only for public methods]
+                    1. all DB Operations inside are part of the same transaction.
+                    2. If all methodes completes Successfully -> Transaction is commited.
+                    3. If any one of them exception occured -> Transaction is rolledback.
+            eg:
+                @Service
+                public class OrderService {
+                    @Autowired
+                    private OrderRepository orderRepo;
+                    
+                    @Autowired
+                    private PaymentRepository paymentRepo;
+
+                    @Transactional
+                    public void placeOrder(Order order, Payment payment) {
+                        orderRepo.save(order);
+                        paymentRepo.save(payment);
+
+                        //Error case...
+                        if(payment.getAmount() > 10000) {
+                            throw new RuntimeException("Playment Limit exceed");
+                        }
+                    }
+                }
+             NOTE:
+                1. Spring starts transaction before calling PlaceOrder.
+                2. both save are called. 
+                3. Any exception occurs -> Everything is rolled back [Nothing gets saved]      
+            2. Why @Transactional is Preferred on method level ? Why not defined it at class level ?
+                -> @Transaction is added on public method of the Service class.
+                -> Reasons:
+                    1. You cannot exculde transaction behaviour for methods --> i.e all pbulic operation inside the class will be Transactional.
+                    2. Even Read-methods and light weigth methods will fall under Transaction -> Not required, unnecessary. [**IMP**]
+                    3. Confusing ! Which method should we need transactional and which are not ?
+            NOTE:
+                case: If a transaction method calls another transaction method inside the same class --> The proxy is bypassed and the second Transaction will be ignored.
+                @Transactional
+                public void outer() {
+                    inner();   // same class call --> proxy bypassed i.e the Transaction for inner class is ignored.
+                }
+
+                @Transactional
+                public void inner() {....}
+                Sol: move the second method to it's own service or use bean reference.
+            3. How to handle a rollback of a transaction due to operation failure at remote service -> SAGA Patterns, Compensation or Distributery Pattern.
         16. What are the servers provided by Springboot ? 
             1. Which is the default one ? And how can we update it ?
-        17. Springboot Data JPA ? Why it is Preferred over normal JPA ?
-            1. How do you implement Search functionality ? 
-            2. custom Query usecases And in-built Queries usecases ?
+        17. Spring Data JPA ? Why it is Preferred over normal JPA ?
+            -> Spring Data JPA makes working with Databases and JPA (Java Persistence API) much simpler and faster.
+            -> Concept:
+                1. JPA  --> Standard/specification (interface) for ORM.
+                2. Hibernate -> Implementation of JPA.
+                3. Spring Data JPA -> Higher-level abstraction to reduce repetative CRUD and query code.
+            Summary -> Spring Data JPA -> reduce query code and fewer bugs and faster development.
+            1. Why Spring Data JPA preffered over JPA ? [***IMP***]
+                1. JPA/Hibernate
+                    -> Required to manager EnityManager, Transactions.
+                    -> Manual Implementation.
+                    -> manually write PSQL/ SQL.
+                    -> Pagiantion Support -> Manual.
+                2. Spring Data JPA 
+                    -> Auto-managed by Spring.
+                    -> Provided out of the box.
+                    -> Supports method-name-based query generation.
+                    -> Pagination/Sorting -> out of the box.
+            2. Implementation of Spring Data JPA 
+            Steps:
+                1. Add Spring-boot-starter-data-JPA + Database (H2/Mysql) under pom.xml.
+                2. Configure application.properties -> Add Database connection detials.
+                3. Create Enity class:
+                eg: 
+                    @Entity
+                    public class Product {
+                        @Id
+                        @GeneratedValue(strategy = GenerationTypes.IDENTITY)
+                        private Long id;
+                        
+                        private String name;
+                        private String category;
+                        private double price;
+
+                        //getters and setters.... 
+                    }
+                4. Create Repository interface.
+                eg:
+                    public interface ProductRepository extends JpaRepository<Product, Long> {
+                        List<Product> findByCategory(String category);
+                    }
+                NOTE:
+                    -> JpaRepository provides a lot of in-built methods like: save(), findAll(), findById(), deleteById(), count(), existsById()....etc.
+                5. Define Service [takes to ProductRepository] + Controller [define routes and controllers]:
+                    @Service
+                    publi class ProductService {
+                        @AutoWired
+                        private ProductRepository repo;   //For demo, used field injection.
+
+                        public List<Product> getAllProducts() {
+                            return repo.findAll();
+                        }
+
+                        public List<Product> searchByCategory(String category) {
+                            return repo.findByCategory(category);
+                        }
+                    }
+
+                    @RestController 
+                    @RequestMapping("/api/prodcuts")
+                    class ProductController {
+                        @AutoWired
+                        private ProductService service;
+
+                        @GetMapping
+                        public List<Product> getAll() {
+                            return service.getAllProducts();
+                        }
+
+                        @GetMapping("/search")
+                        public List<Product> search(@RequestParam String category) {
+                            return service.searchByCategory(category);
+                        }
+                    }
+            3. How do you implement Search functionality ?
+                -> Defines 3 main Appraoches for implementing Search or filter with Spring Data JPA -> This must be deined in "ProductRepository" interface.
+                -> options:
+                    1. using DerivedQueries (Method Name Queries)
+                        eg:
+                            List<Product> findByNameContainingIgnoreCases(String keyword);
+                            List<Product> findByCategoryAndPriceLessThan(String category, double price); 
+                        -> The above named method -> will automatically generate the queires required.
+                    2. Custom JPQL Queires with @Query
+                        eg:
+                            @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword%")
+                            List<Product> searchByName(@Param("keyword") String keyword);
+                    3. Native Queries [use Raw Queries]
+                        eg:
+                            @Query(value = "SELECT * FROM product WHERE price > :minPrice", nativeQuery=true).
+                            List<Product> findExpensive(@Parm("minPrice") double minPrice);
+            4. custom Query usecases And in-built Queries usecases ?
+                Types:
+                    1. DerivedQueries -> simple filters, equals, contains, startWith etc
+                    2. JPQL -> Complex Joins, computed values.
+                    3. Native -> DB specific optimizations, custom SQL functions.
         18. Concept of Repository with Sping Data JPA ?
-            3. Limitations/Disadvantages for Repository.
+            -> Repository is a data access abstraction in Spring => That hides the details of data persistence from application logic.
+            -> Respository Pattern -> Seperate the Persistence Logic from business logic. 
+            -> JPA hierarchy:
+                JPARepository [Adds JPA specific methods like flush, batch etc] --> PagingAndSortingRespository[Adds Paging and sorting method] --> CRUDRepository [CRUD methods like save, findAll] --> Repository [Marker Interface (no methods)]
+            -> Pagination method with JPA: findAll(Pageable pageable), Sorting Method: findAll(Sort sort);
+            1. Advantages of using Repository (Srping Data JPA):
+                1. No Boiler Plate Code
+                2. Auto Query Derivations 
+                3. Built-in Pagination and Sorting Support.
+                4. Custom Queries whenever needed.
+                5. Transaction management by default.
+                6. Integrated with Springboot -> add spring-boot-starter-data-jpa in pom.xml and you are good to go.
+            2. Limitations/Disadvantages for Repository.
+                1. Limited Control over SQL. [Not great for complex joins, multi-table subqueries]
+                2. Not Ideal for High performance APPs.
+                3. Difficult debuggin derivedQueries.  [derived Queries by method-names, we have no debugging guidelines]
+                4. No built-in Support for Non-Relational Database
+                    -> JPA is build for Realational databases, No-SQL needed seperate dependency.
         
 	
 
