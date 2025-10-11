@@ -153,7 +153,7 @@ NOTE:
 
 
 #### Java Interview Notes:
-## Java Interview Notes:
+## Core-Java-OOPs:
 	1. Constructors.
 		-> Initialize the Object for any class with default values or custom values using parameterized constructors.
 		-> Always called when the object is initialized for a class.
@@ -356,6 +356,47 @@ NOTE:
                 -> maven package -> create Jar/War file inside target dir of the project.
                 -> maven clean  => clens the target dir from previous builds.
                 -> maven compile => compile the source code.
+        7. What is Variable Hiding Concept ?
+            -> useCase: 
+                If parent and child [extends Parent], both have the same variable -> And we create an object like Parent newObj = new Child() [Reference type ==> Parent, Object ==> Child]
+            eg: 
+                class Parent {
+                    int x = 10;
+
+                    public void show() {
+                        sysout("Parent class");
+                    }
+                }
+
+                class Child extends Parent {
+                    int x = 20;
+
+                    @Override
+                    public void show() {
+                        sysout("Child class");
+                    }
+                }
+
+                Main() {
+
+                    Parent newObj = new Child();   // Reference to Parent, Object is for Child
+
+                    sysout(newObj.x);  // Prints 10 -> from Parent Class.
+                    x.show();          // Prints "Child class" -> from Child Class.
+                }
+        NOTE:
+            -> Both Parent and Child has the same variable name ==> This is "variable hiding" not "method overloading".
+            -> Concept: 
+                1. Method calls in Java are resolved during runtime i.e "dynamic binding".  -> depends upon the actual object type i.e "new Child()".
+                2. Variable access in resolved at compile-time i.e "static binding". -> depends upon the Reference Type i.e "Parent newObj".
+            -> Summary:
+                1. In-case of Reference Type and object is different while intializing class i.e Parent obj = new Child();
+                2. Remember, the methods will be always executed based on what we override in child class. [only those methods that we override of Parent in child]
+                3. For Variables, Since the ReferenceType is Parent => It will call variable from Parent Class.
+                4. Fix: How can make it take child's variable ?
+                    1. Keep the Reference same as Object i.e Child obj = new Child();
+                    2. Typecast while calling variable i.e sysout(((Child) obj).x);   //Specifically tell to use variable from child class.
+            
 
 	
 
@@ -455,7 +496,7 @@ NOTE:
                             if(this == obj)  return true;  //If the same instance is used.
 
                             Employee emp = (Employee) obj;
-                            return this.id == emp.id && Object.equals(this.name, emp.id);
+                            return this.id == emp.id && Object.equals(this.name, emp.name);
                         }
 
                         //For using Employee instance as a key in Hashed-based containers...
@@ -578,6 +619,22 @@ NOTE:
                             return size() > capacity;   //remove the last recently used entry.
                         }
                     }
+            12. How Lookup in HashMap is O(1).
+                -> HashMap provides "Average Case" to find an element as O(1).
+                -> Process Includes:
+                    1. Find the hash -> hash computation O(1)
+                    2. Bucket Access -> O(1)
+                    3. Traversal [Ideally small constant list size] -> O(1)
+                -> Worst case:
+                    If all Keys ends up in same bucket -> list size will grow and searching will take O(N) time.
+                -> Java 8 Optimization Impact:
+                    -> Java 8 onwards, If colloision happens > 8 or ListSize in bucket > 8 ==> The DS switches from LinkedList to Red-Black Tree.
+                    -> Searching in a Self-balancing BST would take O(log n) time.
+                    -> Worst Case: If we have too many collisions --> Then also the max time for lookup will be O(log n).
+                -> Why Average Case Considered ?
+                    1. hash Functions distribute keys fairly well.
+                    2. HashMap auto-resizes (Keeps load factor ~ 0.75, i.e if 75% of the buckets in internal array are occupied, then capacity will be doubled --> all keys has to be re-hashed [expensive operation] )
+                    3. Treeification prevents wors-case degradation.
 
 
 
@@ -628,8 +685,174 @@ NOTE:
                 -> use limit(), findFirst() or anyMatch() -> When this satisfy, .ifPresent(System.out::println) -> will catch the output and print it.
             -> Problems useCases: [TODO]
                 1. Find duplicates in a list using streams. [groupBy and counting + using entryset and Map.entries, to iterate map items]
+                eg: 
+                    List<String> items = Arrays.asList("apple", "banana", "apple", "orange", "banana");
+
+                    Set<String> duplicates = items.stream()
+                        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+                        .entrySet().stream()
+                        .filter(entry -> entry.getValue() > 1)
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toSet());
+
+                    System.out.println(duplicates); // [apple, banana]
+
                 2. Find top N records in a List of instances. (eg: top highest salaries).  [limit]
+                eg: 
+                    List<Employee> top3 = employees.stream()
+                                                    .sorted(Comparator.comparingInt(e -> -e.salary))
+                                                    .limit(3)
+                                                    .collect(Collectors.toList());
                 3. Convert List<Employee> --> Map<Dept, Employee> as per highes salary per dept. [groupBy + maxBy + comparingInt]
+                eg: 
+                    Map<String, Employee> topEmpByDept = employees.stream()
+                                                                    .collect(Collectors.groupingBy(e -> e.dept,
+                                                                        Collectors.collectingAndThen(
+                                                                            Collectors.maxBy(Comparator.comparingInt(e -> e.salary)),
+                                                                            Optional::get)));
+    ### Stream APIs Practise:
+
+    import java.util.*;
+    import java.util.stream.Collector;
+    import java.util.stream.Collectors;
+
+    class Employee {
+        String name;
+        String department;
+        double salary;
+        int age;
+
+        public Employee(String name, String department, double salary, int age) {
+            this.name = name;
+            this.department = department;
+            this.salary = salary;
+            this.age = age;
+        }
+
+        public String getName() { return name; }
+        public String getDepartment() { return department; }
+        public double getSalary() { return salary; }
+        public int getAge() { return age; }
+
+        @Override
+        public String toString() {
+            return name + " (" + department + ", " + salary + ")";
+        }
+    }
+
+    public class App {
+        public static void main(String[] args) throws Exception {
+
+            List<Employee> employees = Arrays.asList(
+                new Employee("Alice", "HR", 55000, 30),
+                new Employee("Bob", "IT", 70000, 28),
+                new Employee("Charlie", "Finance", 80000, 35),
+                new Employee("David", "IT", 50000, 26),
+                new Employee("Eve", "IT", 90000, 32),
+                new Employee("Frank", "Finance", 85000, 40),
+                new Employee("Grace", "HR", 60000, 29),
+                new Employee("Alice", "IT", 65000, 30)
+            );
+
+            //Find the highest paid employee from each dept, If a dept has no employees, return a default employee.
+            Map<String, Employee> topPaidByDept = employees.stream()
+                .collect(Collectors.groupingBy(
+                    Employee::getDepartment,
+                    Collectors.collectingAndThen(
+                        Collectors.maxBy(Comparator.comparingDouble(Employee::getSalary)), 
+                        opt -> opt.orElse(new Employee("Default", "None", 0, 0)))
+                ));
+            
+            // topPaidByDept.forEach((key, val) -> 
+            //         System.out.println(key + "->" + val)
+            // );
+
+            
+            // find any Meployee by name if he exists, Else give no Department..
+            String matchedDept = employees.stream()
+                .filter(e -> e.getName().toLowerCase().equals("sourav"))
+                .findFirst()
+                .map(Employee::getDepartment)
+                .orElse("No Dept! Record Doesnot exits");
+            
+            // System.out.println(matchedDept);
+
+
+            // duplicate items in an array list... -> create a freqMap. -> Get count >=2 and in ascending order by freq.
+            List<String> itemsList = Arrays.asList("bannana", "apple", "bannana", "apple", "apple", "kiwi");
+
+            Map<String, Long> freqCount = itemsList.stream()
+                .collect(Collectors.groupingBy(
+                    n-> n, 
+                    Collectors.counting()))
+                .entrySet().stream()
+                .filter(e -> e.getValue() >= 2)
+                .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+                .collect(Collectors.toMap(
+                    Map.Entry::getKey,
+                    Map.Entry::getValue,
+                    (e1, e2) -> e1,
+                    LinkedHashMap::new
+                ));
+                
+            freqCount.forEach((key, val) -> System.out.println(key + "-->" + val));
+
+            
+
+            // Find duplicate employee Object...
+            List<Employee> duplicateEmpObj = employees.stream()
+                .collect(Collectors.groupingBy(Employee::getName))
+                .entrySet().stream()
+                .filter(e -> e.getValue().size() > 1)
+                .flatMap(e -> e.getValue().stream())
+                .collect(Collectors.toList());
+
+            // duplicateEmpObj.forEach(System.out::println);
+            
+            
+            // Find duplicate names in employees...
+            List<String> duplicateNames = employees.stream()
+                .collect(Collectors.groupingBy(Employee::getName, Collectors.counting()))
+                .entrySet().stream()
+                .filter(entry -> entry.getValue() > 1)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+
+            // System.out.println(duplicateNames);
+
+
+            // Average Salary for each employees  -> Consider employees whose Salary > 60000.
+            Map<String, Double> avgSalaryByDept = employees.stream()
+                .filter(e -> e.getSalary() > 60000)
+                .collect(Collectors.groupingBy(Employee::getDepartment,
+                    Collectors.averagingDouble(Employee::getSalary)
+                ));     
+
+
+
+            // Grouping emps with their respective Deptartments...
+            Map<String, Long> countByDept = employees.stream()
+                .collect(Collectors.groupingBy(Employee::getDepartment, Collectors.counting()));
+            
+
+            
+            //Top 3 highest paid employees ==> names must be in descending order of salary.
+            List<String> topEarners = employees.stream()
+                .sorted(Comparator.comparingDouble(Employee::getSalary).reversed())
+                .limit(3)
+                .map(Employee::getName)
+                .collect(Collectors.toList());
+
+
+
+            // Filter by Dept and salary, --> Print the names in list manner.
+            List<String> result1 = employees.stream()
+                                        .filter(e -> e.getDepartment().equals("IT") && e.getSalary() > 80000)
+                                        .map(Employee::getName)
+                                        .collect(Collectors.toList());
+
+        }
+    }
 	
 
 	8. Memory Management in Java
@@ -865,6 +1088,15 @@ NOTE:
                 3. Running -> thread is running, doing some work. "run()"
                 4. Blocked/waiting/sleeping -> thread is paused, because either it is sleeping ["sleep(ms)"], waiting [wait()] or blocked i.e waiting for some other resource to complete.
                 5. Terminated -> Thread has finsihed the task, can't restart again.
+        8. What are Object Locks ? 
+            -> Also called as Monitor Lock. -> this lock is possess by every Java Object inherently.
+            -> When a thread enters a "Synchronized" block or method  --> it acquires this Object's lock
+            -> The Synchronized keyword uses the object lock of the current instance ("this").
+            -> Other efficient Modern Lock Options:
+                1. use Java.util.concurrent.atomic classes eg: AtomicInteger
+                    -> Comes with inbuilt method like incrementAndGet(),  getAndIncrement() or decrementAndGet() --> ensures Atomicity without any Synchronized locks.
+                2. use ReentrantLock
+                    -> More Flexible than Synchronized.
             
 
 
@@ -1195,7 +1427,7 @@ NOTE:
                     -> Pagiantion Support -> Manual.
                 2. Spring Data JPA 
                     -> Auto-managed by Spring.
-                    -> Provided out of the box.
+                    -> namedMethods are provided out of the box.
                     -> Supports method-name-based query generation.
                     -> Pagination/Sorting -> out of the box.
             2. Implementation of Spring Data JPA 
@@ -1218,6 +1450,7 @@ NOTE:
                     }
                 4. Create Repository interface.
                 eg:
+                    @Repository
                     public interface ProductRepository extends JpaRepository<Product, Long> {
                         List<Product> findByCategory(String category);
                     }
@@ -1299,7 +1532,6 @@ NOTE:
 
 	11. Kubes concepts:
 		1. While deploying a micro-service -> How do implements zero-downtime rolling deployments.
-
 
 
 

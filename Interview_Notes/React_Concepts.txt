@@ -207,6 +207,17 @@
                     setName("New Name");
                 };
             => Only 1 render is triggered where count and name both are updated.
+        - React Stale updates during multiple updates to the state.
+        eg: 
+            const handleClick = () => {
+                setCount(count + 1);
+                setCount(count + 1);
+                setCount(count + 1);
+            }
+        => Here, setCount doensot update the state immediately and provide updated count value to the next state update. Instead it schedules an re-render for the state to update.
+        => For improved performance, Multipe updates are batched into a single render i.e will update state only once. => Inspite of having 3 times setUpdate call.
+        => Fix: use Functional Update i.e Make you stateUpdate Pure methods [takes a param, return new state with updated param] i.e setCount(prev => prev + 1) instead of impure updates like modifying the state directly i.e setCount(count + 1).
+            -> This make sure your state updates are always takes the latest closure State Variable during updates.
     NOTE:
         -- From React 18 onwards, Multiple State Updates inside setTimeout, Promises are also batched.
         -- setState Doesnot immediatly updates the state => It rather schedule a re-render with the latest state value. => setState is not async, It deferred and batched for next render cycle.

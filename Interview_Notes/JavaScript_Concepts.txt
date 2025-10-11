@@ -101,7 +101,7 @@ implicit type coercion ?
 -- Automatic Conversion of Value from one data Type to another.(while using +,-, ||, && or ==).
 -- '+' convert both operands to String and then concat them.
 -- '-' convert both operands to Number and then subtract them. 
--- '===' converts both sides to same type i.e string before comparing.
+-- '==' converts both sides to same type i.e string before comparing.
 
 NOTE: Boolean Coercion:
 -- Falsy: null, 0, 0n, -0, undefined, false, "" and NaN are falsey. REst are all are truthy. (**Imp**).
@@ -464,7 +464,7 @@ NOTE: While submitting code in Compiler during problem Solving...
 3) To print the ouput for the give input, console.log(fn(input));
 *********************************************************************
 
-Constructors in JS ?
+Function Constructors in JS ?
   -- This are invokes when a object is created using new keyword.
   -- Constructor Should always starts with Caps.
   -- If defined inside a class, Both names should match.
@@ -548,6 +548,7 @@ NOTE:
 Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
   
   -- Debouncing:
+      - concept: delays the execution by d ms i.e No matter how many times it gets trigger -> It executes only after d ms once.
       - useCase:
           -- In SerachBox, If we make service call to backend on every KeyDown, It will make a lot of unneccessary calls.
               Solution: In Debouncing, When the user stops typing, Then we make the service call to the backend.
@@ -556,6 +557,7 @@ Debouncing and Thorttling Concept in JavaScript: [ Optimise Event Handling ]
 
 
   -- Thorttling:
+    - concept: limits the execution by dms i.e let say you hit scroll event 100 times in 10 ms, But it will only execute 2 times fixed within 10 ms not more than that. 
     - useCase:
         -- In Scrolling action, When we reach a particular point, In backend we make service call to fetch new data. 
         -- This gives an infinite scrolling effect.
@@ -853,7 +855,7 @@ EventLoop Explaination:
   -- var, let, const --> scope, reassignable, hoisted, initialized.
   -- Shadowing: 
     if "let" is present inside a nested block i.e the variable is declared again [defined and initialized], for that block, the value changes.
-  -- Function expression like var greet() = () => {console.log("hi")} 
+  -- Function expression like var greet = () => {console.log("hi")} 
     -> Here greet will be hoisted and initialized as undefined.
     -> NOTE: If we have greet() {...} => here the whole function will get hoisted.
   Example:
@@ -914,7 +916,7 @@ EventLoop Explaination:
      The variables inside a closure will be garbage collected when the reference of the inner function is out of scope or is no longer in use.
      as long as we have the refernce of the inner function, The variable exists in memory.
   -- Callbacks --> fun passed to another fun, that executes after sometime.
-     Prmise: JS Object that returns a value that may be available now, later or never.
+     Promise: JS Object that returns a value that may be available now, later or never.
   -- OOPs in JS:
     1. Prototype based.
     2. ES6 class based.
@@ -950,7 +952,8 @@ EventLoop Explaination:
           }
         };
       setTimeout(user.greet, 1000); // Hi undefined. ==> because here the context for this is not passed.
-      setTimeout(() => user.greet(), 1000); // Hi Sourav.
+      Option1: setTimeout(() => user.greet(), 1000); // Hi Sourav.
+      Option2 : use bind keyword -> setTimeout(user.greet.bind(user), 1000);   //Here we are setting the context of the function reference.
   -- Functional Programming --> programs build using Pure function, immutable data and function composition.
   -- pure Function: give same input --> always same output, no side effects.
      immutable --> data is not mutable, copies are made with changes.
@@ -967,7 +970,7 @@ EventLoop Explaination:
       console.log(compose(multiply, increment)(5));  // 25
   -- Array methods that mutates the original arr content --> push, pop, shift(), unshift(), splice(), others method returns new arr.
   -- Pure Functions:
-      -> It should have any dependency on outer variable or any thing that can change.
+      -> It should not have any dependency on outer variable or any thing that can change.
       -> Impure eg: 
           function addItem(arr, item) {   // modify the input arr based on item.
             arr.push(item);
@@ -981,11 +984,11 @@ EventLoop Explaination:
       -> In react, useMemo, useCallback, memo depends upon pure fun behavior for optimization.
   -- 2 condition for pure function:
       1. same input --> always same output.
-      2. should not Change anything outside the function.
+      2. should not Change anything outside the function OR cause any side-effect like HTTP calls [eg: calling localStorage], Console.log [I/O operations], mutating any outside variables.
   -- Muttable vs Immutable example:
     const user = {name: "test"}
       Mutable --> user.name = "sourav"  //the user object is updated.
-      Immutable --> {...user, name: test}  // the user obj is not updated.
+      Immutable --> {...user, name: test}  // the user obj is not updated. -> a new object is created with the content of user and updated name key.
     -- How keep data immutable:
       - For arrays --> use methods other that push, pop, slice or splice or Spread the elements.
       - for obejct -> spread the keys 
@@ -1196,8 +1199,8 @@ EventLoop Explaination:
       subject.notify("New data received!"); // Logged: New data received!
   
   -- Concurrency & Parallelism in JS:
-    -> Concurrency: managing multiple task at the same time, but no necessary in parallel.
-    -> Parallelism: performing parallel execution of tasks at once.
+    -> Concurrency: managing "multiple tasks" at the same time, but no necessary in parallel.
+    -> Parallelism: performing parallel execution of tasks "at once".
     1. Web workers:
       -> Allows JS to run in a background thread without blocking the main ui-thread.
       -> communication with main thread via --> .postMessage()
