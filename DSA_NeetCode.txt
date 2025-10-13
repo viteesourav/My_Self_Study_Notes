@@ -17,7 +17,7 @@
 [ ] Encode and Decode Strings (Medium) => encode Logic: "lenOfWord#" infront of each word ==> concat into a single string. Decode Logic: get the count => [use i and j] => extract the word.
 [ ] Product of Array Except Self (Medium) => Prefix Prod and Suffix. => populate the ans with Prefix Prods. [ans[i] = ans[i-1] * nums[i-1]] => Next maintain a suffix pointer to keep track of suffix vals => update ans[i] => ans[i] [i.e the prefix prod] * suffix [the suffix val]
 [*] Valid Sudoku (Medium) => use hashMap to <index, set> => For each rowId, colId and (rowId/3, colId/3) [For each squares] and set to check if the numbers are repeated or not.
-
+[*] Longest Balanced Substring II (Hard) => Prefix frequency difference Appraoch =>  case1 [with 1 distinct char] -> single char max len find  case2 [with 2 letter equality, with third considered as 0] => d1 = fa-fn => seen[(d1, 0)].  case3 [all 3 disitinct char]: Balance cond: fa = fb = fc => d1: fa-fb = 0, d2: fa-fc = 0 ==> track (d1,d2) -> If we have seen it before at pos i, then from i+1 to curr Pos -> the str is balanced. O(N) [Contest Problem]
 
 ------------------------------
 🔹 2. Sliding Window [Concepts: Fixed & variable length window, frequency counters]
@@ -169,10 +169,6 @@
 [*] Coin Change (Medium) => logic is => we can choose one coin, then again we have to choose from the coins to fill the reminder -> forms a big tree, with same sub-problem and repeated calculation. Sol using DP => Bottoms up appraoch -> from O to amount we build the dp array. eg: If we choose coin 3: then dp[4] = 1 [coin 3 is choosen] + dp[4-3]  //we need to know dp[1] as that will give us the possibilities. 
 [*] Longest Palindromic Substring (Medium) => 2DP solution => Idea is you start looking from right to left -> take each Index and expand right till we are having a palindrome (s[l] == s[r] & inner string is a palindrom already i.e dp[l+1][r-1] is true) -> Compare the length => Store the left and right index. TC: O(n^2) [nested loops for l and r], SC: O(n^2) [using 2D dp]  [NOTE: Optimised solution is using 2 points for odd and even length string].
 [ ] Maximum Subarray (Medium) => use Kadane's Algo [Iterate the array, keep track of sum, if sum < 0 -> start sum with 0 again] OR Divide and conqure => [Sum lies in either left, right or across mid pos, Find prefix and suffix sum, recursive => find mid and find the max of {leftArr [include mid pos], rightArr, across [prefix at mid + suffix at mid+1]}] ==> should give the ans.
-[*] Longest common subsequence (Medium) => 2 DP Approach [Bottoms up] -> Plot the chars in a 2 D grid -> intersecting char have 2 cases: 1. If they match -> i.e we need to increment both i and j pointer on them i.e look diagonally in the matrix i.e 1 + dp[i+1][j+1], [+1 because we matched a character], case2: If they dont match, then we need to check max between immeditate Right [part of word 2 can match word 1] and bottom [part of word1 can match word2] in dp table i.e max(dp[i+1][j], dp[i][j+1]), Bottoms up so -> Iterate in reverse.
-[*] Edit Distance (Hard) => 2 DP Appraoch + pointer case => consider i and j pointer on the words -> for each letter you have 3 cases -> findout how i and j you will update in each case --> Convert this into a 2-D matrix for i and j -> Solve bottoms up [edgecases fill up: 1. If word1 and word2 both are empty -> 0 count, If one of them emoty -> count is len of the non-empty str.]
-[ ] Regular Expression Matching (Hard) => DP -> Top-down appraoch [REcursion + Cache] => 2 pointers at word and pattern, Check for edge cases -> If the character's matches or pattern is a '.' -> valid case, If the charcter is followed by a '*' then result will be gien by 2 cases -> dont consider the '*' i.e 0 count, or consider the char. -> If we dont have char followed by pattern, then just check char, if saem move ahead.
-
 
 
 ### Neetcode Extras:
@@ -186,8 +182,26 @@
 [ ] Coin Change 2 (Medium) => Memorization method using 1D DP => take a coin, For every coin, update the dp map from coin till amount => with dp[curr] = dp[curr] (curr count) + dp[curr-coin] i.e possible ways for reminder sum
 [*] Longest Increasing Subsequence (medium) => Bottom's Up Memorization: strat looking from right to left => for each element: Either we can take the curr ele i.e 1  and 1 + Longest Increasing Subseq of every element after it [cond: this comes only if the element is > than the curr element then only it will strictly increasing ] => take the max of all this. => for that index => this will be dp[index] TC: O(n^2)  OR  Appraoch2: Greedy BS using lower_bound. => Iterate and if any ele < last pushed elemnet -> use BS to find the immediate greater element and replace that. -> track's size will be max LIS. TC: O(nlogn)
 
+
 ------------------------------
-🔹 12. Backtracking [Concepts: Explore all possibilities recursively]
+🔹 12. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
+------------------------------
+[ ] Unique Paths (Medium) => 
+[ ] Target Sum (Medium) => 
+[ ] Interleaving String (Medium)  => 
+[ ] Interleaving String (Medium)  => 
+[ ] Best Time to Buy And Sell Stock With Cooldown (Medium) =>
+[*] Edit Distance (Medium) => 2 DP Appraoch + pointer case => consider i and j pointer on the words -> for each letter you have 3 cases -> findout how i and j you will update in each case --> Convert this into a 2-D matrix for i and j -> Solve bottoms up [edgecases fill up: 1. If word1 and word2 both are empty -> 0 count, If one of them emoty -> count is len of the non-empty str.]
+[*] Longest common subsequence (Medium) => 2 DP Approach [Bottoms up] -> Plot the chars in a 2 D grid -> intersecting char have 2 cases: 1. If they match -> i.e we need to increment both i and j pointer on them i.e look diagonally in the matrix i.e 1 + dp[i+1][j+1], [+1 because we matched a character], case2: If they dont match, then we need to check max between immeditate Right [part of word 2 can match word 1] and bottom [part of word1 can match word2] in dp table i.e max(dp[i+1][j], dp[i][j+1]), Bottoms up so -> Iterate in reverse.
+[ ] Burst Balloons (Hard Hard) => Intuation Appraoch -> BruteForce Recursion => Iterate each ballon and check how much coin we can get if we pop it. | Optimal: Trick is at any index i, consider what if we burst this ballon at the last [Defining subproblem] => If ith ballon is burst last => Total coins = num[i-1] * num[i] * num[i+1] + dp[i+1][R] [Left part of the arr which is already burst] + dp[l][i-1] [Right part of the arr which is also burst]. => Recursively Find the max possible coin we can collect. TC: O(n^2 * n) -> total no of subarray * looping inside, SC: O(n2) -> 2D DP space dp[l][r]
+[ ] Longest Increasing Path In a Matrix (Hard) =>
+[ ] Distinct Subsequences (Hard) =>
+[ ] Regular Expression Matching (Hard) => DP -> Top-down appraoch [REcursion + Cache] => 2 pointers at word and pattern, Check for edge cases -> If the character's matches or pattern is a '.' -> valid case, If the charcter is followed by a '*' then result will be gien by 2 cases -> dont consider the '*' i.e 0 count, or consider the char. -> If we dont have char followed by pattern, then just check char, if saem move ahead.
+
+
+
+------------------------------
+🔹 13. Backtracking [Concepts: Explore all possibilities recursively]
 ------------------------------
 [ ] Subsets (Easy) => use Recursion, include/Exclude => at an index => case1: call recursion by not including the curr element i.e with the next index, case2: add in the track and call recursion for the next element. If you reach the end -> store the ans. TC: O(n * 2^n) i.e we are visiting all element and for each element we have 2 choices.
 [ ] Combination Sum (Medium) => Recursion + Backtracking => Keep track of elements and currsum, At each element either you chose to include the element or skip it totally to avoid -> Each Recursive call goes with same index as we are allowed to choose the same element again, finding sum for duplicates i.e [2, 2, 3] and [3, 2, 2] will have same sum in the Decision Tree, We avoid it by make sure, It is included in one decision branch and totally ignored for the other one. TC: O(2^target)
@@ -203,7 +217,7 @@
 [ ] Letter Combinations of a Phone Number (Medium) => Classic backtracking => Maintain a track through recursive calls -> track all possiblities and store in ans. TC: O(4^n * n) i.e at worst case, we have 4 options so 4^n and n as we will iterate each options for a digit.
 
 ------------------------------
-🔹 13. Greedy [Concepts: Locally optimal → globally optimal]
+🔹 14. Greedy [Concepts: Locally optimal → globally optimal]
 ------------------------------
 [ ] Assign Cookies (Easy) => 2 pointers, greedy pick => Sort the given arrs => iterate the greedArr and CookieArr => Pick the cookie that satisfy the child and move ahead...
 [ ] Jump Game (Medium) => Greedy appraoch => start from right to left => see if you can move the goal closed to start. cond: i + nums[i] >= goalIndex => If true, we move the goal towards left. At end if goal is zero -> we reached the start, else we didn't make it.
@@ -219,7 +233,7 @@
 [ ] Merge Triplets to Form Target Triplet (Medium) => True Greedy => First of all filter triplits whose values are more than target. [These triplets can be ignored], If we find any triplet whose any value, matches with the target's value -> we store index of that in a set.  => If at the end we get set of len 3 i.e we have found 3 indicies where target value are prensent across the triplet.
 
 ------------------------------
-🔹 14. Intervals [Concepts: Sorting + merging or overlapping logic]
+🔹 15. Intervals [Concepts: Sorting + merging or overlapping logic]
 ------------------------------
 [ ] Insert Interval (Medium)
 [ ] Merge Intervals (Medium) => sort the intervals then push first interval in ans, then iterate the other intervals, check can we merge interval ? If yes -> merge them and update at last index in ans. else push in ans.
@@ -229,10 +243,6 @@
 ### Neetcode Extras:
 [ ] Meeting Rooms (Medium)
 [ ] Minimum Interval to Include Each Query (Hard)
-
-
-🔹 15. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
-[ ] Burst Balloons (Hard Hard) => Intuation Appraoch -> BruteForce Recursion => Iterate each ballon and check how much coin we can get if we pop it. | Optimal: Trick is at any index i, consider what if we burst this ballon at the last [Defining subproblem] => If ith ballon is burst last => Total coins = num[i-1] * num[i] * num[i+1] + dp[i+1][R] [Left part of the arr which is already burst] + dp[l][i-1] [Right part of the arr which is also burst]. => Recursively Find the max possible coin we can collect. TC: O(n^2 * n) -> total no of subarray * looping inside, SC: O(n2) -> 2D DP space dp[l][r]
 
 
 

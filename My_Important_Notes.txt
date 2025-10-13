@@ -218,7 +218,7 @@ NOTE: For Singly Linked list we use: forward_list
             return  hash<int>{}(p.first) ^ (hash<int>{}(p.second) << 1);   //==> (inbuilt default hash for first val  XOR inbuilt default hash for scond val << 1 [to reduce the collusin we shift the bit of second val to left.])
          };
 
-         unordered_map<pair<int, int>, unordered_set<int>, decltype(customHash)> map(customHash);    //customHash ==> defines the customer hasher for the keys.
+         unordered_map<pair<int, int>, unordered_set<int>, decltype(customHash)> map;    //customHash ==> defines the customer hasher for the keys.
 
    3. In C++:
       -- std::pair works fine in set and map because they rely on ordering (operator<), which is already defined for std::pair.
