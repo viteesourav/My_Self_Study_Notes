@@ -186,9 +186,8 @@
 ------------------------------
 🔹 12. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
 ------------------------------
-[ ] Unique Paths (Medium) => 
-[ ] Target Sum (Medium) => 
-[ ] Interleaving String (Medium)  => 
+[ ] Unique Paths (Medium) => Classic 2D matrix problem => why DP ? at any place we have 2 choices either go Down or Right ! => Also at any (x,y) -> If i know how can ways i can reach end from there, I can find out it's neighbours too. NOTE: The bottom row will have just 1 way to reach the right end (only Right) and the right most column also will have only 1 way to reach end (only Down) => Bottoms up approach -> Travese the matrix in oppoiste direction => Find ans at (0,0) -> TC: O(m*n) SC: O(m*n)
+[ ] Target Sum (Medium) => Caching the (index, total) -> no of ways to reach that total => use a hashmap to cache it. index ranges from 0 to n, total -> take all neg to all pos value. ==> Worst case: use a decision tree with TC: 2^n [Every index has 2 solution, either +ve or -ve value] 
 [ ] Interleaving String (Medium)  => 
 [ ] Best Time to Buy And Sell Stock With Cooldown (Medium) =>
 [*] Edit Distance (Medium) => 2 DP Appraoch + pointer case => consider i and j pointer on the words -> for each letter you have 3 cases -> findout how i and j you will update in each case --> Convert this into a 2-D matrix for i and j -> Solve bottoms up [edgecases fill up: 1. If word1 and word2 both are empty -> 0 count, If one of them emoty -> count is len of the non-empty str.]

@@ -1235,17 +1235,7 @@ EventLoop Explaination:
       -> life-cycle events:
         1. install -> first time installation -> setup cache.
         2. activate -> after install, cleanup or versioning 
-        3. fetch -> intercepts HTTP reqs.
-  
-NOTE:
-  1. What are the drawbacks of using JSON.parse(JSON.stringify(obj)) for performing deep copy ?
-    --> Below mentioned types are completly loss:
-      1. undefined --> lost 
-      2. functions --> lost.
-      3. Date --> converted to string.
-      4. RegExp --> lost.
-      5. If circular ref present --> Crash/Error.
-    --> circular ref --> When inside the obj, there is a key that is pointing to the same object.      
+        3. fetch -> intercepts HTTP reqs.  
 
 ## Additional Topics:
   -> Local vs Session Storage and IndexDB
@@ -1255,7 +1245,264 @@ NOTE:
   -> ARIA roles
   -> Semantic HTML
   -> Webpacks and webpacks 5
-  -> WebSockets
+
+
+#### NOTE: Important Question Asked From Js-React:
+  1. What are the drawbacks of using JSON.parse(JSON.stringify(obj)) for performing deep copy ?
+    --> Below mentioned types are completly loss:
+      1. undefined --> lost 
+      2. functions --> lost.
+      3. Date --> converted to string.
+      4. RegExp --> lost.
+      5. If circular ref present --> Crash/Error.
+    --> circular ref --> When inside the obj, there is a key that is pointing to the same object.
+  2. What is the difference between Local vs Session Storage and IndexDB ?
+    1. Local Storage:
+      -> Browser based -> Stores Key-value storage (5-10 MB)
+      -> Persist the Data even after browser/tab is closed --> Need to delete explictly.
+      -> usecase: Store small, simple, non-sensitive user preferences or flags.
+      NOTE: 
+        Can we store Token in localstorage ?  -> NO, localstorage can be stolen via script Injection (XSS).   
+    2. Session Storage:
+      -> per-Session/per-tab based -> stores key-value. (~ 5MB)
+      -> Persist the data till the browser or the tab is opened -> Once closed, all data resets.
+      -> usecase: Stores temporary data related to particular tab session eg: form progress, temp auth tokens.
+    3. IndexDB: 
+      -> client-side NOSQL database -> allows storing structured data not just string.
+      -> Space -> Can stored hundread of MBs.
+      -> Data will Persit the data untill explicitly deleted.
+      -> usecase: Large data, offline apps, caching API responses, storing JSON Objs, images etc.
+  3. What are XSS and CSRF ?  -> Client side web security vunerablity.
+    1. XSS
+      -> Cross-site Scripting - Attackers inject malicious JS into your web page, and that code executes in user's browser.
+      -> example:
+          -> we have a comment box in our code --> commentbox.innerHTML = userComment;
+          -> If inside the comment box, HAcker sent -> <script>alert("attack")</script> --> this will directly execute when another user loads the page.
+      -> Impact:
+        1. can steal cookies, JWT tokens, localstorage data.
+        2. Modify DOM or UI
+        3. Redirect to another site.
+        4. Execute unintentional actions on behalf of user.
+      -> Prevention:
+        1. Always sanitize user Inputs --> before rendering.
+        2. use textContent instead of innerHTML.
+        3. Content Security Policy (CSP) --> Add CSP header to restrict which scripts can execute.
+      NOTE: This can be detected using Snyk, OWASP ZAP or security Scanners.
+    2. CSRF
+      -> Cross-site resource Forgery --> An authenticated user is tricked to perform unintentional actions - as browser automatically includes cookies, session with every request.
+      -> example:
+        -> logged in bank.com --> where API is POST: https://bank.com/transfer  & Body: amount=1000&to=attacker
+        -> Now another website, secretly includes -> <img src="https://back.com/transfer?amount=100000&to=attacker">  --> Browser automatically sends cookies from bank.com => transfer happens silently.
+      -> Impact:
+        1. Unauthorizede actions.
+        2. EXploitation of user Trust.
+      -> Prevention:
+        1. CSRF Token --> Backend generates a unique token per session or from --> client must send it with every state-changing req.
+        2. SameSite cookies -> set cookies with Samesite=strict to prevent cross-site request.
+        3. CORS Header --> Dont allow wildcard (*) for sensitive end-points. Restrict allowed origin.
+      
+  4. What is CORS ? Why it is important ? How it is handled ?
+    1. CORS
+      -> Cross-Origin Resource Sharing -> browser mechanism that controls how web page can make requests to different origin (domain/protocol or port).
+      -> Is it a client-side or server-side concept ?
+        -> CORS is configured on the server, enforced by browser.
+        -> Postman doesnot show CORS issue -> because it's a browser security policy.
+      -> Origin:
+            scheme (protocol) + host (domain) + port 
+          eg: http://app.example.com, https://app.example.com   -> Different protocol so different origins.
+      -> How CORS Works ?
+        1. Front end sends a POST, PUT or DELETE or custom header to the server:
+          -> fetch("https://api.example.com/data", { method: "POST", headers: {"content-Type": "application/json" }});
+          -> Broser sends:
+             OPTIONS /data HTTP/1.1
+             Origin: https://app.example.com
+             Access-control-Request-method: POST
+        2. The server responds with a CORS Header:
+            HTTP/1.1 200 ok
+            Access-Control-Allow-origin: https://app.exmaple.com
+            Access-Control-Allow-Methods: POST, GET, OPTIONS
+            Access-control-allow-headers: Content-Type, Authorization.
+        -> If these headers are present -> browser allows the main request. If not --> browser blocks the response with CORS error.
+      -> NOTE: for Public api -> access-control-allow-origin: *  --> It will take request from any site.
+      -> How is CORS different for CSRF ? 
+        -> CORS controls which origin can talk to my APIs, CSRF tricks the user an authenticated browser to send unintended requests.
+      -> Who sends CORS headers ?
+        -> Only the server. Frontend can't fix it directly ! It can only analysis if the current origin is allowed or not !
+  5. How are JWT tokens are more Secure ? What it improves ? How it ensures safetly ?
+    -> JWT -> Json Web token -> a compact, stateless, digitally signed token used to securly transfer user identity and claims betweeen client and server.
+    -> NOTE: JWT are not encrypted -> It is signed token to prevent tampered with.
+    -> JWT structure:
+       [header].[payload].[signature]
+      header -> describe the algo used for signing.
+      payload -> contains claims [eg: userId, role, expiry]
+      signature - verifies the token integrity.
+    -> Why JWT is stateless ?
+      -> without JWT, Server keeps session info in memory or db, every req needs to match -> server heavy.
+      -> with JWT, all info already embedded in token, server verifys the signature with secret token - no database needed. --> Auth becomes stateless and scalable.
+    -> JWT =/== Encription
+      -> Anyone can decode JWT -> it's base64 decoded --> That;s never store sensitive data in JWT payload.
+      -> Only server verifys the JWT to authenticate the request is sent from a valid user.
+    -> How JWT works ?
+      1. user loggs in --> sends username/password.
+      2. Server verifies creds => signs a JWT token and returns it. [signature is generated with a secret key]
+      3. Client stores the token -> inside memory or secure cookies.
+      4. Subsequest request -> include JWT token in header as  { "Authorization" : Bearer <JWT_TOKEN> }
+      5. Servers validate the token signature  --> using the secret key -> If validation success -> grant access.
+  6. What is Semantic HTML ?
+    -> HTML elements that conveys meanings.
+    -> Instead of using div for with id as header, menu, content, we can use elements like: <header>, <nav>, <main>, <footer> etc.
+    -> Impact:
+      1. improves Accessibility -> screan readers job is easy.
+      2. boosts SEO
+      3. Enhance code readability and maintainability.
+  7. What is difference between HTML and HTML 5 ?
+    1. HTML 
+      -- DocType -> mostly long and complex.
+      -- Mostly used <div>-based
+      -- No built-in plugins for audio/video.
+      -- form controls only basic input types.
+      -- For offline storage -> use cookies only.
+      -- No support for web workers, Geolocation APIs, Drag & Drop APIs, websockets.
+    2. HTML 5
+      -- Docktype -> short sand simple <!Doctype Html>
+      -- use semmantic HTML tags like header, main, section, acticle, footer.
+      -- built-in support for audio and video --> <audio> & <video> tags.
+      -- form controls new types: email, url, range, date, color etc.
+      -- for offline storage -> have API access for localstorage, session storage and indexDB.
+      -- Support for web workers, Geolocation APIs, Drap & Drop API and websocket.
+  8. What are Web Accessibilities ?
+    -- This ensures People with disabilities can use website.
+    -- 3 keys:
+      1. Semenatic structure -> <nav> or <main>  -> helps screen readers understand layout.
+      2. Kyboard Navigation -> use tabIndex, focus management --> For users without a mouse.
+      3. ARIA roles/labels -> role = "button", aria-label="close Modal" --> Provide extra context to assistive tools.
+    -- How do you test Accessibility ?
+      -> use chrome's Dev tool -> Lighthouse.
+  9. What are types of Middleware exists in React applciations ? How reducers are pure Function ? Give example of Impure functions ?
+  10. What is the Production Process of a React Application ? How App is bundled and deployed on production ?
+    -- 3 step process:
+      1. Development Phase (Local Environment)
+        -- App is created using Vite or create-react-app. --> Do the development --> Run the app locally.
+        -- command: npm start or npm run dev
+        -- What happens >
+            1. dev server (vite/webpack-dev-server) runs in memory.
+            2. It doesn't build actual static files --> instead, it uses an in-memory bundle.
+            3. Supports Hot Module Replacement (HOT) -> any file you edit, only that module reloads, not the entire page.
+            4. it uses "source maps" for debugging.
+        NOTE: dev mode, performance and bundle size are not optimized.
+      2. Build Phase (Production Bundle Creation)
+        -- command: npm run build.
+        -- The above triggers your bundler (usually webpack or Vite) -->
+          1. Compile
+             -> All React (JSX + Typescript) code is converted to palin JS via Babel core or SWC.
+             eg: 
+                //Before
+                const App = () => <h1>Hello</h1>;
+                //After
+                const Ap = () => React.createElement("h1", null, "Hello");
+          2. Bundle
+            -> All JS modules (import/export) are combined into one or few bundles --> eg: main.js or vendor.js
+          3. Optimize 
+            -> The bundle performs: 
+              1. Minification        - Removes whitespaces, shortens variable names.
+              2. Tree-shaking        - Removes unsed import/exports.
+              3. code Splitting      - Creates smaller chunks (lazy-loaded routes or components)
+              4. Assert optimization - Compresses images, optimizes CSS
+            -> build folder structure:
+                /build 
+                  -> index.html
+                  -> asserts/
+                      -> main.5a1c7.js
+                      -> vendor.9123c.css
+                      -> logo.svg
+            NOTE: build is a static folder. It doesn't need Node.js --> It can be served by any web server.
+          -> What happens to the node_module foleder ?
+            -- during bundle process, the bundler resolves all imports from node_modules.
+            -- it bundles it into our final complied JS -> applies tree-shaking, removes unused parts.
+            -- Thus, my final /build output:
+                - actual node_modules folder is not included.
+                - only the used code from those modules ends up inside my final .js bundle.
+            NOTE: node_module is only used during crating of bundle, not to run it.
+      3. Deployment Phase (Production Hosting)
+        -- 2 deployment methods:
+          1. Static Deployment (for SPA - Single Page Application i.e the whole content is served in index.html file in build folder)
+            - when we have purely client-side app (React Router SPA) 
+            - common services: Vercel, Netlify.
+            - steps:
+              1. we run npm run build.
+              2. upload /build frolder to host.
+              -> Configure fallback for SPA service. --> If the page not found it should serve the index.html by default.
+          2. SSR / Hybrid Deployment 
+            - for Framework like Next JS.
+            - deploy the node server that can render pages on the server side --> this helps SEO, better performances.
+      -- How Browser loads a Production React App ?
+        1. The web server serves the index.html [SPA case]
+        2. The browser downloads JS/CSS bundles from CDN.
+        3. The react runtime boots up, hyderate the root DOM element.
+        4. components render --> API calls fires --> app become interactive.    
+  11. Your Reat Application is running very slow ! How do you identify the Issue, Which tools you will use ? What could be the possible reasons and How do you handle it ?
+      -- Explore possible causes: 
+        1. Initial Page loading is slow ?
+        2. Runtime performance like typing lag or slow re-renders
+        3. network/API calls slow ?
+      -- Tool that can help identify the problem: 
+        1. Browser Dev Tools.
+          1. Network Tab - Check for large bundle sizes, uncompressed asser or blocking requests. Look for large images, fonts etc
+          2. Performance Tab - Record user action -> See which components re-render frequently or cause layout thrashing.
+          3. Memory Tab - Detects Memory leaks - Event listners not cleared, large object retention.
+        2. React Dev Tools PRofiler
+          - Analyse component re-render times.
+          - Find components re-rendering unnecessarily.
+          - "flamegraph" to identify hotspots.
+        3. Lighthouse/Web Vitals
+          - Highlights performance and Accessibility bottlenecks.
+        4. Webpack Bundle Analyzer / Vite Visualizer
+          - visualize bundle composition - find heavy libs and duplicated code.
+      -- Common Causes and Fixes 
+        1. A Rendering Performance Issues:
+          -> Symptoms: Typing lag, scroll jank, frequent re-renders.
+          -> Pssobile reasons: 
+            1. re-renders triggered by parent state changes.
+            2. inline arrow functions as props.
+            3. Missed out React.Memos or callbacks.
+        2. Bundle Size / initial Load is high:
+          -> Symptoms: Slow app load, white screen on startup.
+          -> Possible reasons:
+            1. Large JS bundle or unused dependencies.
+            2. All routes/components bunddled together.
+            3. Uncompressed images or fonts.
+          -> Solutions:
+            1. use code splitting like lazy-loadin + Suspense.
+            2. Compress assert => gzip ot brotli.
+            3. use CDN for static assert.
+            4. Remove unnecessary imports.
+        3. Network /API Issues:
+          -> symptoms: slow page after login ot fetch-heavy ui.
+          -> Problem:
+            1. Multiple redundant API calls.
+            2. No caching or pagination.
+            3. Long waterfall chains.
+          -> Soltuions:
+            1. use React Query /SWR for caching.
+            2. Debounce the input-based API calls.
+            3. Optimize backend APIs.
+        4. Memory Leaks
+          -> symptoms: App slows down over timer or tab memory grows.
+          -> Problem:
+            1. timers or intervals not cleaned up.
+            2. Reatained large objects in closure.
+          -> Solution:
+            1. Do clean up the timers or intervals in return cleanup function with useEffect hook.
+          
+
+### Questions from HTML and CSS:
+  1. What are CSS preprocessors ?
+  2. What is border-box ? What are options we have for content Size ?
+  3. What is difference between in-line block and block elements ?
+  4. What is flex-flow ?
+  5. What is align-self ?
+
+
 
 ## Regrex basic in JS:
 
