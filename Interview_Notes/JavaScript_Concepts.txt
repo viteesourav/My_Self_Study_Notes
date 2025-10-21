@@ -23,6 +23,8 @@ NOTE:
   -- Additionally, String methods are concat(), slice() etc will create and return a new string instead of modifying the original string value.
   -- thus, immutability.
 
+NOTE: any in string manipulation -> spit the string [creates char array] -> Do string manipulation -> join() to create a new string.
+
 Hoisting ? 
 -- variable and function Declaration moves to the top of the scope. Scope can be both local and global
 -- This behavior is strictly for declaration only. Intializing won't be hoisted. **Imp**
@@ -1493,6 +1495,9 @@ EventLoop Explaination:
             2. Reatained large objects in closure.
           -> Solution:
             1. Do clean up the timers or intervals in return cleanup function with useEffect hook.
+  12. What are Web Components, and how are they different from React Components ?
+  13. How would you handle cross-browser compatibility issues ?
+  
           
 
 ### Questions from HTML and CSS:

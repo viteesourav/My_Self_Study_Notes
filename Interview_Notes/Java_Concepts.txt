@@ -259,9 +259,10 @@ NOTE:
 					3. Define the Concrete method: public void method_name() {....};
 				NOTE:
 					-> Can have constructors too.. [** IMP **]
-				-> Child Classes will extend the abstract class.
+				    -> Child Classes will extend the abstract class.
 					-> use @Override to overwrite the abstract methods.
 					-> can directly access the concrete class.
+            NOTE: interfaces are more generic type of Data abstraction i.e Engine -> car [engine basic fucntionality like start/stop Engine must be there in car].  Abstract classes are tightly coupled type of Data abstraction i.e Vehicle -> car and Bike [shared state and method like fuel level and checkFuel].
 
     NOTES:
 		1. Why do we still need Abstract classes when we already have default with Interfaces in Java 8 onwards.
@@ -349,7 +350,7 @@ NOTE:
                         -> it's Constructor can be called using super(msg).
         6. What is Maven ? How we use it in Application ?
             -> A build automation and project management tool.
-            -> uses POM file -> manages Project dependencies, plugins, build configs. [ maven has centralised repo for all dependency Jars]
+            -> uses POM [Project Object Model] file -> manages Project dependencies, plugins, build configs. [ maven has centralised repo for all dependency Jars]
             -> Handle build life cycle => [complie -> test -> package -> install -> deploy]
             -> Difference between Maven install vs maven package
                 -> maven install -> install dependency jars into local repo [.m2 folder]
@@ -396,6 +397,13 @@ NOTE:
                 4. Fix: How can make it take child's variable ?
                     1. Keep the Reference same as Object i.e Child obj = new Child();
                     2. Typecast while calling variable i.e sysout(((Child) obj).x);   //Specifically tell to use variable from child class.
+        NOTE:
+            -> In case of Method Overriding, the child method must be atleast visible to the parent Object in case of Protected methods. 
+            eg: Parent has protected method.
+                1. ChildA extends Parent override with protected Method -> Works.
+                2. ChildB extends Parent override with public Method -> Works.  [we can have a higher visiblity in child class]
+                1. ChildC extends Parent override with private Method -> No [here the Parent can't event see the method, we cannot reduce the Access specifier]
+        8. Runtime Polymorphism Vs CompileTime Polymorphism [Overriding Vs Overloading] [TODO]
             
 
 	
@@ -680,7 +688,7 @@ NOTE:
                 -> Consise, Functional-style, ParallelStream support.
                 -> Loops has more control and preferred for smaller data-sets.
             -> Limit() behaive differently in ordered and unordered streams. [TODO]
-            -> forEach, Dont do any side-effects like API calls or anything..
+            -> forEach(), Dont do any side-effects like API calls or anything..
             -> How can we short-circuit a Stream ?
                 -> use limit(), findFirst() or anyMatch() -> When this satisfy, .ifPresent(System.out::println) -> will catch the output and print it.
             -> Problems useCases: [TODO]

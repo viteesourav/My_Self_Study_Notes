@@ -590,7 +590,7 @@
         -> Rendering optimization tech where only the elements visible in the viewport are rendered to the DOM, instead of rendering the entire dataset at once.
         -> Problem: Why we need Visualization ?
             -- Thousands of elements to render ==> slow dom creation. [Poor Performance]
-            -- Reconciliation is faster, But DOM is the bottleneck ===> Reconciliation solves it.
+            -- Reconciliation is faster, But DOM is the bottleneck ===> React virtualization solves it.
         -> library: react-window
             eg: 
                 import React from "react";
