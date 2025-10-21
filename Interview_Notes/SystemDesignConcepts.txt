@@ -2,24 +2,213 @@
 
 Goal: we will explore real-life example based system design concepts where we will list down HLD and LLD design for any particular System.
 
-### Cocept Theory Understanding:
-    1. 
+### System Design Fundamentals
+    1. Scalability, Availability & Reliability
+        1. Scalability
+            -> It refers to system's Availability to handle increased load by adding resources - like servers, database instances or network capacity.
+            -> Maintains System Performance and reliablity in increased load scenarios.
+            -> Types:
+                1. Vertical Scaling (Scale-UP)
+                    -> simple to implement -> upgrade the current hardware.
+                    -> Problem -> Limited by hardware capacity and single point-of-failure.
+                    -> eg: upgrade database server from 4 core to 16 core.
+                2. Horizontal Scaling (Scale-out)
+                    -> Add more machines to distribute the load.
+                    -> Better fault tolerance and unlimited growth potential.
+                    -> Problem: Need load balancing, distributed data and synchronization.
+                    -> eg: Adding more web servers behind a load balancer, Qubes/AWS addes additional pods/instances when demand increases.
+        2. Availability Vs Reliability:
+            1. Availability
+                -> It menas, how long the system can stay up without shutting down.
+            2. Reliability
+                -> It means how consistently a system can perform a task without failure/Errors.
+            NOTE:    
+                -> eg: A website can be Availability i.e it loads but unreliable (freq data errors)
+                -> eg: A system can be reliable i.e Data loads correctly but is not highly available i.e server mostly stays down.
+        3. Design a System that is: Scalable + highly Available.
+            ->  HLD Structure:
+                1. use "load balancers" to distribute the requests.
+                2. Deploy "multiple app Servers" for Scalability.
+                3. use replicated Databases with read replicas -> Faster database queries.
+                4. Have redundancy across multiple data centers (for Hight Availability)
+                5. Use Caching (CDN or Redis) to reduce load.
+                6. Implement health checks & auto-restart methods. --> If a instance goes down due to failure, It can automatically restart it.
+            -> Flow
+                Client ---> Load Balancers ---> Multiple App Servers ---> Distributed Databases (Master + Replicas) + Cache (CND or Redis).
+            -> TradeOff:
+                1. Balancing consistency + Availability is hardest --> CAP theorm.
+    2. CAP Theorm, consistency Models & Database TradeOffs
+        1. Why CAP Therom ?
+            -> Problem when system becomes Distributed -> i.e more than one machine handling data
+                1. If one server crashes what happens ?
+                2. What if network Delay happens and 2 uses see 2 different data ?
+                3. What if nodes can't talk to each other, should they continue to serve Request ?
+            -> CAP therorm - A Distributed system can only guarntee 2 out of the 3 properties at the same time: 
+                1. C - Consistency       - Every user sees the most recent write or error     - eg: insta bio updated is immediatly visible to all.
+                2. A - Availability      - Every req reserves a resp even if one node is down - eg: insta if one data center is down, still we can post. 
+                3. P - Partion tolerance - some servers can't talks but the App still works.
+            -> Why best of 2 out of 3 ?
+                -> Partion tolerance will happend no matter what  due to network failure or timeouts.
+                -> Now In this case 2 choices: 
+                    1. Being Consitent - Stop serving untill syncs.
+                    2. Being Availabile - Keep serving even if the data can be stale.
+            -> Examples: 
+                1. CP Systems
+                    -> Consitency + Partion Tolerance
+                    -> usecase: We cannot allow 2 users to see 2 different data, Thus if one replica is down, we can afford to wait --> temporary unavailablity is ok !
+                    -> eg: Banking, Payment Systems or Order system (Here Data correctness is more important)
+                2. AP Systems
+                    -> Availabile + Partion Tolerance
+                    -> usecase: If the data is stale or taking time, that's okay --> but the scroll in social Media must work i.e systems must be available always.
+                    -> eg: Social Media Apps, Caches, (Here Availability >> Data consitentany)
+                3. CA Systems 
+                    -> Consistency + Availabile
+                    -> Not any System EXists that implements this 2 together.
+            ->  Decision Method:
+                -> If there is a network failure (P) --> Do you stop serving stale data (C) Or stay online with eventual Consitency (A) ?
+        2. Consitency Model ?
+            -> Modern System go with Eventual consitency -> Data might not be instantly same everywhere i.e stale but eventually converges 
+            -> eg: DynamoDB, Cassandra or S3.
+        3. Database TradeOffs: 
+            1. SQL Databases (Relational)
+                -> Type: CP Systems
+                -> Focus: Data Integrity, ACID Transactions.
+                -> eg: PostgresSQL, MYSQL
+                -> usecase: Banking, Payments, e-commerce orders.
+            2. Non-SQL Databases
+                -> Type: usally AP Systems.
+                -> Focus: Scalability, Flexible, performace
+                -> eg: 
+                    - DynamoDB, Cassandra (AP)
+                    - MongoDB (can be CP or AP based on config)
+                -> usecase: Social Media feeds, logs, caching, high-write workloads.
+        4. Modern Perspective:
+            -> CAP says what to choose in case of error, When there is no error then we follow: "PACELC"
+                i.e if Partion (P) occurs, then choose between Availability (A) or Consistency (C) ELse (E) choose between Latency (L) or Consitency (C).
+            -> When network is fine, we trade between Latency and strong consitency.
+            - eg:
+                1. DynamoDB - AP during Partitions, and prioritizes low latency when no failure(PA/EL).
+                2. Spanner  - CP during partitions, but ensures consistency at cost of higher Latency (PC/EC).
+    3. Caching & Data Access Patterns
+        -> Why we need ?
+            -> Performance Improvement -> Process of storing data in a faster storage eg: RAM so that future requests can be served faster.
+        -> Caching layers: 
+            1. client-side -> Browser, mobile device memory (eg: service workers)
+            2. CDN (Content-delivery-network) -> Geographically distributed static assert caching (images or videos)
+            3. Appliation cache -> Redis/Memcached near the app servers
+            4. Database cache -> Query-level or materialized view cache.
+        -> Cache strategices: 
+            1. read-through  -> app always read from cache, If miss -> fetch data from db -> stores it.  [Redis + cache-side pattern]
+            2. write-through -> app write to cache and db at the same time --> For consistent critical systems.
+            3. write-behind (write-back) -> write to cache -> async updates DB later --> high performance system like Analystics.
+            4. cache-aside (lazy-loading) -> App hits cache, If missed loads from DB, later update cache --> Common pattern.
+        -> Cache Cleaup Policies
+            1. LRU -> Least recently used -> remove last recently accessed items.
+            2. LFU -> least Frequently used -> remove least accessed item.
+            3. FIFo -> First in First out -> Remove oldest Item regardless of usage.
+            4. Random -> randomly just purge data.
+        -> Cache are faster but hold limited memory space -> Must purge data.
+        -> TTL -> Time TO live --> automatically removes data after a fixed duration to prevent stale reads. eg: Cache user profile for 10 mins.
+        -> Cache Invalidation: 
+            -> When data updates -> Cache might hold stale data -> we must sync DB and Cache.
+            -> Options: 
+                1. Invalidate on write
+                    -> Remove cache data when data changes -> Safe but leads to temporary issues.
+                2. Update cache on write
+                    -> Inconsistent if write on cache fails -> data sync will fail.
+                3. Set short TTLs:
+                    -> simple but might cause higher DB load.
+        -> Caching tech:
+            1. Redis -> In-memory, key-val, supports persistence -> most common app-level caching.
+            2. memcached -> in-memory, very fast but volatile -> session storage, temporary storage.
+            3. CDN -> Static assert, videos, large media
+        -> Why Redis preferred ?
+            1. Persisitence (snapshortting + AOF)
+            2. pub/sub + streams
+            3. Rich data types (hashes, lists, sets and sorted sets)
+        -> Trade-Offs: 
+            1. Fitness Vs Performance   --> Higher TTL improves speed but increases staleness.
+            2. Memory Vs hit ratio      --> More Memory --> more storage space -->  fewer misses
+            3. Latency Vs Consistency   --> Remote cache (distributed) add latency but centralized data.
+    4. Load Balancing, Reverse Proxy & Failover Mechanisms
+        -> in prod, we always have more than 1 servers handling traffic.
+        -> Prob with just 1 server: 
+            1. Get overloaded (CPU/memory bottleneck)
+            2. Create single point of failure
+            3. Limit Scalability.
+        -> Solution -- Distribute the incoming request across multiple servers. -> Job of load balancer. -> No single server getting overloaded, better realiablity and availability and semless horizontal scaling.
+        -> Types:
+            1. L4 Load Balancer (Transport layer)
+                -> works at UDP/TCP level.
+                -> Routes bases on Ip and port
+                -> Fast but limited routing control.
+                -> eg: Amazon network Load balancer, H4Proxy (L4 Mode)
+            2. L7 Load Balancer (Application Layer)
+                -> works at HTTP/HTTPS Level.
+                -> can inspect headers, url, cookies.
+                -> can perform intelligent routing -> (eg: /api => Microserve A)
+                -> eg: NGINX, AWS Application load balancer.
+        -> Load balancing Algorithms:
+            1. Round-robin  --> Distributed sequentially (1, 2, 3, 1, 2, 3....)  -> Simple and fair for similar servers.
+            2. weighted round-robin -> Assigned weights based on capacity  -> If server 2 > server 1
+            3. least connection -> Reoutes to server with fewest active requests => best for variable req times.
+            4. IP-hash -> Based on user's IP -> same-user -> same-server  -> useful for session stickiness.
+            5. random  -> Randomly pick a server -> faster & statless.
+            6. Consitent Hashing -> same key always map to same node --> used in distributed caching or sharding.
+        -> Load balancer patterns:
+            1. Active-Active
+                -> all servers handl traffic.
+                -> if one fails, LB redirect traffic to others.
+                -> Pros: higher utilization
+                -> Cons: more coordiantion needed for shared state. 
+            2. Active-passive
+                -> one or more servers are on stand-by untill the active one fails.
+                -> Procs: simpler failover
+                -> cons: Less efficient resource utilization.
+        -> What is Reverse Proxy ?
+            -> It forwards reqs from client to backend server.
+            -> works only at L7 layer i.e HTTPS/HTTP.
+            -> eg: NGINX, Apache.
+            -> feat: SSL termination, caching, compression.
+        -> Health Checks & Failover:
+            -> LB periodically pings backend servers --> If they doesn't respond within timeout -> marked as unheadlty -> temporary removed from rotation -> traffic re-directed to backup region.
+        -> Gloabl LB:
+            -> When users are world-wide, few traffic redirection methods:
+                1. based on geolocation -> nearest region.
+                2. Latency-based routing.
+                3. Weighted rounting (send 70% from US-East & 30% from EU)
+            -> Tools: AWS Route53, Cloudflare Anycast, Google Cloud DNS.
+        -> trade-offs:
+            1. Latency Vs Control  --> L7 is smarter but slower, L4 is faster but dummer [less control on routing]
+            2. StateLess vs Sticky sessions  --> sticky sessions simplify state but breaks Scalability.
+            3. Active-Active Vs Active-passive  --> More reliable vs resource wastage.
+            4. Single Vs Multi-Region  --> Multi-region improves Up-time but add sync complixity.
+        NOTES:
+            1. What happens when a single LB fails ?
+                -> If only 1 LB fails -> system goes down.
+                -> Sol: use redundent LBS (active-active or active-passive) or manged LBs (AWS/GCP handles redundancy).    
+            2. How do we maintain user serssions across Load balanced servers ?
+                -> use sticky sessions (IP hash / cookies) or better -> store session state in Redis or DB.
+                -> sticky sessions does prevent scaling, solution is to use distributed session storage to store sessions state.
+            3. How do we perfrom zero-down time deployments with LB ?
+                -> gradually remove old servers from LB rotation -> deploy -> re-add -> blue-green or rolling deployment.
+    5. Database Scaling -> Replication, Sharding and Partitioning
+        1. Replication
+            -> 
 
+### Extra LLD & HLD Qs:
 
-1. Airline Booking System.
+    1. Airline Booking System.
+        1. Function Requirements.
+        2. Non-Function Requirements.
+        3. Enities/Actors: 
+        4. LLD
 
-    1. Function Requirements.
-    2. Non-Function Requirements.
-    3. Enities/Actors: 
-    4. LLD
-
-
-2. Event Booking System.
-
-    1. Function Requirements.
-    2. Non-Functional Requirements.
-    3. Entities/Actors
-    4. HLD
-    5. LLD
+    2. Event Booking System.
+        1. Function Requirements.
+        2. Non-Functional Requirements.
+        3. Entities/Actors
+        4. HLD
+        5. LLD
 
 
