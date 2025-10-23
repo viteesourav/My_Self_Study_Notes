@@ -102,7 +102,7 @@ Goal: we will explore real-life example based system design concepts where we wi
             2. write-through -> app write to cache and db at the same time --> For consistent critical systems.
             3. write-behind (write-back) -> write to cache -> async updates DB later --> high performance system like Analystics.
             4. cache-aside (lazy-loading) -> App hits cache, If missed loads from DB, later update cache --> Common pattern.
-        -> Cache Cleaup Policies
+        -> Cache Cleaup/Eviction Policies
             1. LRU -> Least recently used -> remove last recently accessed items.
             2. LFU -> least Frequently used -> remove least accessed item.
             3. FIFo -> First in First out -> Remove oldest Item regardless of usage.
@@ -194,7 +194,210 @@ Goal: we will explore real-life example based system design concepts where we wi
                 -> gradually remove old servers from LB rotation -> deploy -> re-add -> blue-green or rolling deployment.
     5. Database Scaling -> Replication, Sharding and Partitioning
         1. Replication
-            -> 
+            -> Copying data from one database server (Master) to one or more servers (slaves or replicas).
+            -> improves Performance and availability.
+            -> Functionality:
+                1. The primary (Master) handles writes.
+                2. The replicas (slaves) handle reads. [to avoid conficts]
+            -> Types of Replicas:
+                1. Synchronous  -  writes is confirmed only after replicas updates     - strong consitency, higher latency.
+                2. Asynchronous -  Master confirms immediatly, replicas updates later  - better performance, eventual consistency.
+            -> TradeOffs: 
+                1. Pros:
+                    -> Improves read performance (read scaling)
+                    -> Increase Availability (failover possible)
+                    -> Enable data locality (geo-distributed reads) 
+                2. Cons:
+                    -> Write still limited to one master.
+                    -> Replication lag (in async setup)
+                    -> consistency management is complex.
+            -> NOTES:
+                - If master crashes, A replica can be promoted to Master manually or via leader election.
+        2. Sharding (Horizontal Partitioning)
+            -> When data becomes too large for a single server --> split or shard data across multiple servers. -> each shard holds a subset of data.
+            -> Shard strategices: 
+                1. Range-based     ---  Split by vaule ranges          -->  users 1 - 1000 in shard 1, rest in others.
+                2. Hash-based      ---  Hash user_id -> shard number   -->  Even distribution but harder to rebalance.
+                3. Geo-based       ---  split by location or region    -->  EU users, US users
+                4. Directory-based ---  lookup table maps ID -> shard  -->  flexible but adds lookup oberhead.
+            -> TradeOffs
+                1. Pros:
+                    -> Enables horizontal scaling
+                    -> Reduce data size per shard.
+                    -> beeter write throughput.
+                2. Cons:  
+                    -> Cross-shard queries are expensive.
+                    -> Harder joins and transactions.
+                    -> Rebalancing shards --> Operationally complex.
+            -> Rebalancing ?
+                -> When shards fills unevenly -> some servers hot, others are cold ---> use consistent hashing to remap keys evenly across nodes.
+        3. Partitioning Vs Sharding
+            1. Partitioning: 
+                -> scale: Within 1 database.
+                -> Goal: Manage large tables.
+                -> eg: MYSQL partioning a table into data ranges.
+            2. Sharding:
+                -> scale: across multiple databases.
+                -> Goal: Distribute the data across multiple instances. -> horizontally or Geographically.
+                -> eg: Splitting users data into multiple MYSQL Cluster.
+        -> usecase:
+            -> In a large System we combine Replicas and shards to Optimize the performance of the System.
+                1. Each Shard may have replicas for read scaling.
+                2. Writes -> Master of that shard.
+                3. Reads -> Replicas of that shard.
+        -> Design Flow: 
+            App Server ----> Shard Manager 
+                                    |--->  Shard 1 (Master) + Replica 1, Replica 2.
+                                    |--->  Shard 2 (Master) + Replica 1, Replica 2.
+    6. Message Queues & Async Communication
+        1. Message Queue (MQ) ?
+            -> It is a temporary holding area where messages (tasks, data or events) are stored until a consumer service can process them.
+            -> It allows async communication between 2 services i.e sender and receiver don't have to interact real-time.
+            -> How it works ?
+                1. Producer -> sends a message eg: "User signed up !"
+                2. Queue    -> stores the message reliably (FIFO or priority)
+                3. consumer -> Processes message eg: "send welcome email"
+            -> Flow Diagram:
+                [User Service] ---> [Message Queue] ---> [Email Service]
+                    |                   |                    |
+                Producer         Temporary store         Consumer
+            -> Types: 
+                1. Traditional Message Queues  --> RabbitMQ, Amazon SQS, Redis Streams.
+                2. Distributed Logs / Streaming  --> Apache Kafka, Pulsar, Kinesis.
+            -> why need a Message Queue / Advantages ?
+                1. decoupling 
+                    Pro:  Services can work independently ! producers and consumer dont have to wait for each other.
+                    Cons: Harder to trace flow end to end.
+                2. load Buffering
+                    Pro: Hanldes burst traffic by queueing requests.
+                3. Reliability
+                    Pro:  Prevent data loss via acknowledgement and rettries.
+                    Cons: Message duplication possible. 
+                4. Scalability
+                    Pro: Add more cosumers to process high message volume.
+                    Cons: Ordering guarantees may break
+                5. Async Processing 
+                    -> Improves user experience (no blocking operations)
+            -> Sync VS Async Communication
+                1. Synchronous (Direct Call)     --> API A --> API B (waits for response)  --> Real-time, needs immediate data.
+                1. ASynchronous (Queue or Event) --> API A --> Queue --> API B             --> Background Jobs, non-blocking ops
+            -> usecase:
+                - use Async queues only when the user doesnot need the result immediatly eg: Logging, Analystics, email Notifications.
+        NOTES:
+            1. At-least-once vs At-most-once Vs Exactly-once delivery ?
+                1. At-least-once  --> message may be processed more than once (most common).
+                2. At-most-once   --> may loose some messgaes but never duplication.
+                3. Exactly-once   --> hard to acheive with kafka transactions.
+            2. Dead Letter Queue (DLQ)
+                -> A Seperate Queue to store massages that repeatedly fail to process.
+            3. Idempotency
+                -> Make message processing safe for retries i.e re-sending the same email shouldn;t cause duplication.
+            4. Backpressure ?
+                -> Happens when the consumer cannot keep up --> Message Queue groes --> implement Scaling ot throttling.
+    7. Data Storage Choices - SQL vs NoSQL
+        -> Majorly have 2 options
+            1. Relational Databases     - SQL    - MySQL, PostgresSQL, Oracle, MSSQL
+            2. Non-Relational Databases - No-SQL - MongoDB, Cassandra, DynamoDB, Redis, Neo4j.
+        -> Conceptual Differences:
+            1. MYSQL
+                1. DataModel -> Tables (rows & cols)
+                2. Schema    -> Fixed Schema (predefined columns & types)
+                3. Query Language -> SQL
+                4. Scalability -> vertical Scaling (scale-up i.e bigger machine)
+                5. Transactions -> Strong ACID Support.
+                6. usecase => Structured, relational data.
+            2. NoSQL 
+                1. DataModel -> Flexible (key-value, document, column, graph)
+                2. Schema    -> Dynamic Schema (fields can vary per record)
+                3. Query Language -> Each DB has it's own API or query model.
+                4. Scalability -> Horizontal (scale-out i.e more machines)
+                5. Transactions -> Often relazed (BASE) for perfromance.
+                6 usecase -> unstructured or rapid changing data.
+        -> What is ACID principle with SQL databases ?
+            1. A - Atomicity
+                -> All or nothing. - Either all operations will succeed or nothing will.
+                -> us of keyword -> Start Transaction; ....  Commit;   --> Make sure the in-between querie's Atomicity.
+                -> usecase: Both debit or credit succeed or both fails.
+            2. C - Consistency
+                -> Data remains valid.
+                -> eg: If a constraing is set of Check(balance > 0) --> transaction with negative balance will fail -> Data must be valid in the tables.
+                -> eg: No rules/containts violted.
+            3. I - Isolation
+                -> Transactions don't interfere interfer with each other.
+                -> SQL provides Isolation levels
+                    Read uncommitted --> Read Committed --> Repeatable Read --> serializable.
+                NOTE: Higher levels = strong isolation = less concurrency.
+                -> eg: Parallel transfers donot overlap data.
+            4. D - Durability
+                -> Changes persist. -> Once the data is commited -> It is permanently stored, even if the system crashes.
+                -> Achieved via write-ahead logs (WAL), journaling or replication.
+                -> eg: Data survives crash/restart.
+        -> When to choose SQL or NO-SQL ?
+            1. Reasons to choose SQL
+                1. Need Complex queries or joins.
+                2. Data has clear relationships (eg: users, order, purchases)
+                3. Need strong consistency and atomic transactions.
+                4. expect moderate scale but high integrity.
+                eg: banking systems, Inventory Management or HRM or CRM applications.
+            2. Reasons to choose NoSQL
+                1. Data structure evolves quickly or is semi-structured (eg: JSON-like)
+                2. Need massive Scalability and high availability.
+                3. deal with high-velocity writes or big data.
+                4. tolerate eventual consisitency.
+                eg: Social feeds and chat messages, IoT -sensor data or Logging and analytics.
+        -> Types of No-SQl Databases and when to use which one ?
+            1. key-Value store
+                -> simple pairs
+                -> usecase: Caching or sessions.
+                -> eg: Redis, DynamoDB
+            2. Document Store
+                -> JSON-like documents
+                -> usecase: User profiles, catalogs.
+                -> eg: MongoDB, Couchbase.
+            3. Column Family store
+                -> Columns-oriented
+                -> usecase: High write throughput, time series.
+                -> eg: Cassandra, Hbase
+            4. Graph database
+                -> Nodes + Edges.
+                -> usecase: Social networks, recommendations
+                -> eg: Neo4j, ArangoDB.
+    NOTES:
+        -> SQL databases provides high Consistency (every reads get the latest write) but they scale vertically which limits.
+        -> NO-SQL databases scarifice Strong consistency but provides eventual consistency (i.e data will load but not immediatly) and focus on Availability and partition tolerance - ideal for distributed systems.
+        -> Modern World Hybrid Appraoch:
+            -> Modern System uses a polyglot appraoch - multiple db for different needs.
+            -> eg: For E-Commerse System Design.
+                    1. User data, Orders, Patments    -> SQL (PostgresSQL)        -> Need high consistency (data must reflect immediatly)
+                    2. Feed storage, Product Catalog  -> NoSQl (MongoDB)          -> Eventual consisitency works but must always availabile, For Feed Storage: High write throughput (use CassandraDB)
+                    3. Cart/sessions                  -> Redis                    -> memory-storage with key-value pairs, fase-access.
+                    4. Seach                          -> Elasticsearch.           -> Full-text search optimized.
+                    5. analytics                      -> Column Store (Cassandra) -> High write throughput. 
+    8. CDN & Edge Caching
+    9. Rate Limiting & Throttling
+    10. Design for Reliability - Heartbeats, Leader Election, Quorum, Failover
+    11. Monitoring, Logging & Observability
+
+
+### HLD System Design
+    1. Design URL shortner (Bit.ly)
+    2. Design Instagram Feed System / Social Media App 
+    3. Design Youtube / Video Streaming platform.
+    4. Design Chat Application (WhatsApp / Slack)
+    5. Design Distributed Cache Like Redis
+    6. Design File Storage System like Google Drive
+    7. Design Notification / Event Queue System
+    8. Design Rate Limiter or API Gateway
+    9. Design Ride-Sharing Platform Like Uber
+    10. Design E-Commerce Recommendation or Search System
+
+### LLD System Design - Code, Class, Entity.
+    1. Design a parking lot system
+    2. Design a Library management system
+    3. Design a hotel booking system.
+    4. Design a Elevator / Lift System.
+    5. Design a Meeting scheduler.
+    6. Design a Logging FrameWork / Splitwise.
 
 ### Extra LLD & HLD Qs:
 
