@@ -10,7 +10,7 @@
 [ ] Group Anagrams (Medium)  -> eat --> [e->1, a->1, t->1] ->a1e1t1 ==> store in map -> {a1e1t1, [eat]}, tea --> [t->1, e->1, a->1] ->a1e1t1 ==> add in map -> {a1e1t1, [eat, tea]} => print the values.
 [ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] => create freq map => put {freq, item} in the min heap [maintain only k elements inside heap] => Pop the values, store in ans OR 2. Manually use quick sort logic to sort. [optimal]
 [ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exist --> One possible consequative seq length.  [NOTE: iterate in set to ignore duplicates]
-[*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Item, Logic: check if there exist a prefix sum if we can subtract from the current Prefix sum we get K i.e maintain track of currSum => check if in the map there exist any currSum - k => a possible sol, if not add currSum in map for future use.
+[*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Item, store it in hashmap {prefixSum, count}, Logic: check if there exist a prefix sum if we can subtract from the current Prefix sum we get K i.e diff = currSum -k & check if diff exist in map i.e that many possible subarr we can remove from currSum to get k, add it in ans and store currSum in map. NOTE: start hashmap with 0 -> 1 i.e If there exist a prefixSum with k then k-k = 0 i.e no Prefix sum we need to subtract. [an edge case.]
 [*] Maximum SubArray (Medium) => Either use Kadane's Algo [iterate, if sum < 0, reset it to 0, track the maxSum] Or Divide and Conquer [Sum might lie in the left part, right part or across the mid]
 
 ### Neetcode Extras:
@@ -25,13 +25,13 @@
 [ ] Maximum Average Subarray I (Easy)  ==> use PrefixSum for simplicity, First sum of k element ==> as the window slides, remove i-1th ele, add j+1th element, find max avg. [NOTE: type casting: (double) 2 -> 2.000]
 [ ] Best Time to Buy and Sell Stock (Easy) => move left to right, track minPrize => maxProfit = max(maxProfit, currPrize - minPrize);
 [ ] Best Time to Buy and Sell Stock II (Medium)  => Track up going inclines for total possible profit amount.
-[ ] Longest Substring Without Repeating Characters (Medium)  ==> use set to identify unique substr, update l, r pointer, untill set content is unique, Find max len possible.
+[*] Longest Substring Without Repeating Characters (Medium)  ==> use set to identify unique substr, update l, r pointer, untill set content is unique, Find max len possible.
 [ ] Permutation in String (Medium)  ==> s1, make a hasmap, iterate s1.len window in s2, update the hasmap, if all zeros ==> valid permutation.
 [ ] Minimum Size Subarray Sum (Medium) => take 2 pointers, since all positives, slides till right if sum >= target, track the length => min length.
-[ ] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> move left i.e shrink the window & reduce count of left char from freqMap, If any value in freqMap is 0 and erase same val from set.
+[*] Longest Substring with At Most K Distinct Characters (Hard) -> use set to track unique val, map to track freq. if set len == k, find max len, while set len > k -> move left i.e shrink the window & reduce count of left char from freqMap, If any value in freqMap is 0 and erase same val from set.
 
 ### Neetcode Extras:
-[*] Longest Repeating Character Replacement (Medium) => 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e we can replace them -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
+[*] Longest Repeating Character Replacement (Medium) => Logic: find max common element in a window, Can you replace other chars with the common element i.e there count <= k. Code Appraoch: 2 pointer + char Freq Map => L, R starts from 0 -> every time R moves, we check if substr len - freq of max occuring character <= k i.e that many other char we have that we can replace with the one which are same already -> [ curr substr len is a possible solution ] If not, it exceeds k, we move the left pointer.
 [*] Minimum Window Substring (hard) => 2 pointers window shift + 2 hashMap + formed & required => create refHashMap and it's size as required. => on every char exist in refMAp and freq same => we increment formed. => till left <= right && formed == required, update start and minLen, Move left pointer [since we need min length], update freq map, update formed count.
 
 ------------------------------
@@ -42,7 +42,7 @@
 [ ] Remove Duplicates from Sorted Array (easy) => 2 points l and r, move r till size => ele at r is a distinct ele at l => move l and replace ele at l with ele at r. => return the final len.
 [ ] Container With Most Water (Medium) => 2 pointers at extremes, max area, whicher side height is smaller -> move inside from that side.
 [*] Remove Duplicates from Sorted Array II (Medium)   => allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r].
-[*] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)]
+[*] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)] -> Optimised Appraoch. [Another sol exist using dp cache].
 [ ] 3Sum (hard) => sort it first, loop i => use 2 pointer l = i+1 and r=size-1, find a sum == 0 [valid, now => move one pointer till it's unique (** imp **) ], sum > 0 [r--, since, sorted arr], sum < 0 [l++, since sorted arr]. 
 
 ### Neetcode Extras:
@@ -56,9 +56,9 @@
 ------------------------------
 [ ] Binary Search (Easy) => a simple binary search logic. [remember the condition l<=h and updaiting h to mid-1]
 [ ] Guess Number Higher or Lower (Easy) => just simple binary search logic.
-[ ] Search in Rotated Sorted Array (Medium) => mid can be wither on the sortedside [ if target >= l or target < mid => look left, else look right] or rotated side. [if target > mid or target < h => look right else look left] 
+[*] Search in Rotated Sorted Array (Medium) => Mid divides arr into sorted part and unsoted part => compare with sorted part boundary -> decide need to seach left or right i.e mid can be wither on the sortedside [ if target >= l or target < mid => look left, else look right] or rotated side. [if target > mid or target < h => look right else look left] 
 [ ] Find Peak Element (Medium) => check if left neighbour is up, check if the right neighbour is up..
-[ ] Koko Eating Bananas (Medium) => sample space of k: 1 to max pile => find for at k rate -> how many hours koko can finish piles.[ if koko take 1.2 hr -> round it to 2 hr.] => if koko takes less or equal time than h => look left for smaller k value, If koko takes more time -> look right to increase k value and reduce time. 
+[*] Koko Eating Bananas (Medium) => sample space of k: 1 to max pile => find for at k rate -> how many hours koko can finish piles.[ if koko take 1.2 hr -> round it to 2 hr.] => if koko takes less or equal time than h => look left for smaller k value, If koko takes more time -> look right to increase k value and reduce time. 
 [*] Median of Two Sorted Arrays (Hard) => 2 pointer logic => find the median element using 2 pointer and find the avg. OR use BS logic -> Concept of ALeft, ARight And Bleft and BRight [take care of edge cases].
 
 ### Neetcode Extras:
@@ -84,12 +84,12 @@
 ------------------------------
 🔹 6. Linked List [Concepts: Pointers, dummy nodes, fast/slow]
 ------------------------------
-[ ] Reverse Linked List (Easy) => Recursively go till the end of the List, save newHead, Point the Node infront of the head to head itself, make head point to null, return newHead. 
-[ ] Merge Two Sorted Lists (Easy) => L1, and L2 => iterate and store the smallest val in ans. => check for leftover nodes in Either L1 and l2 -> return the new head.
+[*] Reverse Linked List (Easy) => Recursively go till the end of the List, save newHead, Point the Node infront of the head to head itself, make head point to null, return newHead. 
+[*] Merge Two Sorted Lists (Easy) => L1, and L2 => iterate and store the smallest val in ans. => check for leftover nodes in Either L1 and l2 -> return the new head.
 [ ] Add Two Numbers (Medium) => take carry, iterate and sum and store in a dummy List. NOTE: carry -> val/10, value -> val%10.=> Add till l1 and l2 is null, collect any remaining, collect any carry left => return the dummy List's head.
 [ ] Linked List Cycle II (Medium) => fast and slow pointer => To know the start of loop, if fast already reached end -> No cycle present, now move slow back to head, move slow and fast both untill they meet again ** Imp part **.
-[ ] Remove Nth Node From End of List (Medium) => maintain window with 2 pointer L and R of size n -> iterate till R reaches Null. NOTE: L must move 1 node behind the node to delete, so that we can update the node's link => use dummyHead node infront of head, start left from here. 
-[ ] Reverse Nodes in K Group (Hard) => use iterative method, reverse the first k nodes, then rest part recursion will handle [returns a head] -> connect old head to recursion's head, and new head will be prev.
+[*] Remove Nth Node From End of List (Medium) => maintain window with 2 pointer L and R of size n -> iterate till R reaches Null. NOTE: L must move 1 node behind the node to delete, so that we can update the node's link => use dummyHead node infront of head, start left from here. 
+[*] Reverse Nodes in K Group (Hard) => use iterative method, reverse the first k nodes, then rest part recursion will handle [returns a head] -> connect old head to recursion's head, and new head will be prev.
 [ ] Copy List with Random Pointer (Hard) => a map maintains the Nodes of original and copied one. 1. copy the nodes normally, then create the random points for each nodes using map's data.
 
 ### Neetcode Extras:
@@ -188,7 +188,7 @@
 ------------------------------
 [*] Unique Paths (Medium) => Classic 2D matrix problem => why DP ? at any place we have 2 choices either go Down or Right ! => Also at any (x,y) -> If i know how can ways i can reach end from there, I can find out it's neighbours too. NOTE: The bottom row will have just 1 way to reach the right end (only Right) and the right most column also will have only 1 way to reach end (only Down) => Bottoms up approach -> Travese the matrix in oppoiste direction => Find ans at (0,0) -> TC: O(m*n) SC: O(m*n)
 [*] Target Sum (Medium) => Caching the (index, total) -> no of ways to reach that total => use a hashmap to cache it. index ranges from 0 to n, total -> take all neg to all pos value. ==> Worst case: use a decision tree with TC: 2^n [Every index has 2 solution, either +ve or -ve value] 
-[ ] Interleaving String (Medium)  => 
+[ ] Interleaving String (Medium)  => 2 Approachs => 1. Cached Recursive sol i.e top-down => 2 pointers on s1 and s2 say i and j => k pointer on s3 will be always k = i + j, match the characters -> If matched check for the next possible character, do this recursively use a cache to reduce the 2^n TC  ,2. dp matrix sol i.e Bottoms up => dp matrix of n+1 x m+1, +1 as we consider an empty space -> For at any random x,y => If you selected from row, then check if (row + 1)(col) is true, If you selected a char from col then check (row)(col+1) is true ? -> strat from bottom fill the table. find ans at (0,0)
 [*] Best Time to Buy And Sell Stock With Cooldown (Medium) => Recursion with caching => At each day, either you can buy [total money - stock price] or cooldown [carry same money], If you buy then you have 2 options sell [totalPrice + stock price] or cooldown, If you sold, move 2 days ahead -> cache <index, buyORsell> -> max profit value --> you will find the answer once we recursion completes. TC: O(N).
 [*] Edit Distance (Medium) => 2 DP Appraoch + pointer case => consider i and j pointer on the words -> for each letter you have 3 cases -> findout how i and j you will update in each case --> Convert this into a 2-D matrix for i and j -> Solve bottoms up [edgecases fill up: 1. If word1 and word2 both are empty -> 0 count, If one of them emoty -> count is len of the non-empty str.]
 [*] Longest common subsequence (Medium) => 2 DP Approach [Bottoms up] -> Plot the chars in a 2 D grid -> intersecting char have 2 cases: 1. If they match -> i.e we need to increment both i and j pointer on them i.e look diagonally in the matrix i.e 1 + dp[i+1][j+1], [+1 because we matched a character], case2: If they dont match, then we need to check max between immeditate Right [part of word 2 can match word 1] and bottom [part of word1 can match word2] in dp table i.e max(dp[i+1][j], dp[i][j+1]), Bottoms up so -> Iterate in reverse.
@@ -220,7 +220,7 @@
 ------------------------------
 [ ] Assign Cookies (Easy) => 2 pointers, greedy pick => Sort the given arrs => iterate the greedArr and CookieArr => Pick the cookie that satisfy the child and move ahead...
 [ ] Jump Game (Medium) => Greedy appraoch => start from right to left => see if you can move the goal closed to start. cond: i + nums[i] >= goalIndex => If true, we move the goal towards left. At end if goal is zero -> we reached the start, else we didn't make it.
-[ ] Partition Labels (Medium) => make a map [char -> lastIndex], -> have size [keep track of current Partition] and end [keep track of the index of the fartest character possible] => iterate the str, update size, if this char last occur index > end => update end too. => If index exceeds end => One partion is over [save the value, reset size to zero] 
+[*] Partition Labels (Medium) => make a map [char -> lastIndex], -> have size [keep track of current Partition] and end [keep track of the index of the fartest character possible] => iterate the str, update size, if this char last occur index > end => update end too. => If index exceeds end => One partion is over [save the value, reset size to zero] 
 [ ] Gas Station (Medium) => cond: sum of total gas must be >= to cost to travel each node => If not there is no way. ==> Travel each node, track total gas, If toal becomes negative => That node is not starting pos => make it next node.
 [ ] Minimum Number of Arrows to Burst Balloons (Medium) => Interval based => sort the intervals => Have a arrowCount & range for the arrow rangeX1, rangeX2 => iterate all the intervals, For each interval if they are bounded in range i.e update the range, If not => then we need Additional arrow and new range will be the curr Interval's range.
 
@@ -228,7 +228,7 @@
 [ ] Find The Duplicate Number (Medium) => pick the currIndex [pick abs value], check if ele at currIndex is negative => that's ans, If not make it negative. [TC: O(n)] 
 [*] Jump Game 2 (Medium) => Recursive Solution => at currPos => try all the possiblePath, baseCase: If we reached the end, then 0 or If we already explored this path-> take the min jump from it. (TC: O(n^2)) OR Greedy [Preferred] => Linear BFS Solution => Each Jump takes us to a new level i.e range between l and r. => Find the max jump we can make, update l -> r + 1 and r -> max distance we can jump, If r already reached the end -> We are done. [TC: O(N)] 
 [ ] Hand of Straights (Medium) => use HashMap + minHeap => map tracks the count of each cards, minHeap tracks minimum of each card. ==> Take the min card from heap, start a loop for given size, If it is present in map, decrement the freq and if freq is zero remove from heap as that value is not longer available, return false case: If the min val from heap is not there in map or when a freq is zero, if the top heap val is not same, Otherwise true.
-[*] Valid Parenthesis String (Medium) => Recursive Solution TC: O(3^n) => track 'C' count, if it's 0 return true, DP optimisation [using 2D dp] TC: O(n^2), SC: O(n) => memorize the recursive using dp[i][openCount], Greedy approach TC: O(n) => maintain 2 var leftMin and leftMAx, Iterate, If ( => increment both leftMin and leftMax, If ) => decrement both, If * => decrement left min i.e we use assume it as ')', and incrmeent leftMax i.e we assume it to be '(' => reset leftMin to 0 if it become negative. If leftmax < 0, => we cannot recover i.e return false. else  return true. 
+[*] Valid Parenthesis String (Medium) => Recursive Solution -> Track the open/bracket count at give index => TC: O(3^n) => track 'C' count, if it's 0 return true, DP optimisation [using 2D dp] TC: O(n^2), SC: O(n) => memorize the recursive using dp[i][openCount], Greedy approach TC: O(n) => Find Range of open bracket count => maintain 2 var leftMin and leftMAx, Iterate, If ( => increment both leftMin and leftMax, If ) => decrement both, If * => decrement left min i.e we use assume it as ')', and incrmeent leftMax i.e we assume it to be '(' => reset leftMin to 0 if it become negative. If leftmax < 0, => we cannot recover i.e return false. else  return true. 
 [ ] Merge Triplets to Form Target Triplet (Medium) => True Greedy => First of all filter triplits whose values are more than target. [These triplets can be ignored], If we find any triplet whose any value, matches with the target's value -> we store index of that in a set.  => If at the end we get set of len 3 i.e we have found 3 indicies where target value are prensent across the triplet.
 
 ------------------------------
@@ -248,6 +248,18 @@
 ### Extras [Questions from contests/Practise]: 
 [*] Split and Merge Array Transformation => Brute Force way, use BFS for the finding shortest Path to reach the desired combination, Vistied keeps track of all paths and avoid checking duplicates.
 [ ] Lexicographically Smallest Permutation Greater Than Target => dfs recursive + Backtracking Logic => Rather than finding all permutation i.e n!, Construct letter by letter [from a cahr freq map] and compare to target -> explore only those paths where we can find a lexiographically better solution.
+
+
+## Constraint based Decision:
+	1. n <= 10             --->  O(n!) or O(2^n)         ---> BruteForce / Backtracking.
+	2. n <= 15             --->  O(2^n * n)              ---> Bitmask DP / Exhaustive Search
+	3. n <= 20             --->  O(2^n)                  ---> Recurision + Memoization.
+	4. n <= 100            --->  O(n^3)                  ---> DP solutions
+	5. n <= 1,000          --->  O(n^2)                  ---> 2D DP, graph algo (BFS)
+	6. n <= 10^5           --->  O(n) or O(n logn)       ---> Sorting, Binary Search, Heap
+	7. n <= 10^6           --->  O(n)                    ---> Linear algo -> Prefix sum, hashMap, sliding window.
+	8. n <= 10^7           --->  O(n) [tight case]       ---> very opitimized linear algo  --> Avoid heavy constaints.
+	9. n <= 10^8 or 10^9   ---> O(logn) or O(1)          ---> Binary Search or Math Formulas.
 
 
 ## NOTES:
