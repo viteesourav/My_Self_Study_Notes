@@ -158,9 +158,12 @@
         - uses this.state and this.setState to access the states.
         eg: 
             class Counter extends React.Component {
-                state = { count: 0 };
+                constructor(props) {
+                    super(props);
+                    this.state = { count: 0 };
+                }
 
-                increment = () => this.setState({ count: this.state.count + 1 });
+                const increment = () => this.setState({ count: this.state.count + 1 });
 
                 render() {
                     return <button onClick={this.increment}>Count: {this.state.count}</button>;
@@ -245,7 +248,7 @@
         No Need to worry, everything is properly scope here.
     -- Rendering Arrays:
         -> use .map().
-        -> must use an unique Id for key attribute in the elemets. ==> helps React to identify which item chnaged during re-render.
+        -> must use an unique Id for key attribute in the elemets. ==> helps React to identify which list item chnaged during re-render.
         -> index as a key is acceptable only:
             1. If the list is static.
             2. we are adding, removing or updating element in the list.

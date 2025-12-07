@@ -49,3 +49,369 @@ Utility with React
     Typing useState, useReducer, and useEffect
     Using React.ComponentProps, JSX.IntrinsicElements
     Generics in custom hooks
+
+
+
+TOP 10 things to know:
+
+1. Narrowing types
+
+What it is: Turning a union type (e.g. string | number | null) into a single concrete type so the compiler lets you use properties/methods safely.
+
+How to narrow (common techniques):
+
+typeof checks (typeof x === "string")
+
+instanceof (for classes)
+
+in operator (check property presence)
+
+user-defined type guards (function isFoo(x): x is Foo { ... })
+
+discriminated unions (see below)
+
+truthiness checks (if (x)) — works but can be imprecise
+
+Examples:
+
+function print(x: string | number | null) {
+  if (typeof x === "string") {
+    console.log(x.toUpperCase()); // safe
+  } else if (typeof x === "number") {
+    console.log(x.toFixed(2)); // safe
+  } else {
+    console.log("no value");
+  }
+}
+
+
+User-defined guard:
+
+type Cat = { meow: () => void };
+type Dog = { bark: () => void };
+
+function isCat(a: Cat | Dog): a is Cat {
+  return (a as Cat).meow !== undefined;
+}
+
+
+Pitfalls:
+
+typeof only covers primitive checks ("string"|"number"|"boolean"|"symbol"|"undefined"|"object"|"function").
+
+Checking a property that may exist on multiple types without a guard can be unsafe.
+
+Narrowing is flow-sensitive: reassignment can widen again.
+
+Interview tip: Show an example where you create a robust user-defined guard and explain why it's safer than ad-hoc as casts.
+
+2. Structural typing
+
+What it is: TypeScript types are based on the shape of values (properties & their types), not on explicit names. Two types with the same structure are compatible.
+
+Example:
+
+type PointA = { x: number; y: number };
+type PointB = { x: number; y: number };
+
+const p: PointA = { x: 1, y: 2 };
+const q: PointB = p; // allowed — same shape
+
+
+Why it matters:
+
+Easier interoperability (you don’t need explicit inheritance).
+
+Can assign objects created in different modules if shapes match.
+
+Beware of accidental compatibility: extra properties are allowed in some contexts (excess property checks apply to object literals).
+
+Pitfalls:
+
+Structural typing can make it easy to accidentally accept objects you didn't intend to.
+
+If you want stricter identity semantics, use branded types or unique symbol tricks.
+
+Interview tip: Explain a scenario where structural typing helped integrate third-party data, and show how to “brand” a type to avoid accidental assignment.
+
+3. interface vs type
+
+Core differences:
+
+interface supports declaration merging (multiple interface declarations with same name are merged).
+
+type is more flexible (unions, tuples, mapped types) but can’t be re-opened for merging.
+
+Both can describe object shapes; type can also name primitives, unions, intersections, mapped types, etc.
+
+Examples:
+
+interface IUser { id: string }
+interface IUser { name: string } // merged -> { id: string; name: string }
+
+type T1 = { id: string };
+type T2 = T1 | { guest: true }; // union — only `type` can do this
+
+
+When to use which:
+
+Use interface for publicly exposed object shapes and when you might extend/merge across module boundaries.
+
+Use type for unions, mapped types, or when you need advanced composition.
+
+Pitfalls:
+
+Overusing interface for unions is impossible; you’ll need type.
+
+Relying on declaration merging can make code harder to follow if not documented.
+
+Interview tip: Mention declaration merging as a selling point for extensible library APIs; show type for a union example.
+
+4. Utility Types (Partial, Required, Readonly, Pick, Omit, Record, Extract, Exclude)
+
+What they do (short):
+
+Partial<T> — all props optional.
+
+Required<T> — all props required.
+
+Readonly<T> — all props readonly.
+
+Pick<T, K> — select a subset of keys.
+
+Omit<T, K> — exclude keys.
+
+Record<K, T> — map keys K to values T.
+
+Extract<T, U> / Exclude<T, U> — set operations on unions.
+
+Examples:
+
+type User = { id: string; name: string; age?: number };
+
+type UpdateUser = Partial<User>; // all optional
+type PublicUser = Omit<User, "age">;
+type NameRecord = Record<"first" | "last", string>;
+
+
+Common advanced patterns:
+
+Readonly<Record<K, T>> for immutable dictionaries.
+
+Pick + Partial for patch objects: Partial<Pick<User, "name" | "age">>.
+
+Pitfalls:
+
+Partial is shallow — nested objects remain mutable/required unless you use recursive mapped types.
+
+Overuse of deeply nested utility types can make error messages hard to read.
+
+Interview tip: Explain how you'd type an update API (PATCH) using Partial<Pick<...>> and why shallow vs deep Partial matters.
+
+5. Generics: constraints + defaults
+
+What: Generics give reusable, type-safe code templates. Constraints (extends) restrict allowed types. Defaults provide fallback type parameters.
+
+Examples:
+
+function wrap<T>(value: T): { value: T } { return { value }; }
+
+function id<T extends { id: string }>(x: T): string { return x.id; }
+
+function makePair<T = number, U = string>(a: T, b: U) { return [a, b] as [T, U]; }
+
+
+When to constrain:
+
+When you need certain properties/methods on T (e.g., T extends { length: number }).
+
+Pitfalls:
+
+Over-constraining reduces reusability.
+
+Under-constraining loses type information leading to any-like behavior.
+
+Interview tip: Show a generic function (e.g., pluck<T, K extends keyof T>(obj: T, key: K): T[K]) and explain how constraints ensure key exists on obj.
+
+Example pluck:
+
+function pluck<T, K extends keyof T>(obj: T, key: K): T[K] {
+  return obj[key];
+}
+
+6. keyof + mapped types
+
+What: keyof extracts keys of a type as a union. Mapped types iterate keys to produce new types.
+
+Examples:
+
+type User = { id: string; name: string; age: number };
+type UserKeys = keyof User; // "id" | "name" | "age"
+
+type OptionalAll<T> = { [K in keyof T]?: T[K] };
+type OnlyStringProps<T> = {
+  [K in keyof T as T[K] extends string ? K : never]: T[K]
+};
+
+
+Use cases:
+
+Create derived types (readonly, partial, pick).
+
+Build type-safe APIs that operate on keys.
+
+Pitfalls:
+
+Conditional mapping with as can be confusing at first.
+
+Mapped types are shallow by default.
+
+Interview tip: Demonstrate OnlyStringProps (above) and explain how as remaps keys based on a condition.
+
+7. Discriminated unions
+
+What: A union of object types that share a common literal property (the discriminator). Great for exhaustive type narrowing.
+
+Example:
+
+type Shape =
+  | { kind: "circle"; radius: number }
+  | { kind: "square"; size: number };
+
+function area(s: Shape) {
+  switch (s.kind) {
+    case "circle": return Math.PI * s.radius ** 2;
+    case "square": return s.size * s.size;
+  }
+}
+
+
+Exhaustiveness checking:
+
+function assertNever(x: never): never { throw new Error("Unexpected " + x); }
+
+function area2(s: Shape) {
+  switch (s.kind) {
+    case "circle": return s.radius;
+    case "square": return s.size;
+    default: return assertNever(s); // helps ensure compile-time exhaustiveness
+  }
+}
+
+
+Pitfalls:
+
+If discriminator values are not literal types (e.g., string), narrowing fails.
+
+Using non-unique discriminators across members causes ambiguity.
+
+Interview tip: Show how discriminated unions model protocol messages or action types in Redux, and how assertNever gives compile-time guarantees.
+
+8. never type
+
+What: never represents values that never occur. It appears in functions that always throw or infinite loop, and in impossible branches after exhaustive checks.
+
+Examples:
+
+function fail(msg: string): never { throw new Error(msg); }
+
+type T = string & number; // never
+
+
+Usage in exhaustive checks:
+
+function assertNever(x: never): never { throw new Error("Unexpected " + x); }
+
+
+Pitfalls:
+
+Seeing never in error messages often means your generics are too constrained or you’re doing an impossible assignment.
+
+never can leak into union types if you filter everything out with conditional types.
+
+Interview tip: Explain never in context of discriminated union exhaustiveness and show the assertNever pattern.
+
+9. Readonly + immutability questions
+
+What: readonly prevents assignment to properties at compile time; immutability patterns in TS are largely compile-time guarantees.
+
+Examples:
+
+type Point = { readonly x: number; readonly y: number };
+const p: Point = { x: 1, y: 2 };
+// p.x = 5 // compile error
+
+
+Shallow vs deep readonly:
+
+Readonly<T> and readonly are shallow.
+
+For nested immutability you must write recursive mapped types.
+
+Make recursive readonly (simplified):
+
+type DeepReadonly<T> = {
+  readonly [K in keyof T]: T[K] extends object ? DeepReadonly<T[K]> : T[K];
+}
+
+
+Pitfalls:
+
+readonly only helps at compile time — runtime objects can still be mutated unless frozen (Object.freeze).
+
+Excessive immutability layers can complicate updates; prefer patterns like "copy, modify, set".
+
+Interview tip: Discuss tradeoffs: immutability aids reasoning and avoids subtle bugs, but can incur extra copying and should be used where beneficial (state updates, concurrency).
+
+10. Class private vs TS private (# vs private)
+
+What:
+
+private (TypeScript modifier) is erased at compile time — it’s only compile-time enforcement. After compilation, properties are still plain JS properties (subject to naming collisions).
+
+#private is the ECMAScript private field. It’s enforced at runtime (real privacy) and cannot be accessed outside the class.
+
+Examples:
+
+class A {
+  private secret = 1;
+  #hardSecret = 2;
+}
+
+const a = new A();
+// (a as any).secret = 3; // allowed at runtime if you use casts
+// a.#hardSecret // SyntaxError at runtime — true privacy
+
+
+When to use which:
+
+Use private for normal TS-only encapsulation where runtime privacy is not essential.
+
+Use # when you need runtime-enforced privacy (ES private fields supported in modern engines).
+
+Pitfalls:
+
+# fields cannot be accessed by subclasses or via reflection; sometimes you need protected semantics (protected keyword).
+
+private can be circumvented with casts or by manipulating the output JS — not secure for sensitive data.
+
+Interview tip: Explain the compilation difference and show an example where subclass needs access (protected) and why # wouldn't permit it.
+
+Quick wrap: how to study & answer in interviews
+
+For each topic, write one short code sample you can explain in 60–90 seconds.
+
+When asked, explain why (practical benefit), how (short code), and pitfalls/tradeoffs.
+
+Use real-world analogies: discriminated unions → "protocol messages", Partial → "PATCH payload".
+
+If you want, I’ll:
+
+Convert these into a printable 1-page cheatsheet, or
+
+Build 2–3 live coding exercises per topic with step-by-step solutions and TS types.
+
+Which next?
+
+Want to keep using GPT-5? Try Go for free. Upgrade your plan to keep getting better, faster answers.
+Try Go free

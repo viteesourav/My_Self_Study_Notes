@@ -184,7 +184,7 @@
 
 
 ------------------------------
-🔹 12. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal]
+🔹 12. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal] -> Try solve with DFS [Recursion] + Caching [Top-down] & DP Tablular Appraoch [Bottoms-up]
 ------------------------------
 [*] Unique Paths (Medium) => Classic 2D matrix problem => why DP ? at any place we have 2 choices either go Down or Right ! => Also at any (x,y) -> If i know how can ways i can reach end from there, I can find out it's neighbours too. NOTE: The bottom row will have just 1 way to reach the right end (only Right) and the right most column also will have only 1 way to reach end (only Down) => Bottoms up approach -> Travese the matrix in oppoiste direction => Find ans at (0,0) -> TC: O(m*n) SC: O(m*n)
 [*] Target Sum (Medium) => Caching the (index, total) -> no of ways to reach that total => use a hashmap to cache it. index ranges from 0 to n, total -> take all neg to all pos value. ==> Worst case: use a decision tree with TC: 2^n [Every index has 2 solution, either +ve or -ve value] 
@@ -193,8 +193,8 @@
 [*] Edit Distance (Medium) => 2 DP Appraoch + pointer case => consider i and j pointer on the words -> for each letter you have 3 cases -> findout how i and j you will update in each case --> Convert this into a 2-D matrix for i and j -> Solve bottoms up [edgecases fill up: 1. If word1 and word2 both are empty -> 0 count, If one of them emoty -> count is len of the non-empty str.]
 [*] Longest common subsequence (Medium) => 2 DP Approach [Bottoms up] -> Plot the chars in a 2 D grid -> intersecting char have 2 cases: 1. If they match -> i.e we need to increment both i and j pointer on them i.e look diagonally in the matrix i.e 1 + dp[i+1][j+1], [+1 because we matched a character], case2: If they dont match, then we need to check max between immeditate Right [part of word 2 can match word 1] and bottom [part of word1 can match word2] in dp table i.e max(dp[i+1][j], dp[i][j+1]), Bottoms up so -> Iterate in reverse.
 [ ] Burst Balloons (Hard Hard) => Intuation Appraoch -> BruteForce Recursion => Iterate each ballon and check how much coin we can get if we pop it. | Optimal: Trick is at any index i, consider what if we burst this ballon at the last [Defining subproblem] => If ith ballon is burst last => Total coins = num[i-1] * num[i] * num[i+1] + dp[i+1][R] [Left part of the arr which is already burst] + dp[l][i-1] [Right part of the arr which is also burst]. => Recursively Find the max possible coin we can collect. TC: O(n^2 * n) -> total no of subarray * looping inside, SC: O(n2) -> 2D DP space dp[l][r]
-[ ] Longest Increasing Path In a Matrix (Hard) =>
-[ ] Distinct Subsequences (Hard) =>
+[ ] Longest Increasing Path In a Matrix (Hard) => BruteForce DFS caching => iterate each cell, check all four directions for longest path, cache the value in a 2D dp matrix. --> use Recursive Function with (row,col), cache and the previous value --> At a point, find the max path possible with least being 1 [considering the current cell only] TC: O(m*n) [case: when all value are same we will iterate all cells]
+[ ] Distinct Subsequences (Hard) => DFS + caching appraoch => edgecase: if s empty and t is not empty => 0 ways we can generate t from s, if s is not empty and t is empty => there is 1 way we can genreate t from s. Now 2 cases: When characts of i [iterate on s] and j [iterate on t] matches -> count ways for both (i+1, j+1) and (i+1, j) else count ways for (i+1,j) --> Cache it for later use. TC: O(m *n) where m and n is size of s and t resp.
 [ ] Regular Expression Matching (Hard) => DP -> Top-down appraoch [REcursion + Cache] => 2 pointers at word and pattern, Check for edge cases -> If the character's matches or pattern is a '.' -> valid case, If the charcter is followed by a '*' then result will be gien by 2 cases -> dont consider the '*' i.e 0 count, or consider the char. -> If we dont have char followed by pattern, then just check char, if saem move ahead.
 
 
@@ -234,13 +234,13 @@
 ------------------------------
 🔹 15. Intervals [Concepts: Sorting + merging or overlapping logic]
 ------------------------------
-[ ] Insert Interval (Medium)
+[ ] Insert Interval (Medium) => 3 cases: case1: put all the intervals before the newIntervals in ans, case2: merge intervals till you can, update newIntervals => store in ans, case3: put the rest in the answer.
 [ ] Merge Intervals (Medium) => sort the intervals then push first interval in ans, then iterate the other intervals, check can we merge interval ? If yes -> merge them and update at last index in ans. else push in ans.
 [*] Meeting Rooms II (Medium) => sort the start and end time. use 2 pointer. we need to find max overlapping meeting. Iterate in start time, If startTime < endTime i.e the next meeting started before the previous ended so roomCount++, else you reduce the room count. -> keep track of the max room count. 
 [*] Non-overlapping Intervals (Medium) => sort the intervals based on start time => Keep track of the PrevEndtime, iterate from next interval onwards, If startTime > prevTime => update prevEndTime to curr EndTime else, we have clashing intervals i.e update the prevEndTime as min of prevEndTime or currTime, also keep track of how many times you are doing it. -> return this ans.
 
 ### Neetcode Extras:
-[ ] Meeting Rooms (Medium)
+[ ] Meeting Rooms (Medium) => Check for overlapping Intervals if any ==> convert vector arr into pair vector, Sort it, then iterate the intervals check if end1 > start1 [end of an interval is > the start of next interval] => overlapping confirmed, return false.
 [ ] Minimum Interval to Include Each Query (Hard)
 
 
@@ -248,6 +248,7 @@
 ### Extras [Questions from contests/Practise]: 
 [*] Split and Merge Array Transformation => Brute Force way, use BFS for the finding shortest Path to reach the desired combination, Vistied keeps track of all paths and avoid checking duplicates.
 [ ] Lexicographically Smallest Permutation Greater Than Target => dfs recursive + Backtracking Logic => Rather than finding all permutation i.e n!, Construct letter by letter [from a cahr freq map] and compare to target -> explore only those paths where we can find a lexiographically better solution.
+[*] Minimum Time to Complete All Deliveries (Medium) => Amazon asked question, Binary Search => Find the sample space, derive the conditions for completing deliveries, 1. when both cannot deliver, 2. when d1 cannot deliver, 3. when d2 cannot deliver => Reduce the sample space accordingly and track the ans.
 
 
 ## Constraint based Decision:

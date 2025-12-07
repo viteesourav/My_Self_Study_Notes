@@ -377,6 +377,9 @@ Goal: we will explore real-life example based system design concepts where we wi
     9. Rate Limiting & Throttling
     10. Design for Reliability - Heartbeats, Leader Election, Quorum, Failover
     11. Monitoring, Logging & Observability
+    12. SAGA and CQRS design patterns for microservices.
+    13. How you handle Complex Database SQL Queries ? Optimization Techniques ?
+    14. How do you handle Tables with huge growing data in SQL ? Optimization Techniques ?
 
 
 ### HLD System Design

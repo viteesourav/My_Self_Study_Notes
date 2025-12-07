@@ -1,0 +1,1001 @@
+TODO: 
+	1. Practise TypeScript Machine coding Round.
+		1. Build a Ticketing System. [Commonly asked] *
+		2. Rate Limter / Message Throttler *
+		3. Notification System. *
+		4. Chat / Message Simulation *
+		5. Form Validation / JSON Schema Engine.
+		6. Mini Database or Query Builder.
+	2. Practise HLD designs.
+
+
+############ Typescript Machine Coding Round ###############
+
+Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBYoCoE8AHSAZVgCcBLA1UABWgEM8BzM+AVwDsATAGiwoBnUENANQAd0gAjQRVSQAUCEmYKsTKGYUAbpGF4OY0BoadYKdJMoL+gzAzIoz3UNEiPOofEVKVqAHSKymAAmkYI7NCuqGqcANag8ABmIjQUXrFOKBJMggBcISGgoAC0oACCbvCwDKgU8JkY7p7ehCTkVDQS2E6gnPCxGcwmZqDSTgzxxWWVoASMFmgYkAAeRJTInN3ymj4d-jSCeNsMq-wuoPaOltigAKoASgAywhK7SbGQZIIz5VWCFzSeCrZagNYbChbHaxUDcCjJZLfSDbExIAgUdxkUBIursJzCFJtXydajBBCcQQ0MwAUVWDEQC0gADVHBQGNJ3KAALygABEAAkYNAMOB4GRonzFBTBPB3AERcwABS0+mM9ysygc9wASmCKhwzQ8ZC8iHFzmB7BoXzcZmY7AYzEg-Fg0HUiQ58D0Ii8fLpDKZgj5SWxfPADlQAHJhAA5SASPlBFQAeS+ZHegmdWkgR1QjgUrmkeFATjNOmGWH0KAQiGhwkuNok4uiIgMHGxCyYrA4PCCJSAA
+
+1. Ticketing System (Commonly Asked in Zendesk)
+
+## Requirement Analysis:	
+	1. Ticket 
+		id 
+		title 
+		priority: Low -> Medium -> High
+		status:   Open, Assign, Resolved
+		tags
+		createdAt
+		assignedTo.
+		
+	2. Agents
+		id
+		name
+		active -> boolean
+		assignedCount.  --> No of tickets they working on.
+		
+## Tasks:
+    -> Ticket Created --> Gets auto-assigned to agent with least no of assignedCount. If ties, pick the agent with smaller name. If no agent -> Ticket stay open.
+    -> APIs:
+        createTicket
+        addAgent
+        setAgentStatus
+        resolveTicket
+        listTickets (filter)
+    -> All data stored in memory, Focus: clean design, seperation of concern and tests.
+
+## Logic:
+    -> We start by defining the types for Tickets and Agents. --> Define folder structure and high level methods.
+    -> We store the data in-memory using Map.
+    -> Ticket Id will be incremental, Agent Id will be <string>  -> Assumption.
+    -> Start with defining the types for Ticket, Agent and enum if needed. 
+    -> Implement the services:
+        1. AgentService -> Manages Agents [creation, update Agent Status]
+        2. Ticket Service -> Handle Tickets and Queries [Creation, updaitng Ticket status]
+        3. Rounting Service -> Assignment of tickets to Agents.
+
+## Code:
+    // Ticket Routing design Machine Coding Challange !
+
+    type Priority = 'Low' | 'Medium' | 'High';
+    type TicketStatus = 'Open' | 'Assigned' | 'Resolved';
+
+    interface Ticket {
+        id: number;
+        title: string;
+        priority: Priority;
+        status: TicketStatus;
+        tags: string[];
+        createdAt: Date;
+        assignedTo ?: string;  // Possible the ticket is not assigned yet i.e optional key.
+    }
+
+    interface Agent {
+        id: string;
+        name: string;
+        active: boolean;
+        assignedCount: number;
+    }
+
+    // This is the type for filtered List Input...
+    interface ListFilter {
+        status?: TicketStatus;
+        priority?: Priority;
+        assignedTo?: string;
+        tags?: string[];  // matched if the ticket contains all tags...
+    }
+
+
+    // single Responsibility -> pick the best agent for a task.
+    /* RouterService: Logic to choose Agent based on 
+        1. least assignedCount 
+        2. tie-breaker for people with alphabetically smaller name.
+
+        @Returns: Agent Id if found else null.
+    */
+    class RouterService {
+
+        chooseAgent(agents: Agent[]):string | null {
+            if(!agents || agents.length == 0) return null;  //If no agents are present !
+
+            // sort by ascending order of assignedCount, then by name.
+            // using slice() -> create a copy of agents and sort that instead of modifying the original agents list..
+            const sorted = agents.slice().sort((a, b) => {
+                if(a.assignedCount !== b.assignedCount) return a.assignedCount - b.assignedCount;  //if count is not same -> sort them
+                return a.name.localeCompare(b.name);                                               //if count is same -> sort them based on name.
+            });
+            return sorted[0].id;
+        }
+    }
+
+    // Agent Service -> Handles Agents releated Operations... [store data in a map<agentId, Agent>]
+    class AgentService {
+        private agents: Map<string, Agent> = new Map();
+
+        addAgent(id: string, name: string):Agent {
+            // check is agent already exist.
+            if(this.agents.has(id)) {
+                throw new Error(`Agent with ${id} already exist !`);
+            }
+            // create a new Agent and add it to the map.
+            const agent: Agent = {id, name, active: true, assignedCount: 0};
+            this.agents.set(id, agent);
+            return agent;
+        };
+
+        setAgentStatus(id: string, active: boolean): boolean {
+            // fetch the agent from the map -> update the key -> it still uses reference [no need to push updated agaent back inside map]
+            // NOTE: Js Maps stores references, not deep clone !
+            const agent = this.agents.get(id);
+            if(!agent) throw new Error(`Agent with ${id} doesnot exit`);
+            agent.active = active;
+            return active;
+        };
+
+        getAgent(id: string): Agent | undefined {
+            return this.agents.get(id);
+        };
+
+        incrementAssignedCount(id: string) {
+            const agent = this.agents.get(id);
+            if(!agent) throw new Error(`Agent with ${id} doesnot exit`);
+            agent.assignedCount += 1;
+        };
+
+        decrementAssignedCount(id: string) {
+            const agent = this.agents.get(id);
+            if(!agent) throw new Error(`Agent with ${id} doesnot exit`);
+            agent.assignedCount = Math.max(0, agent.assignedCount-1);
+        };
+
+        // @return -> filterd list of agents who are active and present in the map..
+        getActiveAgents():Agent[] {
+            return Array.from(this.agents.values()).filter(a => a.active);
+        };
+
+        // util methods: 
+        listAgents():Agent[] {
+            return Array.from(this.agents.values());
+        };
+    }
+
+    // Ticket Service -> Handles Tickets releated Operations...[store data in a map<TickerId, Ticket>]
+    class TicektService {
+        private tickets: Map<number, Ticket> = new Map();
+        private nextId = 1;  // to keep TicketId unique..
+
+        // inject the dependencies in the class [Shorthand form -> creates Private field and also inject the dependencies]
+        constructor(
+            private agentService: AgentService,
+            private routerService: RouterService
+        ) {};
+
+        createTicket(title: string, priority: Priority, tags: string[] = []): Ticket {
+            const ticket: Ticket = {
+                id: this.nextId++,
+                title,
+                priority,
+                status: 'Open',
+                tags,
+                createdAt: new Date()
+            }
+
+            // Attempt to assign the ticket -> 1. find list of all active agents, 2. find the choosen agentId [use routerService]
+            const getAllActiveAgents = this.agentService.getActiveAgents();
+            const choosenAgentId = this.routerService.chooseAgent(getAllActiveAgents);
+
+            // update the ticket -> with assignedTo, status and update agent with assignedCount.
+            if(choosenAgentId) {
+                ticket.assignedTo = choosenAgentId;
+                ticket.status = 'Assigned';
+                this.agentService.incrementAssignedCount(choosenAgentId); 
+            }
+
+            this.tickets.set(ticket.id, ticket);  //store the ticket in map.
+            return ticket;
+        };
+
+        resolveTicket(id: number): Ticket {
+            const ticket = this.tickets.get(id);  // get Ticket details from the Map.
+            if(!ticket) throw new Error(`The ticket with ${id} doesnot exist`);
+            if(ticket.status === 'Resolved') return ticket;  // ticket alredy resolved.
+
+            // If the ticket is assigned => decrement assigned Count, update the status, update the ticket in map..
+            if(ticket.assignedTo) {
+                try {
+                    this.agentService.decrementAssignedCount(ticket.assignedTo);   //decrement the count from agent which this ticket linked to.
+                } catch(e) {
+                    throw new Error('Incosistence State of ticket');
+                }
+            }
+
+            ticket.status = 'Resolved';
+            this.tickets.set(ticket.id, ticket);
+            return ticket;
+        };
+
+        // fetch ticket details...
+        getTicket(id: number): Ticket | undefined {
+            return this.tickets.get(id);
+        };
+
+        // Filter the tickets -> by Options.
+        listTickets(options: ListFilter = {}):Ticket[] {
+            // get all the tickets in memory...
+            let result = Array.from(this.tickets.values());
+
+            if(options.status) {
+                result = result.filter((a) => (a.status == options.status));
+            }
+            if(options.priority) {
+                result = result.filter(a => a.priority === options.priority);
+            }
+            if(options.assignedTo) {
+                result = result.filter(a => a.assignedTo === options.assignedTo);
+            }
+            if(options.tags && options.tags.length > 0) {
+                result = result.filter(a => options.tags!.every(tag => a.tags.includes(tag)));
+            }
+
+            // sort the result based on createdDate...
+            result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+            return result;
+        };
+        
+    }
+
+    // Test cases....
+
+    function testRun() {
+        
+        const routerService = new RouterService();
+        const agentService = new AgentService();
+        const ticketService = new TicektService(agentService, routerService);
+
+        // Add Agents...
+        agentService.addAgent('a1', 'alice');
+        agentService.addAgent('b1', 'bob');
+        agentService.addAgent('c1', 'charles');
+
+        // create Tickets...
+        const t1 = ticketService.createTicket('Issue 1', 'High', ['billing']);
+        console.log('Ticket 1', t1);
+
+        // prints the list of agents...
+        console.log('Agents now', agentService.listAgents());
+
+        // List of open Tickets..
+        console.log('Open Tickets', ticketService.listTickets());
+
+    }
+
+    testRun();
+
+
+2. Rate Limitter / Message Throttler:
+
+##  Requirement: 
+    -> The Limitter should restrict how many times a given user can perform an action within a sliding times window.
+    -> create 2 methods: 
+        1. allow(userId) -> returns true if the user is allowed to perform any actions. else return false.
+        2. constructor  -> takes number of allowed actions, time window in milli-seconds.
+    -> constraints:
+        1. Must support multiple users.
+        2. The window is sliding. [It looks for every forward moving consequtive time-window ]
+        3. no external Libraries.
+
+## Logic: 
+    -> store user's time-stamps in a queue-like structure.
+    -> when a new user comes:
+        1. Remove the timestamp older than now - window.
+        2. check if the queue length is under limit.
+        3. If yes -> insert the timestamp -> return true.
+        4. If no -> return false.
+
+## Code: 
+    // Rate Limiter Machine Coding Round
+
+    class RateLimitter {
+        private limit: number;
+        private window: number;
+        private userEvents: Map<string, number[]>;  // <userIds, [T1, T2, T3, T4 .....]>
+
+        constructor(limit: number, window: number) {
+            this.limit = limit;
+            this.window = window;
+            this.userEvents = new Map();   //initialize the map to track userTimestamps...
+        }
+
+        allow(userId: string):boolean {
+            const now = Date.now();
+            // check if it's a new user --> initialize it [].
+            if(!this.userEvents.has(userId)) {
+                this.userEvents.set(userId, []); 
+            }
+
+            // get the events lisit...
+            const events = this.userEvents.get(userId) || [];
+
+            // 1. remove the events which are older than the current window.
+            while(events.length > 0 && events[0] <= now - this.window) {
+                events.shift(); // removes the first element from the list.
+            }
+
+            // 2. Check if the limit exceeds ? 
+            if(events.length >= this.limit) {
+                return false;
+            }
+
+            // 3. Push the currTime and move ahead...
+            events.push(now);
+            return true;
+        }
+
+    }
+
+
+    function Testing() {
+
+        const limiter = new RateLimitter(3, 5000);   //3 tasks allowd in window of 5sec.
+
+        console.log(limiter.allow("u1"));   // true ...
+        console.log(limiter.allow("u1"));   // true ...
+        console.log(limiter.allow("u1"));   // true ...
+        console.log(limiter.allow("u1"));   // false ... Limit exceeded.
+    }
+    Testing();
+
+
+3. Notification System.
+
+## Requirement Analysis: 
+    -> The System should support: 
+        1. Sending notifications -> send(userId, message): void.
+        2. Receiving notifications -> get(userId): Notification[] -> should get the latest notification first.
+        3. Mark as read. -> markRead(userId, notficationId): void
+        4. Unread Count. -> countUnRead(userId): number
+
+## Logic:
+    -> Create a notifictionService class.
+        -> Store notifications per users in a map.
+        -> Notification will be an obj -> id, message, timestamp, isRead.
+    -> For faster operations:
+        -> store each notification like a stack for each user [LIFO - last in, first out]
+
+## Code: 
+    
+    type NotifyType = {
+        id: string;
+        message: string;
+        timeStamp: number;
+        isRead: boolean;
+    };
+
+    class NotificationService {
+        private notificationTray: Map <string, NotifyType[]>;   // <userId, [N1, N2, N3, ....]>
+
+        constructor() {
+            this.notificationTray = new Map();
+        }
+
+        // Generates custom random 10 digit Ids for each Messages..
+        private generateId ():string {
+            return Math.random().toString(36).substring(2, 10);
+        }
+
+        send(userId: string, message: string): void {
+            // fetch the notifications of the user if it exists or start with empty []..
+            const notifications = this.notificationTray.get(userId) || [];
+
+            // create a new notification...
+            const newNotificationObj: NotifyType = {
+                id: this.generateId(),
+                message,
+                timeStamp: Date.now(),
+                isRead: false
+            };
+
+            // No sorting required whiling pulling the messages...
+            this.notificationTray.set(userId, [newNotificationObj, ...notifications]);
+        };
+
+        get(userId: string): NotifyType[] { 
+            return this.notificationTray.get(userId) || [];
+        };
+
+        markRead(userId: string, notificationId: string): void {
+            const notifications = this.notificationTray.get(userId) || [];
+
+            for(let it of notifications) {
+                if(it.id === notificationId) {
+                    it.isRead = true;
+                    break;
+                }
+            }
+        };
+
+        countUnRead(userId: string):number {
+            const notificaitons = this.notificationTray.get(userId) || [];
+
+            return notificaitons.filter(it => !it.isRead).length;
+        }
+    };
+
+
+    (function Testing() {
+        const service = new NotificationService();
+
+        service.send("u1", "Hi, This is Sourav");
+        service.send("u1", "Hi, This is Andy");
+
+        const notificaitons = service.get("u1");
+        for(let it of notificaitons) {
+            console.log(it.message);
+        }
+
+        const id = notificaitons[0].id;
+        service.markRead("u1", id);
+
+        console.log(service.countUnRead("u1"));
+
+    })();
+
+
+
+4. Chat / Message Simulation.
+
+## Requirement Analysis
+    -> The Messaging service should include: 
+        1. sendMessage(from, to, text) -> send a message.
+        2. getconversation(userA, userB) -> should return all the Messages[]
+        3. markAsRead(messageId).
+        4. getUnreadCount(userId) -> get the number.
+    -> Extended the logic to include and handle
+        1. group Chats.
+        2. pagianted Messages.
+        3. Delete Messages.
+
+## Logic: 
+    -> A Message layout -> id, from , to , groupId, text, timestamp, read, deleted [soft deleting]
+    -> A Message can be sent to either from 
+        1. user to another user.
+        2. user to Group.
+    -> Chat Service should be hanldling all the methods required for this design.
+
+## Coding: 
+    // A Chat Message System - includes one-to-one with group-chat support + pagianted Message view.
+
+    type Message = {
+        id: string;
+        from: string;
+        to?: string;       // In case of group this will undefined.
+        groupId?: string;  // In case of one-one this will undefined.
+        text: string;
+        timestamp: number;
+        isRead: boolean;
+        isDeleted: boolean;
+    }
+
+    class ChatService {
+        private messages: Message[] = [];
+        private groups: Map<string, Set<string>> = new Map();    //<groupId, [userId1, userId2, userId3, ...]>
+
+        private generateId(): string {
+            return Math.random().toString(36).substring(2, 10);  // generates 10-dig random Ids.
+        }
+
+        // Group Management -> create Group or add New Members.
+        // 1. creates a group with all users and returns a groupId.
+        createGroup(members: string[]): string {
+            const id = this.generateId();
+            this.groups.set(id, new Set([...members]));
+            return id;
+        }
+
+        // existing group add a new member, return group Id.
+        addNewMember(groupId: string, userId: string): string {
+            const members = this.groups.get(groupId);
+            if(members) {
+                members.add(userId);
+            }
+            return groupId;
+        }
+
+        // Sending Messages -> can be to a user or a group...
+        sendMessages(from: string, to: string | undefined, text: string, groupId?: string): void {
+            // create a msgObj..
+            const msgObj: Message = {
+                from,
+                to: groupId ? undefined : to || undefined,
+                groupId,
+                text,
+                timestamp: Date.now(),
+                isRead: false,
+                isDeleted: false,
+                id: this.generateId()
+            }
+
+            this.messages.push(msgObj);
+        }  
+
+        // Fetch conversations -> one to one and group..
+        // 1. Fetch direct converstions -> one to one... [Paginated data]
+        fetchDirectConverstaions(userA: string, userB: string, limit: number = 20, offset: number = 0): Message[] {
+            const filterdMessages = 
+                this.messages
+                    .filter(item => (
+                        !item.isDeleted &&
+                        item.groupId === undefined &&
+                        (item.from === userA && item.to === userB) || (item.from === userB && item.to === userA)
+                    ))
+                    .sort((item1, item2) => item1.timestamp - item2.timestamp);
+
+            return filterdMessages.slice(offset, offset + limit);
+        }
+
+        // 2. Fetch group converstations -> converstaion of a group.. [paginated data]
+        fetchGroupConversations(groupId: string, limit: number = 20, offset: number=0): Message[] {
+            const filterdMessages =
+                this.messages
+                    .filter(item => (
+                        !item.isDeleted &&
+                        item.groupId === groupId
+                    ))
+                    .sort((item1, item2) => item1.timestamp - item2.timestamp);
+            
+            return filterdMessages.slice(offset, offset + limit);
+        }
+
+
+        // Mark a Message as Read.
+        markMessageAsRead(id: string): void {
+            const message = this.messages.find(item => item.id === id);
+            if(message && !message.isDeleted) {
+                message.isRead = true;
+            }
+        }
+
+
+        // getUnreadMessagesCount 
+        getUnreadMessageCount(userId: string):number {
+            const filteredMessages = 
+                this.messages
+                    .filter(item => {
+                        if(item.isDeleted) return false;
+
+                        // Pick un-read direct messages.
+                        if(item.to === userId && !item.isRead) return true;
+
+                        // pick unread group messages. -> find the memebers, check if the user is there, if msg doesnot belong to him and isunread.
+                        if(item.groupId) {
+                            const members = this.groups.get(item.groupId);
+                            if(members?.has(userId) && item.from !== userId && !item.isRead)
+                                return true;
+                        }
+
+                        return false;  //ignore all other cases.
+                    });
+            
+            return filteredMessages.length;
+        }
+
+        // Handle deletion of a message
+        deleteMessage(id: string): void {
+            const msg = this.messages.find(item => item.id === id);
+            if(msg) {
+                msg.isDeleted = true;
+            }
+        }
+    }
+
+
+
+5. Task Scheduler / Job Scheduler
+
+## Requirement Analysis: 
+    -> We should be able to schedule futer jobs.
+    -> Methods that we have to implement
+        1. scheduleJob
+        2. cancelJob 
+    -> Manage the timer cleanup too, if not Jobs are scheduled.
+
+## Logic:
+    -> create a Job interface -> id, Job function, runAt [in ms], cancelled.
+    -> have a timer -> to track the time.
+        -> on Constructor start the timer.
+        -> on Schdule of a job -> add the Job in Array [sort it based on runAt] can be optimised with MinHeap to log(n). -> start the timer.
+    -> using Normal Data structure to store Job details in-memory and relying on sorting.
+
+## Code:
+
+    // JOb/Task Scheduler - using in-memory arr + sorting.. 
+    type JobFn = () => void;
+
+    interface Task {
+        id: string;
+        fn: JobFn;
+        runAt: number;  // in ms
+        isCancelled: boolean
+    }
+
+    class TaskScheduler {
+        private taskList: Task[] = [];
+        private timer: number | null = null;
+
+        // start's a interval, that keeps running Jobs..
+        private startTimer(): void {
+            if(this.timer) return;  // timer already running...
+
+            this.timer = setInterval(()=> this.runJobs(), 100);
+        };
+
+        // clears the running timer and set it back to null.
+        private stopTimer() {
+            if(this.timer) {
+                clearInterval(this.timer);
+                this.timer = null;
+            }
+        };
+
+        private generateId():string {
+            return Math.random().toString(36).substring(2, 10);
+        };
+
+        // Handles creation of new Tasks and adding it to the list..
+        scheduleTask(fn: JobFn, runAt: number): string {
+            // create a new task obj..
+            const newTask: Task = {
+                id: this.generateId(),
+                fn,
+                runAt,
+                isCancelled: false
+            }
+
+            this.taskList.push(newTask);
+
+            // update the task as per their runAt [Adds the complexity]...
+            this.taskList.sort((item1, item2) => item1.runAt - item2.runAt);
+
+            //start the Timer, it will start if it was running idle, if it's already running it will ignore..
+            this.startTimer();
+
+            return newTask.id;
+        }
+
+
+        // Cancel any Job -> soft update of the isCancelled flag.
+        cancelTask(id: string): boolean {
+            const job = this.taskList.find(item => item.id === id);
+
+            if(job) {
+                job.isCancelled = true;
+                return true;   // job- cancel passed.
+            }
+
+            return false;  // job-cancel failed.
+        }
+
+        runJobs(): void {
+            const now = Date.now();
+
+            // Execute all the jobs in the pipeline...
+            while(this.taskList.length && this.taskList[0].runAt <= now) {
+                const jobItem = this.taskList.shift();   // removes the first entry...
+                if(jobItem && !jobItem.isCancelled){     
+                    jobItem.fn();   //if the job is not cancelled, then it's executes fine.
+                }
+            }
+
+            // Auto-stop the timer, if no jobs are left...
+            if(this.taskList.length == 0) {
+                this.stopTimer();
+            }
+        }
+    }
+
+
+
+6. Emitter Machine Coding Challange: 
+
+## Requirement Analysis:
+    -> Define a event emitter for function.
+    -> Define the below methods:
+        1. on(eventName, callback) -> Register a callback for an Event.
+        2. emit(eventName, ..args) -> Trigger all callback for an Event.
+        3. off(eventName, callback) -> Removes a specific callback.
+        4. once(eventName, callback) -> Register a callback that just once.
+
+## logic:
+    -> Data structe of event - listner List: 
+        {
+            [key: string]: any[];
+        }
+    -> Maintain a obj of events -> where new events can be cached -> Focus on TS genrics...
+
+## Code:
+
+    // Event Emitter Machine coding with TS
+
+    type Listner<T extends any[] = any[]> = (...args: T) => void;
+
+    class EventEmitter<Events extends Record<string, any[]>> {
+        
+        private events: {
+            [K in keyof Events]?: Listner<Events[K]>[];
+        } = {};
+
+        // Register an Event
+        on<K extends keyof Events>(eventName: K, callback: Listner<Events[K]>): void {
+            
+            // If the event not there, register it...
+            if(!this.events[eventName]) {
+                this.events[eventName] = [];
+            }
+
+            // add the callback to it...
+            this.events[eventName].push(callback);
+        };
+
+        //emit an event -> Run the callback for an event with the passed args..
+        emit<K extends keyof Events>(eventName: K, ...args: Events[K]): void {
+            
+            const listnersList = this.events[eventName];
+
+            if(listnersList) {
+                listnersList.forEach(cb => cb(...args));     //fetch all the listners for the event and just call them..   
+            }
+        }
+
+        off<K extends keyof Events>(eventName: K, callback: Listner<Events[K]>): void {
+            const listnersList = this.events[eventName];
+
+            if(listnersList) {
+                this.events[eventName] = listnersList.filter(cb => cb !== callback);   //filter out other listners and reset to eventName.
+            }
+        }
+
+
+        once<K extends keyof Events>(eventName: K, callback: Listner<Events[K]>): void {
+            
+            // Create a wrapper -> that calls the cb + self off itself, add that to the eventList.
+            const wrapper: Listner<Events[K]> = (...args) => {
+                callback(...args);
+                this.off(eventName, wrapper);
+            };
+            this.on(eventName, wrapper);
+        } 
+    };
+
+
+    // Testing...
+
+    interface MyEvents {
+        [key: string]: any[];
+    }
+
+    const emitter = new EventEmitter<MyEvents>();
+
+    function greet(name: string) {
+        console.log("Hello", name);
+    }
+
+    emitter.on('greet', greet);
+    console.log(emitter.emit('greet', 'sourav'));
+
+
+7. Implementation of LRU Cache
+
+## Requirement Analysis:
+    -> Implement the following methods:
+        1. get(key) --> Return the value of the key, if exists in cache else -1.
+        2. set(key) -> insert/update the value of key. 
+    -> If cache reached it's capacity -> remove the least recently used Item.
+
+## Logic: 
+    -> using a map to store key-value pair.
+    -> use order of insertion/access to track usage.
+    -> When is key is accessed -> remove from the map and add it back again.
+
+## Code: 
+    // LRU Cache Implementation
+
+    class LRU<K, V> {
+        private capacity:number;
+        private cache: Map<K, V>;
+
+        constructor(capacity: number) {
+            this.capacity = capacity;
+            this.cache = new Map();
+        }
+
+        // get any item that is present in the cache, If not return -1.
+        get(key: K): V | -1 {
+            if(!this.cache.has(key)) {
+                return -1;
+            }
+
+            // get the value, delete the key, re-insert the key-value.
+            const val = this.cache.get(key)!;   // Note ! at the end means -> this is for sure will never be null or undefined.
+            this.cache.delete(key);
+            this.cache.set(key, val); 
+
+            return val;
+        }
+
+        // add an key-value set inside the cache..
+        put(key: K, value: V): void {
+            if(this.cache.has(key)) {
+                // update key scenario...
+                this.cache.delete(key);  // delete the key, we will push again.
+            }
+
+            //check for overflow...
+            if(this.cache.size >= this.capacity) {
+                // Delete the first item from the cache...
+                const firstKey = Array.from(this.cache.keys())[0];
+                this.cache.delete(firstKey); 
+            }
+
+            this.cache.set(key, value);
+        }
+
+    }
+
+
+    const cache = new LRU<number, string>(2);
+
+    cache.put(1, "one");
+    cache.put(2, "two");
+    console.log(cache.get(1)); // "one"
+    cache.put(3, "three");     // evicts key 2
+    console.log(cache.get(2)); // -1 (not found)
+    cache.put(4, "four");      // evicts key 1
+    console.log(cache.get(1)); // -1 (not found)
+    console.log(cache.get(3)); // "three"
+    console.log(cache.get(4)); // "four"
+
+
+
+### Coding Challenges in Typescript...
+
+1. Group an array of Objects by a key.
+
+    
+    // function signrature -> Takes T the data[], and key as one of the key present in data...
+    function groupBy<T, K extends keyof T>(arr: T[], key: K): Record<string, T[]> {
+        return arr.reduce((acc, item)=> {
+
+            const groupKey = String(item[key]);  // find the groupKey val.
+            
+            if(!acc[groupKey]) {
+                acc[groupKey] = [];  // check if acc already have groupKey ? If not start with [].
+            }
+            acc[groupKey].push(item);  //add currItem in the correct arr.
+            
+            return acc;
+        }, {} as Record<string, T[]>);
+    }
+
+
+    const data = [
+    { id: 1, category: "A", value: 10 },
+    { id: 2, category: "A", value: 20 },
+    { id: 3, category: "B", value: 15 }
+    ];
+
+    console.log(groupBy(data, "category"));
+
+
+2. Sort Array using Custom Comparator... 
+
+    //function -> you have to take list of nums -> convert them to bianry -> reverse it -> convert them to num -> sort the original arr based on it.
+
+    function binaryReflection(n: number): number {
+        const binaryStr = n.toString(2);  // gets the binary of the number..
+        const revseStr = binaryStr.split('').reverse().join('');  //split + reverse + join -> gives binary reflection.
+        return parseInt(revseStr, 2);    // convert bianry back to number.
+    }
+
+
+    // Logic: compare 2 num at a time, find their binaryReflection, sort based on it..
+    function sortByBinaryReflection(input: number[]): number[] {
+        return input.slice()      // just .slice() returns a new copy of the input arr..
+                    .sort((num1, num2) => {
+                        const rev1 = binaryReflection(num1);
+                        const rev2 = binaryReflection(num2);
+
+                        if(rev1 === rev2) return num1 - num2;   //tie-breaker: If reflection is same -> sort based on original num.
+                        return rev1 - rev2; 
+                    })
+    }
+
+    const input = [2, 3, 7, 8]; 
+    // Binary: 2 = 10, reversed = 01 (1)
+    //         3 = 11, reversed = 11 (3)
+    //         7 = 111, reversed = 111 (7)
+    //         8 = 1000, reversed = 0001 (1)
+
+    console.log(sortByBinaryReflection(input));
+    // Output: [2, 8, 3, 7]
+
+
+3. Implement Debouncing a Function with d ms: 
+
+    // Implementation of Debouncing with TS -> delays the execution of a function by d ms.
+    // F can be a genric function that can accept any args and return any args -> returned function is made to take the same args that F holds. [** Brilliant **]
+    function debounce<F extends (...args: any[]) => any>(cb: F, delay: number): (...args: Parameters<F>) => void {
+        
+        let timer: ReturnType<typeof setTimeout> | null = null;
+
+        return function(...args:Parameters<F>): void {
+            if(timer !== null) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(()=>{
+                cb(...args);
+            }, delay);
+        }
+    }
+
+
+
+    const log = (msg: string) => console.log(msg);
+    const debouncedLog = debounce(log, 500);
+
+    debouncedLog("Hello");
+    debouncedLog("Hello again");
+
+/**
+* Notes:
+* 
+* Generics (F) ensure your debounce function works with any input function with any signature.
+* Parameters<F> extracts the argument types from the original function fn so the returned function matches the same signature.
+* Return type is void because the debounced function runs asynchronously, so you don’t get the result immediately.
+* 
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
