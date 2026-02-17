@@ -63,7 +63,7 @@ Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBY
         priority: Priority;
         status: TicketStatus;
         tags: string[];
-        createdAt: Date;
+        createdAt: number;
         assignedTo ?: string;  // Possible the ticket is not assigned yet i.e optional key.
     }
 
@@ -174,7 +174,7 @@ Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBY
                 priority,
                 status: 'Open',
                 tags,
-                createdAt: new Date()
+                createdAt: Date.now()
             }
 
             // Attempt to assign the ticket -> 1. find list of all active agents, 2. find the choosen agentId [use routerService]
@@ -235,7 +235,7 @@ Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBY
             }
 
             // sort the result based on createdDate...
-            result.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
+            result.sort((a, b) => a.createdAt - b.createdAt);
             return result;
         };
         
@@ -617,7 +617,7 @@ Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBY
 
     class TaskScheduler {
         private taskList: Task[] = [];
-        private timer: number | null = null;
+        private timer: ReturnType<typeof setInterval> | null = null;
 
         // start's a interval, that keeps running Jobs..
         private startTimer(): void {
@@ -919,7 +919,7 @@ Coding with: https://www.typescriptlang.org/play/?#code/PTAEHUFMBsGMHsC2lQBd5oBY
 3. Implement Debouncing a Function with d ms: 
 
     // Implementation of Debouncing with TS -> delays the execution of a function by d ms.
-    // F can be a genric function that can accept any args and return any args -> returned function is made to take the same args that F holds. [** Brilliant **]
+    // F can be a genric function that can accept any args and return any type -> returned function is made to take the same args that F holds using Parameter<F> [** Brilliant **]
     function debounce<F extends (...args: any[]) => any>(cb: F, delay: number): (...args: Parameters<F>) => void {
         
         let timer: ReturnType<typeof setTimeout> | null = null;

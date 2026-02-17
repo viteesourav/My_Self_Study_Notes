@@ -1098,9 +1098,148 @@
 
 
 
+### Queries on Advanced Topics and Explanations: 
 
-## Extra Important Notes:
-    -- 
+1. How Virtualization works with pagianted url for fetching data ? As i understand, Virtualization needs the whole list and stores in memory, it renders only the part that is showing in the view-port. Thus we need to the whole data right ?
+
+    -> Virtualization (React-window) only renders items that are visible in the viewport.
+    -> It keeps total listSize in memory to calculate scroll positions. -> Not necessary we need to fetch all data at once.
+    -> Concept: Virtualization with Incremental Loading (Pagianted API)
+        -> 50 items loaded at first -> user scrolls till the end --> you load next page data from server.
+        -> Append the next page to the current List.
+        -> Virtualization re-calculates scroll and renders visible Items.
+    
+    Key-Notes:
+        -> Virtualization needs "total no of Items" to manage scrollbar size.
+        -> Items Count can be updated dynamically as we fetch more data.
+    
+    Implementation Logic:
+        -> Maintain a state to keep track of all items and currPage -> On currPage change -> fetch items and add it to the list + add the total Items count also [Pass it to virtual List Component]
+        -> NOTE: here totalItems will tell in-total how many items we have to render -> react-window calculates the scroll correctly based on this.
+        -> Handle the action when the user reached near the end of scroll:
+            -> check if the visibleStopIndex >= items.length - 10 && ticket.length < totalCount  [still more entries are there and we have almost reached the scroll end]
+            -> Update to next page. 
+            -> Triggers call -> fetch next page data -> addes to itemList -> Virtualization re-calculate items-length and adjust the scroll.
+        -> Handle the ROW element from react-window to render each Row based on item[index]  (from local state)
+        -> Add an additional Event on the List [from react-window] -> handleItemRender.
+
+
+
+2. How we are using web-socket here for real-time updates ? Can you please explain.
+    
+    -> WebSocket is a persistent, full-duplex connection between client and server.
+    -> After the initial page-load and fetching items via Rest API, the UI opens a connection to the respective backend Websocket connection to listen to realTime updates.
+    -> The Flow:
+        1. Ticket is updated (status/priority/assignment) => Thought PUT/PATCH REST API
+            ->  await fetch("/api/tickets/123", { method: "PATCH", body: JSON.stringify({status: "closed"})});
+            -> REST is to write / mutate data.   websocker is to read / listen to events.
+        2. Backend Does the work.
+            -> It checks permission, check ticket version [to reduce conflicts] and then updates DB.
+        3. Backend Emits a Key.
+            -> backend emmits a key after successful update -> with type and payload.
+            -> This event is published to Message brokers like Kafka -->  then to Websocket servers.
+            -> Event publish only after DB Changes -> consistency guarntee.
+        4. Frontend listens.
+            -> websocket brodcasts the events to all connected clients.
+            -> any frontend connected to that websocket and listening to that key, will listen.
+            -> receives the pyload.
+            -> Checkes if that same Ticket it currently displaying -> merges the changes in the current List. 
+
+    Benefits:
+        1. Real-time updates.
+        2. No Polling [Re-triggering APIs to fetch data again]    
+
+    Implementation: 
+        useEffect(() => {
+            // Initial fetch (can be done with React Query or any fetch)
+            fetch("/api/tickets")
+            .then((res) => res.json())
+            .then((data) => setTickets(data.tickets));
+
+            // Open WebSocket connection
+            const ws = new WebSocket("wss://example.com/ticket-updates");
+
+            ws.onmessage = (event) => {
+            const update = JSON.parse(event.data);
+
+            // Example update format: { id: 123, status: "open", subject: "...", ... }
+            setTickets((prevTickets) => {
+                const idx = prevTickets.findIndex((t) => t.id === update.id);
+                if (idx !== -1) {
+                // Update existing ticket
+                const newTickets = [...prevTickets];
+                newTickets[idx] = { ...newTickets[idx], ...update };
+                return newTickets;
+                } else {
+                // New ticket — add to start of list
+                return [update, ...prevTickets];
+                }
+            });
+            };
+
+            ws.onerror = (err) => {
+            console.error("WebSocket error:", err);
+            };
+
+            return () => {
+            ws.close();
+            };
+        }, []);
+ 
+
+
+
+3. I understand we have React-Query to help us optimize and cache the API. But am confused with the use-case, means where to use ? How to use ? When it will refresh the data ? What triggers it ? Can we control it or not ?
+
+    -> React Query: A Library to manage server state by Data fetching, Caching in React Apps.
+    -> use-cases:
+        1. It can fetch data from Rest APIs.
+        2. Manage Caching for Previously cached data. [Saves Pooling]
+        3. Automatically refreshes stale data.
+        4. Handling loading/error state out of the box.
+    
+    NOTE: 
+        -> Make sure at the top level or parent is wrapped in QueryProvider and client is queryClient.
+            // Create a client
+            const queryClient = new QueryClient()
+
+            function App() {
+            return (
+                // Provide the client to your App
+                <QueryClientProvider client={queryClient}>
+                <YourApp />
+                </QueryClientProvider>
+            )
+            }
+
+    Implementation: 
+        const {data, error, isPending, isError, refetch} = useQuery(
+            ['tickets', filters, page],       // This keys are used in query func, thus on their change, fetch new data.
+            () => fetchTickets(filters, page),
+            {
+                staleTime: 5 * 60 * 1000,     // After 5 mins it will again fetches data.
+                refetchOnWindowFocus: true,   // Auto re-fresh when the windows or tab gains focus.
+                enabled: true,                // controls if the query is active.
+            }
+        );
+
+    This above example fetches new data: 
+        1. If any of the keys like filters or page changes.
+        2. If the data is stale i.e after 5 mins or the window lost and re-gain focus.
+        3. enabled -> If the fetching is conditional, then this key enbales or disables auto-fetching data.
+        4. if you want to manually refetch data => have that refetch() option available also.  
+
+    Additional Control with queryClient: 
+        // Access the client
+        const queryClient = useQueryClient()
+
+        queryClient.invalidateQueries({queryKey: ['todos']});  //Invalidate and refetch the data.
+        
+        queryClient.setQueryData(['notifications'], (old = []) => {   // Manually update the Query Data...
+            if (old.some(n => n.id === event.id)) return old;
+            return [event, ...old].slice(0, 50);
+        });
+ 
 
 
 

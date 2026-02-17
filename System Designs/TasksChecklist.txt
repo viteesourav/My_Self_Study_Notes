@@ -1,0 +1,14 @@
+Task to Focus on: 
+
+  1. Frequently asked Real-life System design questions for Frontend ? [** IMP]
+  2. LLD code for the use-cases.
+  3. HLD design for Ticketing and Notification system.
+  4. React Code Overview: [** IMP]
+	1. debouncing
+	2. pagination + Sorting.
+	3. react-queries.
+	4. virtualization.
+  5. system Design of front-end features. --> Okay..
+  6. A problem statement is given and Need to design a complete solution with Scalability, Security and Performance.
+	1. Ticket Management System.
+        2. Chat / Notification System.
