@@ -1,0 +1,449 @@
+######## Important Notes for using Python for DSA ########
+
+Reasons:
+    1. Python is easier and faster to do code for DSA complex logic like backtracking and Recusrsion logics.
+        -> In C++, While calling recursive function, we need to send a lot of params that tracks the output or path, With nested functions in Python, this becomes faster.
+        -> In C++, If we want to store pair as a key inside a HashMap, then we need to override the hashCode method, wuth Python this can be handled efficiently.
+        -> In C++, Working with Strings can be tricky as they are non-mutable, With Python, In-string manipulation should be easy.
+    2. Python has other useage:
+        -> Can be used to develop -> Dango for UI (rare)/ fastAPI (backend) -> Very widely used.
+        -> Python has huge library support for Data Analysis and ML applications.
+
+NOTEs:
+## variables & types:
+    -- Python is a dynamically typed language. At run type variables type is resolved i.e n can be number first and then it can be string.
+    -- multiple assignements also possible. i.e n, m = 0, "abc"
+    -- Increment of variables: 
+        1. n = n+1  # works.
+        2. n += 1   # works.
+        3. n ++     # Syntax error
+    -- None is null (absense of Value). eg: 
+        n=4 
+        n=None
+        print("n =", n)
+
+## Conditionals: 
+    NOTE: Simple conditions we can manage with just indentations of the line. No need to explict mention of Parentheses or brackets. eg: 
+        n =1 
+        if n > 2:
+            n -=1
+        elif n == 2:
+            n *= 2
+        else
+            n += 2
+    Case: If we have multiline conditions, We do need Parentheses. 
+        -- "and" and "or" keyword is used for multiple conditions. eg:
+            n, m = 1, 2
+            if((n > 2 and n !=m) or n == m):
+                n += 1
+
+## Loops: 
+   -- while loop. eg:
+        n = 0
+        while(n < 5):
+            print(n)
+            n += 1
+    -- Looping with "for loops"
+        NOTE: 
+            -- the upper bound in the range is not inclusive. the range goes from start to end-1 for range(start, end). 
+            -- For reverse iteration, a 3rd param is introduced as "-1" to determine the step count & direction.
+        case: i = 0 to i = 4. eg:   # range from zero to a upper bound.
+            for i in range(5):
+                print(i)
+        case: i = 2 to i = 5. eg:   # range from start to a upper bound.
+            for i range(2, 6):
+                print(i)
+        case: i = 5 to i = 2.  eg:   # Decending or reverse iteration
+            for i range (5, 1, -1): 
+                print(i)             # NOTE: In the move case, since the end in not inclusive, it print: 5, 4, 3, 2
+
+## Math with Python: 
+    -- Division in Python is by default decimal division. eg:       
+        print(5 / 2)   # Default is decimal. This print 2.5
+        print(5 // 2)  # This performs integer division -> Rounds down towards zero., print 2.
+    -- Division of negative numbers: 
+        print(-3 // 2)      # In decimal it's -1.5, but since "//" rounds down --> This will print -2.
+        print(int(-3 / 2))  # Here we are doing decimal division i.e -3 / 2 gives -1.5 then covernt it to int --> It print -1.
+    -- Modding Operation:
+        print(10 % 3)      # print the reminder -> 1
+        print (-10 % 3)    # Negative values mod, gives unexpected results --> print 2.
+    -- The "import math helper":
+        -- This import provides consitency with other langugaes modulo. eg:
+            
+            import math
+            
+            print(math.fmod(-10 % 3))   # print -1.0
+            print(math.floor(3 / 2))    # Explictly rounds down.
+            print(math.ceil(3 / 2))     # Explictly rounds up.
+            print(math.sqrt(2))         # For finding sq root of a number.
+            print(math.pow(2, 3))       # For finding the power of any number.
+
+        -- Defining Extremes i.e -Inf and Inf.
+            float("inf")   # Max INT
+            float("-inf")  # Min INT
+        
+        NOTE: Python numbers are infinite ==> They never overflow.
+            print(math.pow(2, 200))                 # This is a very huge number it's still less than infi.
+            print(math.pow(2, 200) < float("inf"))  # print "true"
+
+## Arrays With Python:
+    -- Also called "lists"
+    -- arr in python are dynamic language by default. --> They can be used as "stack" [supports append() & pop()]
+    -- we can also insert values at any position. => TC: O(N)
+    -- To update any value in the arr i.e arr[0] = 1, arr[3] = 8   ==> TC: O(1).
+
+    eg: 
+        arr = [1, 2, 3]    # declaring arr in python
+
+        # Can also be used as stacks.
+        arr.append(4)
+        arr.append(5)
+
+        print(arr)        # print [1, 2, 3, 4, 5]
+
+        arr.pop()         # removes the last inserted element i.e 5 got popped out.
+
+        arr.insert(1, 7)
+        print(arr)        # this insert 7 at 1st index, print [1, 7, 2, 3, 4]
+
+        # arr with a variable length
+        n = 5
+        arr = [1] * n
+        print(arr)        # This print -> [1, 1, 1, 1, 1]
+        print(len(arr))   # print 5
+
+        # In python, "-Index" reads from the end.
+        arr = [1, 2, 3]
+        print(arr[-1])    # print -> 3, last indexed element.
+        print(arr[-2])    # print -> 2, second last indexed element. 
+
+        # Getting Sublist of an array i.e slicing an array.
+        arr = [1, 2, 3, 4]
+        print(arr[1:3])   # print -> [2, 3]  NOTE: [start:end], where start is include but end Index is not included.
+        print(arr[0:4])   # print -> [2, 3, 4]
+
+        # Unpacking -> assigning variables directly from array.
+        a, b, c = [1, 2, 4]
+        print(a, b, c)   # print -> 1 2 3
+
+        a, b = [1, 2, 4]    # Not Valid, the variables count must match the array Elements.
+
+        # Looping with arr
+        arr = [1, 2, 3]
+
+            ## using index:
+            for i in range(len(arr)):
+                print(arr[i])
+
+            ## without using index:
+            for n in arr:
+                print(n)
+
+            ## using enumerate function: 
+            for i, n in enumerate(nums):
+                print(i, n)
+        
+        # Loop multiple Arrays simultaneously with Unpacking and Zip function:
+        nums1 = [1, 3, 5]
+        nums2 = [2, 4, 6]
+
+        for n1, n2 in zip(nums1, nums2):        # NOTE: zip takes the corresponding elements from 2 arrs and combine them.
+            print(n1, n2)                       # print: 1,2  3,4  5,6
+
+        NOTE: If the len of nums1 & nums2 differs, then the till the shortest arr it will combine the elements i.e 
+            nums1 = [1, 3, 5]
+            nums2 = [2, 4]
+
+            for n1, n2 in zip(nums1, nums2):     
+                print(n1, n2)                  # print: 1,2  3,4
+
+        # Reversing an array
+        nums = [1, 2, 4, 6, 3]
+
+        nums.reverse()
+        print(nums)        # print [3, 6, 4, 2, 1]
+
+        # sorting an Arrays
+        nums.sort()                  # Sort in ascending order by default, print [1, 2, 3, 4, 6]
+        nums.sort(reverse=True)      # sort in descending order.
+
+        # sorting strings array
+        arr = ["bob", "alice", "jane", "doe"]
+
+            arr.sort()      # Sorts the content based on alphabetical order by default.
+            print(arr)     
+
+            arr.sort(key= lambda x: len(x))      # Custom Sort (eg: based on length) -> we use lambda function.
+
+        # List comprehension
+        arr = [i for i in range(5)]
+        print(arr)   # print: [0, 1, 2, 3, 4]
+
+        arr = [i+i for i in range(5)]   
+        print(arr)   # print: [0, 2, 4, 6, 8], Just at each index we will have 2 times of the context.
+
+## 2-D Arrays:
+
+    arr = [[0] * 4 for i in range(4)]
+    print(arr)   # prints a 4X4 grid of all elements set to 0. => [0] * 4 will create one row with 4 columns as 0s, then the loop will create 4 such unique rows.
+
+    # Careful-> the bottom syntax is not correct for creating 2D matrix
+    arr = [[0] * 4] * 4   # This does creates a 4 x 4 matrix but all rows are not unique.
+
+## String in Python:
+    s = "abc"
+
+    # Creating substrings from string.
+    print(s[0:2])    # print: ab
+
+    # String in python are non-mutable
+    s[0] = 't'       # This is not allowed.
+
+
+    s += "def"     # This creates a new string: "abcdef"  
+
+    NOTE: Any modification to strings is a O(n) operation.
+
+    # Valid numeric strings can be converted to string and Vise-versa.
+    print(int("123") + int("123"))   # print: 246
+    
+    print(str(123) + str(123))       # print: 123123
+
+    # For fetching the ASCII value of a character ==> use "ord()"
+    print(ord('a'))  # print: 97
+    print(ord('b'))  # print: 98
+
+    # Joins a list of strings with a delimitor
+    strings = ["ab", "cd", "ef"]
+
+    print("**".join(strings))   #print: ab**cd**ef
+
+## Queues in Python:
+    -- By defaul Queues in python are "double ended queue".
+
+    from collections import deque
+
+    queue = deque()
+
+    queue.append(1)
+    queue.append(2)
+    print(queue)         # prints: [1, 2] -> append inserts elements from right side.
+    
+    queue.pop()          # Removes the right most element from the queue.
+
+    queue.popleft()      # Removes the left most element from the queue.   --> O(1) operation.
+    queue.appendleft(2)  # Adds element to the left most from the queue.   --> O(1) operation.
+
+## Hashset in Python:
+    -- We can search & insert values in O(1) i.e constant time.
+    -- elemets will be unique so no duplicates allowed.
+
+    mySet = set()
+
+    myset.add(1)
+    myset.add(2)
+    print(mySet)        # print: {1, 2}
+    print(len(mySet))   # print: 2
+
+    print(1 in mySet)   # Print true, as the value exists in set.
+    print(3 in myset)   # print false.
+
+    mySet.remove(2)     # removes an element from set.
+
+    # List to set
+    print(set([1, 2, 3, 4]))   # Takes a list and convert it to set.
+
+    # Set comprehension
+    mySet = {i for i in range(5)}
+    print(mySet)               # print: {1, 2, 3, 4}
+
+## HashMap (aka dict) in Python
+    myMap = {}
+    myMap["alice"] = 88
+    myMap["bob"] = 77
+
+    print(myMap)        # print: {"alice": 88, "bob": 77}
+    print(len(myMap))   # print: 2, no of keys in the map.
+
+    myMap["alice"] = 98;
+
+    print("alice" in myMap)   # check if a key exists in map.
+    myMap.pop("alice")        # Remove a key from the map
+
+    myMap = {"alice": 90, "bob": 70}
+
+    ## Dict Comprehension: 
+    myMap = {i: 2*i for i in range(3)}          # print: {0:0, 1: 2, 2: 4}  --> Very useful while doing graph prob & Adjacey list.
+
+    # Looping with hashMap
+    myMap = {"alice": 90, "bob": 70}
+
+        -- Way1: using loop over the key:
+            for key in myMap:
+                print(key, myMap[key])
+        
+        -- Way2: Directly loop over the values:
+            for val in myMap.values():
+                print(val)
+
+        -- Way3: key,val pairs iteration:
+            for key, val in myMap.items():
+                print(key, val)
+
+## Tuples
+    -- Tuples are like arrays but immutable => They can be indexed but we cannot modify them.
+    tup = (1, 2, 3)
+    print(tup)          # print: (1, 2, 3)
+    
+    print(tup[0])       # print: 1
+    print(tup[-1])      # print: 3
+    
+
+    tup[0] = 4       # Throws Error, Not allowed.
+
+    useCase:
+        -- Tuples can be used as keys for a hashmap.  --> this tuple is a hashable key.
+        eg: 
+            myMap = {(1, 2): 3} 
+            print(myMap[(1, 2)])    #print: 3
+
+        -- Tuples can be also added to hashset.
+            mySet = new Set()
+            mySet.add((1, 2))
+            print((1, 2) in mySet)
+
+        --> Reason: Why not using Lists ? Beacause Lists are not hashable.
+
+## Heaps -> Min and Max heaps
+    -- Bydefault Heaps in Python are minHeap.
+    -- They are basically arrays under the hood. 
+
+    import heapq
+
+    # under the hood are arrays
+    minHeap = []
+    heapq.heappush(minHeap, 3)
+    heapq.heappush(minHeap, 5)
+    heapq.heappush(minHeap, 1)
+
+    # Min is always at index 0:
+    print(minHeap[0]);              #print: 1
+
+    # Looping in a heap: 
+    while(len(minHeap)):
+        print(heapq.heappop(minHeap))    # pop elements from the heap. --> This pops in sorted ordered i.e 1  3  5
+
+    ## Max Meap Doesn't exist in Python
+    -- WorkAround: use minHeap and multiple by -1 when we do push & pop
+    maxHeap = []
+    heapq.heappush(maxHeap, -3)
+    heapq.heappush(maxHeap, -2)
+    heapq.heappush(maxHeap, -4)
+
+    # the max element is at index 0
+    print(-1 * maxHeap[0])             # Print: 4
+
+    # Looping: 
+    while len(maxHeap):
+        print(-1 * heapq.heappop(maxHeap))  # pop elements from the heap in descending order i.e 4 3 2
+
+
+    ## Build the heap from some intial values
+    arr = [2, 1, 8, 4, 5]
+    heapq.heapify(arr)
+
+    while arr:
+        print(heapq.heappop(arr))           # this print: 1 2 4 5 8
+
+
+## Functions
+    def myFunc(n, m):
+        return n * m
+    
+    print(myFunc(3, 4))
+
+
+## Nested functions -> Really helpful in Recursive function.
+    -- Nested Function have access to the outer variables.
+
+    def outer(a, b):
+        c = "c"
+
+        # defining a inner function -> can access current scope variables.
+        def inner():
+            return a + b + c
+        
+        return inner()     # calling the inner function
+
+    print(outer("a", "b"))
+
+NOTE: 
+    # Under Nested Functions we can modify objects like arrays but not reassign unless using "nonlocal" keyword.
+
+    def double(arr, val):
+        def helper():
+            # Modifying the array works
+            for i, n in enumerate(arr):
+                arr[i] *= 2
+
+            # The below line -> it will only modify val in the helper scope.
+            # val *= 2
+
+            # this will modify val outside the helper scope
+            nonlocal val
+            val *= 2
+        
+        helper()
+        print(arr, val)
+
+    nums = [1, 2]
+    val = 3
+    print(double(nums, val))   # print: [2, 4] 6   i.e the array will modify but for the variable's modification to refelect we declare it "nonlocal"
+
+
+## Classes    
+    
+    class MyClass:
+        # Constructor
+        def __init__(self, nums):
+            # Create member variables
+            self.nums = nums
+            self.size = len(nums)
+        
+        # For memeber functions -> self needs as a param
+        def getLength(self):
+            return self.size
+
+        def getDoubleLength(self):
+            return 2 * self.getLength()     # Can call other functions inside.
+    
+
+
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+            
+
+
+    
+
+
+
+
+
+
+        
+        
