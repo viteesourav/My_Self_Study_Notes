@@ -8,9 +8,9 @@
 [ ] Contains Duplicate (Easy) ->  use a map to track freq of items > 1.
 [ ] Valid Anagram (Easy) -> s1 -> populate the charFreqMap, s2 -> reduce the charFreqMap, if all zero -> valid.
 [ ] Group Anagrams (Medium)  -> eat --> [e->1, a->1, t->1] ->a1e1t1 ==> store in map -> {a1e1t1, [eat]}, tea --> [t->1, e->1, a->1] ->a1e1t1 ==> add in map -> {a1e1t1, [eat, tea]} => print the values.
-[ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] => create freq map => put {freq, item} in the min heap [maintain only k elements inside heap] => Pop the values, store in ans OR 2. Manually use quick sort logic to sort. [optimal]
+[ ] Top K Frequent Elements (Medium) --> sort the freq Map based on value => 1.use minHeap [klogn, easy] => create freq map => put {freq, item} in the min heap [maintain only k elements inside heap] => Pop the values, store in ans OR 2. Manually use quick sort logic to sort. [optimal], O(N) sol: using freqMap + Bucket Sort logic with index represent counts and values as arr of number with that count, look from right to left, find k most freq elements.
 [ ] Longest Consecutive Sequence (Medium) -> put in set => if immediate prev not there => start count till the immediate right doesnot exist --> One possible consequative seq length.  [NOTE: iterate in set to ignore duplicates]
-[*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Item, store it in hashmap {prefixSum, count}, Logic: check if there exist a prefix sum if we can subtract from the current Prefix sum we get K i.e diff = currSum -k & check if diff exist in map i.e that many possible subarr we can remove from currSum to get k, add it in ans and store currSum in map. NOTE: start hashmap with 0 -> 1 i.e If there exist a prefixSum with k then k-k = 0 i.e no Prefix sum we need to subtract. [an edge case.]
+[*] Subarray Sum Equals K (Medium) -> prefix sum concept, Find Prefix sum for each Indicies, store it in hashmap {prefixSum, count}, Logic: check if there exist a prefix sum if we can subtract from the current sum we get K i.e diff = currSum -k & check if diff exist in map i.e that many possible subarr we can remove from currSum to get k, add it in ans and store currSum in map. NOTE: start hashmap with 0 -> 1 i.e If there exist a prefixSum with k then k-k = 0 i.e no Prefix sum we need to subtract. [an edge case.]
 [*] Maximum SubArray (Medium) => Either use Kadane's Algo [iterate, if sum < 0, reset it to 0, track the maxSum] Or Divide and Conquer [Sum might lie in the left part, right part or across the mid]
 
 ### Neetcode Extras:
@@ -41,7 +41,7 @@
 [ ] Merge Sorted Array (Easy) => start tracking from behind, k tracks the largest element.. => arr will be sorted with O(m+n);
 [ ] Remove Duplicates from Sorted Array (easy) => 2 points l and r, move r till size => ele at r is a distinct ele at l => move l and replace ele at l with ele at r. => return the final len.
 [ ] Container With Most Water (Medium) => 2 pointers at extremes, max area, whicher side height is smaller -> move inside from that side.
-[*] Remove Duplicates from Sorted Array II (Medium)   => allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r].
+[*] Remove Duplicates from Sorted Array II (Medium)   => Neetcode sol: allowed duplicate -> 2, start l and r at 0, till r reaches n => start count =>1, till r+1 is same as r, increase count, After that that many times, you replace num[l] with num[r]. OR Efficient slgo: start from pos 2, 2 variables k & i, i goes till end, check if item at i != item at k-2, replace ith item at kth and move kth. return k.
 [*] Longest Palindromic SubString (medium) => For each char Expand left and right away from each other => Till palindrome satisfy expand => Check the length and store the substr. [TC: O(n^2)] -> Optimised Appraoch. [Another sol exist using dp cache].
 [ ] 3Sum (hard) => sort it first, loop i => use 2 pointer l = i+1 and r=size-1, find a sum == 0 [valid, now => move one pointer till it's unique (** imp **) ], sum > 0 [r--, since, sorted arr], sum < 0 [l++, since sorted arr]. 
 
@@ -149,17 +149,29 @@
 🔹 10. Graphs (BFS/DFS/Union Find) [Concepts: Traversals, cycle detection, connected components]
 ------------------------------
 [ ] Number of Islands (Easy) => use BFS/DFS traversal => iterate each node, at each valid node -> run BFS[Queue + iterative] => push current (r, c) in queue, mark visited i.e make it 0, then check in all 4 directions [left, right, up, down] => find new coordinate, check if they are in grid's bound and valid island, => If yes-> push new coordiante in queue, mark them as visited / DFS [Recursion]. => same BFS logic, we use a baseCase for recursuion [same as valid node in BFS], mark the node as visited, then all 4 direction, use recursion. 
-[ ] Flood Fill (Easy)
+[ ] Flood Fill (Easy) => Logic: DFS traversal in all 4 directions, check if pixel at [sr,sc] is same as color -> ignore. if not then check dfs all nodes and update the pixel to color wherever that starting pixel is present. O(N x M) -> we visiting each cell only once.
 [ ] Clone Graph (Medium) =>  have a hashMap to track original and new node -> Iterate each node, if exisits in map, take it or create a copy, add in map -> Do the same for neighours. TC: O(N)
 [*] Course Schedule (Medium) => Adjacency Map Logic in Graph => use DFS logic with HashMap and visitedNodeSet => visit the node from 0 to n-1, put them in visitedSet [If we visit a node again, Loop exists] If pre-req List is empty => we can complete that course, check current course's pre-requist => call Recursive DFS on them. [While coming back, Do remove from visited node] => Do this for all the courses from 0 to n-1. TC: O(N+P) => No of node + no of pre-requesites
-[ ] Pacific Atlantic Water Flow (Medium)
-[ ] Word Ladder (Hard)
-[ ] Alien Dictionary (Hard)
 
 ### Neetcode Extras:
 [ ] Course Schedule II (Medium) => Topological Sort => Adjacency Map + VistiedNodes + cycleTrack => create the Adjacency Map first => Iterate each course => Call Recursive DFS => If a course is already in the current cycle -> return false, If alreday visted once i.e recorded in ans -> return true, else add currNode in cycle, Loop through all it's pre-reqs and Check if any of them is false, If it passes, remove currNode from cycle as all pre-req processed, add the same in visited node and put in ans => for curr Node return true.
-[ ]
-[ ]
+[ ] Max Area of Island (Medium) => Similar to Count island, check for all cells, if you find a land -> DFS/BFS your way to find adajecent land in all 4 directions -> count toal area, keep track of maxArea. For a island that is visited mark that grid space as 0 i.e water.
+[*] Walls And Gates (Medium) [solved on neetcode] => Classic BFS problem => idea is -> You find location of the chest -> push them in queue -> so at chest curr dist is 0, now push the nearby valid, non-visited cells inside the queue -> for them new dist would 1 and so does it follows incrementally covering all cells. TC: O(M x N).
+[ ] Rotting Oranges (Medium) => Classic BFS exploration problem => Mark the bad ornages cells in a queue, also count fresh ornages. edegecase: if no freshOrnages i.e nothing to rot -> return 0. Now, do BFS, explore adjacent cell of current rooten elements in the queue -> if adjacent are fresh oranges -> mark them as rotten, insert in Queue. Also update fresh orangescount. Note, update time after each process of rotten oranges only when we sure some orange is rotten in that iteration. -> at the end, if fresh ornage count is not zero, then something left -> return -1 else the time. TC: O(size of grid) -> every cell is visited only once.
+[ ] Pacific Atlantic Water Flow (Medium)
+[ ] Surrounded Regions (Medium)
+[ ] Graph Valid Tree (Medium)
+[ ] Number of Connected Components In An Undirected Graph (Medium)
+[ ] Redundant Connection (Medium)
+[ ] Word Ladder (Medium)
+
+### Advanced Graph Problems: 
+[ ] Network Delay Time (Medium)
+[ ] Min Cost to Connect All Points (Medium)
+[*] Cheapest Flights Within K Stops (Medium)
+[ ] Reconstruct Itinerary (Hard)
+[ ] Swim In Rising Water (Hard)
+[ ] Alien Dictionary(Hard)
 
 ------------------------------
 🔹 11. Dynamic Programming (DP) [Concepts: Memoization, Tabulation]
@@ -181,7 +193,7 @@
 [*] Word Break (Medium) => 1D DP => maintain a dp<bool> for (len+1, false) => Look from right to left, for last letter i.e dp[len] => true, as for empty string. For each index, loop each word in dict, check if we have enough words [i.e substr is not going out of bound], we find a match => and if dp[i + len of word] is also true, mark dp[i] as true. => One word satisfy, break the words search loop.  dp[0] is ans as we explored all letters.
 [ ] Coin Change 2 (Medium) => Memorization method using 1D DP => take a coin, For every coin, update the dp map from coin till amount => with dp[curr] = dp[curr] (curr count) + dp[curr-coin] i.e possible ways for reminder sum
 [*] Longest Increasing Subsequence (medium) => Bottom's Up Memorization: strat looking from right to left => for each element: Either we can take the curr ele i.e 1  and 1 + Longest Increasing Subseq of every element after it [cond: this comes only if the element is > than the curr element then only it will strictly increasing ] => take the max of all this. => for that index => this will be dp[index] TC: O(n^2)  OR  Appraoch2: Greedy BS using lower_bound. => Iterate and if any ele < last pushed elemnet -> use BS to find the immediate greater element and replace that. -> track's size will be max LIS. TC: O(nlogn)
-
+[*] Last Stone Weight II (Medium) => Idea is, The list of stones can be turned into 2 big piles of rock => (Total/2) approxe let call it target and (Total - target) the other half. Total being sum of all rocks, Now, use Include/exclude Decision tree (also called Bounded Knapsack Algo) to find which stones can form the target and then what would be the minimum possible diff. Optimization: we can cache[i, total] to reduce the recursion dept: TC: O(N * sum of input) - N since we using index i whose upper bound is N 
 
 ------------------------------
 🔹 12. 2-D Dynamic Programming (DP) [Concepts: 2D Memoization i.e caching and DFS Recursive Traversal] -> Try solve with DFS [Recursion] + Caching [Top-down] & DP Tablular Appraoch [Bottoms-up]
