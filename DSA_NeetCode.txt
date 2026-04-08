@@ -158,8 +158,8 @@
 [ ] Max Area of Island (Medium) => Similar to Count island, check for all cells, if you find a land -> DFS/BFS your way to find adajecent land in all 4 directions -> count toal area, keep track of maxArea. For a island that is visited mark that grid space as 0 i.e water.
 [*] Walls And Gates (Medium) [solved on neetcode] => Classic BFS problem => idea is -> You find location of the chest -> push them in queue -> so at chest curr dist is 0, now push the nearby valid, non-visited cells inside the queue -> for them new dist would 1 and so does it follows incrementally covering all cells. TC: O(M x N).
 [ ] Rotting Oranges (Medium) => Classic BFS exploration problem => Mark the bad ornages cells in a queue, also count fresh ornages. edegecase: if no freshOrnages i.e nothing to rot -> return 0. Now, do BFS, explore adjacent cell of current rooten elements in the queue -> if adjacent are fresh oranges -> mark them as rotten, insert in Queue. Also update fresh orangescount. Note, update time after each process of rotten oranges only when we sure some orange is rotten in that iteration. -> at the end, if fresh ornage count is not zero, then something left -> return -1 else the time. TC: O(size of grid) -> every cell is visited only once.
-[ ] Pacific Atlantic Water Flow (Medium)
-[ ] Surrounded Regions (Medium)
+[*] Pacific Atlantic Water Flow (Medium) => Interesting piece: idea is, solve from the boundaries and see in reverse, where the water can climb till. maintain a set for pacific waters and atlantic waters. For each cell, use DFS exploration of neighbours and if it satisfies then add it to respective set. At the end collect and return those cell present in both pacific and atlantc.
+[ ] Surrounded Regions (Medium) => 
 [ ] Graph Valid Tree (Medium)
 [ ] Number of Connected Components In An Undirected Graph (Medium)
 [ ] Redundant Connection (Medium)

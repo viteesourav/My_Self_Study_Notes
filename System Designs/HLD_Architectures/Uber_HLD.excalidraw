@@ -43,10 +43,10 @@
     {
       "id": "-HGGtQmFeLm5nYYnt7ixW",
       "type": "text",
-      "x": 725.5461704375865,
-      "y": 3842.5674775858347,
+      "x": 513.8080523506743,
+      "y": 4419.257843524989,
       "width": 1869.2786865234375,
-      "height": 949.9999999999999,
+      "height": 1024.9999999999998,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -60,20 +60,20 @@
       "index": "ae",
       "roundness": null,
       "seed": 1056171188,
-      "version": 4645,
-      "versionNonce": 1946348706,
+      "version": 4819,
+      "versionNonce": 786148158,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775652940683,
+      "updated": 1775680062700,
       "link": null,
       "locked": false,
-      "text": "Notes:\n\n-- Non-Function requiremnts are very important -> this what help us think in terms of deep-dive and make the system more efficient.\n    A. Identify the qualities that are unique for this system specifically.\n    B. Put them in context of the System -> this should make sense when you expand the design for optimizations.\n    C. If possible, quantify the load and edge cases.\n-- Entities are important to list down important aspect [Actors / system / service ] needed by the system.\n--  API - The main goal here is to go one-by-one in core entities to satisfy the Functional requirements \n    - No need to put any data-type -> that's ovious and don't need to be explictly mentioned.\n    - Note: \n        we haven't mentioned the userId in any API --> that is important for Security and should be handled by JWT tokens. \n        This should be put in the header not in the body. If put in the body, it would be exposed for tempering. \n-- HLD Design:\n    - We take the APIs and Entity and build the entire structure around it -> satisfying all the APIs that we have designed.\n    - We try to seperate the Ride booking and Matching service as 2 different Micro-service. --> Allows different team to work on it seperatly and scale independently also is a async service.\n    - Flow Explaination:\n       1. So we have the Ride [on their phone], they first request to the Ride Microservice, through the API gateway. \n          - Main function of the API gateway is to route request to the correct microservices, then balance the load among these microservices.\n          - It also perfroms the Security aspect with SSL termination, Authentication and rate limiting.\n       2. Ride Micro-service:\n          - This guy's main role is to Manage the Ride. \n          - When it gets a request from user based on source/destination -> it connects to a 3rd Party Mapping service -> that based on region and distance provides price estimation to user.\n          - it also creates a new entry in Primary DB -> that includes the rideId, estimate, source / destination.\n       3. Ride Matching Micro-service:\n          - This guy comes next -> once the user chose a fare -> they request the ride -> the request comes to this micro-service.\n          - The sole job of this is to match rider with a driver.  [1: 1].\n          - It connects to a location DB [drivers update their location here periodically] -> fetches like drivers who are available in say 5 kms radius.\n          - waits for some pre-defined time, if not increase the search radius and try again.\n          - It also sends a push notification to those drivers with ride details -> drivers can either accept/decline the ride.\n       4. Location micro-service:\n          - This is a utility micro-service which is crucial to handle location details of riders and drivers.\n          - drivers phone's location if they are available are priodically upadted to Location DB via this micro-service.\n       \n     Thus the above design, in corporate all the APIs that we have created.\n\n-- Deep-dive: [ Incorporating the non-functional requirements to make system Robust ]\n\n",
+      "text": "Notes:\n\n-- Non-Function requiremnts are very important -> this what help us think in terms of deep-dive and make the system more efficient.\n    A. Identify the qualities that are unique for this system specifically.\n    B. Put them in context of the System -> this should make sense when you expand the design for optimizations.\n    C. If possible, quantify the load and edge cases.\n\n-- Entities are important to list down important aspect [Actors / system / service ] needed by the system.\n\n--  API - The main goal here is to go one-by-one in core entities to satisfy the Functional requirements \n    - No need to put any data-type -> that's ovious and don't need to be explictly mentioned.\n    - Note: \n        we haven't mentioned the userId in any API --> that is important for Security and should be handled by JWT tokens. \n        This should be put in the header not in the body. If put in the body, it would be exposed for tempering. \n\n-- HLD Design:\n    - We take the APIs and Entity and build the entire structure around it -> satisfying all the APIs that we have designed.\n    - We try to seperate the Ride booking and Matching service as 2 different Micro-service. --> Allows different team to work on it seperatly and scale independently also is a async service.\n    - Flow Explaination:\n       1. So we have the Ride [on their phone], they first request to the Ride Microservice, through the API gateway. \n          - Main function of the API gateway is to route request to the correct microservices, then balance the load among these microservices.\n          - It also perfroms the Security aspect with SSL termination, Authentication and rate limiting.\n       2. Ride Micro-service:\n          - This guy's main role is to Manage the Ride. \n          - When it gets a request from user based on source/destination -> it connects to a 3rd Party Mapping service -> that based on region and distance provides price estimation to user.\n          - it also creates a new entry in Primary DB -> that includes the rideId, estimate, source / destination.\n       3. Ride Matching Micro-service:\n          - This guy comes next -> once the user chose a fare -> they request the ride -> the request comes to this micro-service.\n          - The sole job of this is to match rider with a driver.  [1: 1].\n          - It connects to a location DB [drivers update their location here periodically] -> fetches like drivers who are available in say 5 kms radius.\n          - waits for some pre-defined time, if not increase the search radius and try again.\n          - It also sends a push notification to those drivers with ride details -> drivers can either accept/decline the ride.\n       4. Location micro-service:\n          - This is a utility micro-service which is crucial to handle location details of riders and drivers.\n          - drivers phone's location if they are available are priodically upadted to Location DB via this micro-service.\n       \n     Thus the above design, in corporate all the APIs that we have created.\n\n-- Deep-dive: [ Incorporating the non-functional requirements to make system Robust ]\n\n",
       "fontSize": 19.999999999999996,
       "fontFamily": 5,
       "textAlign": "left",
       "verticalAlign": "top",
       "containerId": null,
-      "originalText": "Notes:\n\n-- Non-Function requiremnts are very important -> this what help us think in terms of deep-dive and make the system more efficient.\n    A. Identify the qualities that are unique for this system specifically.\n    B. Put them in context of the System -> this should make sense when you expand the design for optimizations.\n    C. If possible, quantify the load and edge cases.\n-- Entities are important to list down important aspect [Actors / system / service ] needed by the system.\n--  API - The main goal here is to go one-by-one in core entities to satisfy the Functional requirements \n    - No need to put any data-type -> that's ovious and don't need to be explictly mentioned.\n    - Note: \n        we haven't mentioned the userId in any API --> that is important for Security and should be handled by JWT tokens. \n        This should be put in the header not in the body. If put in the body, it would be exposed for tempering. \n-- HLD Design:\n    - We take the APIs and Entity and build the entire structure around it -> satisfying all the APIs that we have designed.\n    - We try to seperate the Ride booking and Matching service as 2 different Micro-service. --> Allows different team to work on it seperatly and scale independently also is a async service.\n    - Flow Explaination:\n       1. So we have the Ride [on their phone], they first request to the Ride Microservice, through the API gateway. \n          - Main function of the API gateway is to route request to the correct microservices, then balance the load among these microservices.\n          - It also perfroms the Security aspect with SSL termination, Authentication and rate limiting.\n       2. Ride Micro-service:\n          - This guy's main role is to Manage the Ride. \n          - When it gets a request from user based on source/destination -> it connects to a 3rd Party Mapping service -> that based on region and distance provides price estimation to user.\n          - it also creates a new entry in Primary DB -> that includes the rideId, estimate, source / destination.\n       3. Ride Matching Micro-service:\n          - This guy comes next -> once the user chose a fare -> they request the ride -> the request comes to this micro-service.\n          - The sole job of this is to match rider with a driver.  [1: 1].\n          - It connects to a location DB [drivers update their location here periodically] -> fetches like drivers who are available in say 5 kms radius.\n          - waits for some pre-defined time, if not increase the search radius and try again.\n          - It also sends a push notification to those drivers with ride details -> drivers can either accept/decline the ride.\n       4. Location micro-service:\n          - This is a utility micro-service which is crucial to handle location details of riders and drivers.\n          - drivers phone's location if they are available are priodically upadted to Location DB via this micro-service.\n       \n     Thus the above design, in corporate all the APIs that we have created.\n\n-- Deep-dive: [ Incorporating the non-functional requirements to make system Robust ]\n\n",
+      "originalText": "Notes:\n\n-- Non-Function requiremnts are very important -> this what help us think in terms of deep-dive and make the system more efficient.\n    A. Identify the qualities that are unique for this system specifically.\n    B. Put them in context of the System -> this should make sense when you expand the design for optimizations.\n    C. If possible, quantify the load and edge cases.\n\n-- Entities are important to list down important aspect [Actors / system / service ] needed by the system.\n\n--  API - The main goal here is to go one-by-one in core entities to satisfy the Functional requirements \n    - No need to put any data-type -> that's ovious and don't need to be explictly mentioned.\n    - Note: \n        we haven't mentioned the userId in any API --> that is important for Security and should be handled by JWT tokens. \n        This should be put in the header not in the body. If put in the body, it would be exposed for tempering. \n\n-- HLD Design:\n    - We take the APIs and Entity and build the entire structure around it -> satisfying all the APIs that we have designed.\n    - We try to seperate the Ride booking and Matching service as 2 different Micro-service. --> Allows different team to work on it seperatly and scale independently also is a async service.\n    - Flow Explaination:\n       1. So we have the Ride [on their phone], they first request to the Ride Microservice, through the API gateway. \n          - Main function of the API gateway is to route request to the correct microservices, then balance the load among these microservices.\n          - It also perfroms the Security aspect with SSL termination, Authentication and rate limiting.\n       2. Ride Micro-service:\n          - This guy's main role is to Manage the Ride. \n          - When it gets a request from user based on source/destination -> it connects to a 3rd Party Mapping service -> that based on region and distance provides price estimation to user.\n          - it also creates a new entry in Primary DB -> that includes the rideId, estimate, source / destination.\n       3. Ride Matching Micro-service:\n          - This guy comes next -> once the user chose a fare -> they request the ride -> the request comes to this micro-service.\n          - The sole job of this is to match rider with a driver.  [1: 1].\n          - It connects to a location DB [drivers update their location here periodically] -> fetches like drivers who are available in say 5 kms radius.\n          - waits for some pre-defined time, if not increase the search radius and try again.\n          - It also sends a push notification to those drivers with ride details -> drivers can either accept/decline the ride.\n       4. Location micro-service:\n          - This is a utility micro-service which is crucial to handle location details of riders and drivers.\n          - drivers phone's location if they are available are priodically upadted to Location DB via this micro-service.\n       \n     Thus the above design, in corporate all the APIs that we have created.\n\n-- Deep-dive: [ Incorporating the non-functional requirements to make system Robust ]\n\n",
       "autoResize": true,
       "lineHeight": 1.25
     },
@@ -1147,8 +1147,8 @@
     {
       "id": "qrDVvPIB7EC1clG3EjR8e",
       "type": "rectangle",
-      "x": 1288.9751758401203,
-      "y": 2755.154915718007,
+      "x": 912.3102600604857,
+      "y": 2586.3176984390484,
       "width": 160.36963526939837,
       "height": 94.95164211453039,
       "angle": 0,
@@ -1166,8 +1166,8 @@
         "type": 3
       },
       "seed": 168478388,
-      "version": 333,
-      "versionNonce": 443708980,
+      "version": 459,
+      "versionNonce": 190284414,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1179,15 +1179,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775591699589,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "GvssJjpVu1HXiJ2vxFmFA",
       "type": "text",
-      "x": 1305.5700505426908,
-      "y": 2777.6307367752725,
+      "x": 928.9051347630561,
+      "y": 2608.793519496314,
       "width": 127.17988586425781,
       "height": 50,
       "angle": 0,
@@ -1203,11 +1203,11 @@
       "index": "b0HV",
       "roundness": null,
       "seed": 1115128116,
-      "version": 182,
-      "versionNonce": 496194484,
+      "version": 308,
+      "versionNonce": 1417577150,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775591638538,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Rider\n(ios/Android)",
@@ -1223,8 +1223,8 @@
     {
       "id": "VbfMC3L05LjnXyAGKI2rz",
       "type": "rectangle",
-      "x": 1614.4134724726098,
-      "y": 2629.203380206482,
+      "x": 1169.000065335272,
+      "y": 2443.8795267641353,
       "width": 195.8712524231521,
       "height": 510.6425028797008,
       "angle": 0,
@@ -1242,8 +1242,8 @@
         "type": 3
       },
       "seed": 1594697868,
-      "version": 655,
-      "versionNonce": 2030513420,
+      "version": 820,
+      "versionNonce": 1507889250,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1271,15 +1271,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775592934177,
+      "updated": 1775680564866,
       "link": null,
       "locked": false
     },
     {
       "id": "yvrjnwLLQNdbbdgYedDey",
       "type": "text",
-      "x": 1629.339149953717,
-      "y": 2784.5246316463326,
+      "x": 1183.9257428163792,
+      "y": 2599.200778203986,
       "width": 166.0198974609375,
       "height": 200,
       "angle": 0,
@@ -1295,11 +1295,11 @@
       "index": "b0IV",
       "roundness": null,
       "seed": 343281036,
-      "version": 59,
-      "versionNonce": 1511779084,
+      "version": 224,
+      "versionNonce": 435434530,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592667954,
+      "updated": 1775680564866,
       "link": null,
       "locked": false,
       "text": "AWS Managed\nAPI Gateway\n\n- Load balancing\n- routing ( IMP )\n- authentication\n- SSL termintion\n- rate limiting",
@@ -1315,8 +1315,8 @@
     {
       "id": "iakuGPh8QmAfPrFkN92qK",
       "type": "rectangle",
-      "x": 2128.4063761132647,
-      "y": 2524.324923952454,
+      "x": 1751.7414603336301,
+      "y": 2355.4877066734953,
       "width": 318.29087599189575,
       "height": 142.00665022356134,
       "angle": 0,
@@ -1334,8 +1334,8 @@
         "type": 3
       },
       "seed": 500605196,
-      "version": 406,
-      "versionNonce": 1780158988,
+      "version": 532,
+      "versionNonce": 403840254,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1359,15 +1359,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775593381871,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "XMF03nHY7gv_L-C7l8cAg",
       "type": "text",
-      "x": 2170.6119032205406,
-      "y": 2570.3282490642346,
+      "x": 1793.946987440906,
+      "y": 2401.491031785276,
       "width": 233.87982177734375,
       "height": 50,
       "angle": 0,
@@ -1383,11 +1383,11 @@
       "index": "b0P",
       "roundness": null,
       "seed": 447829428,
-      "version": 316,
-      "versionNonce": 1535438988,
+      "version": 442,
+      "versionNonce": 1409404222,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593381871,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Ride Service\n- Handle fare estimation",
@@ -1403,8 +1403,8 @@
     {
       "id": "r_0gw_DSg0eoWxZTfHJM_",
       "type": "diamond",
-      "x": 2159.614212530412,
-      "y": 2290.9239916778233,
+      "x": 1782.9492967507772,
+      "y": 2122.0867743988647,
       "width": 210.8880420508784,
       "height": 135.56652046451606,
       "angle": 0,
@@ -1422,8 +1422,8 @@
         "type": 2
       },
       "seed": 392792204,
-      "version": 408,
-      "versionNonce": 241025932,
+      "version": 534,
+      "versionNonce": 298043006,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1435,15 +1435,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775592918187,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "7K4WFyBYQ0o3-r_FOWkrh",
       "type": "text",
-      "x": 2218.2062563072914,
-      "y": 2333.8156217939522,
+      "x": 1841.5413405276568,
+      "y": 2164.9784045149936,
       "width": 93.25993347167969,
       "height": 50,
       "angle": 0,
@@ -1459,11 +1459,11 @@
       "index": "b0QG",
       "roundness": null,
       "seed": 1804714380,
-      "version": 258,
-      "versionNonce": 393572876,
+      "version": 384,
+      "versionNonce": 1287800510,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592918187,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "3rd party\nMapping",
@@ -1479,10 +1479,10 @@
     {
       "id": "FdOLvNyvXx--ETWdx52Db",
       "type": "arrow",
-      "x": 1455.7510791189356,
-      "y": 2810.494127259834,
-      "width": 152.73961974444205,
-      "height": 58.92344963029336,
+      "x": 1078.1190895677407,
+      "y": 2643.5388187674657,
+      "width": 88.69292694029423,
+      "height": 37.96136547673859,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -1498,11 +1498,11 @@
         "type": 2
       },
       "seed": 1506147980,
-      "version": 354,
-      "versionNonce": 615954060,
+      "version": 773,
+      "versionNonce": 9195362,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592667954,
+      "updated": 1775680564868,
       "link": null,
       "locked": false,
       "points": [
@@ -1511,20 +1511,20 @@
           0
         ],
         [
-          152.73961974444205,
-          58.92344963029336
+          88.69292694029423,
+          37.96136547673859
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "qrDVvPIB7EC1clG3EjR8e",
-        "focus": -0.32703727980984415,
-        "gap": 7.562175151785141
+        "focus": -0.32574544502747005,
+        "gap": 6.40626800941709
       },
       "endBinding": {
         "elementId": "VbfMC3L05LjnXyAGKI2rz",
-        "focus": -0.08500075525110949,
-        "gap": 15.341219293248514
+        "focus": -0.08515496315973774,
+        "gap": 5.922773609232081
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -1533,10 +1533,10 @@
     {
       "id": "qd-pOvW0b-FQoOgZ1cv_M",
       "type": "arrow",
-      "x": 1812.0264345092796,
-      "y": 2789.7967310846248,
-      "width": 313.1056258875383,
-      "height": 190.5341974395733,
+      "x": 1365.5009935355488,
+      "y": 2616.4710403503586,
+      "width": 383.2627585970538,
+      "height": 193.57480360516092,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -1552,8 +1552,8 @@
         "type": 2
       },
       "seed": 1751416332,
-      "version": 524,
-      "versionNonce": 1898905356,
+      "version": 943,
+      "versionNonce": 660430818,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1561,7 +1561,7 @@
           "id": "wJEdBUM1F4mOjbwqr9uJR"
         }
       ],
-      "updated": 1775593381871,
+      "updated": 1775680564867,
       "link": null,
       "locked": false,
       "points": [
@@ -1570,20 +1570,20 @@
           0
         ],
         [
-          313.1056258875383,
-          -190.5341974395733
+          383.2627585970538,
+          -193.57480360516092
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "VbfMC3L05LjnXyAGKI2rz",
-        "focus": -0.10733687511448575,
-        "gap": 4.7427885836493715
+        "focus": -0.10819082602195274,
+        "gap": 1.7417096135177417
       },
       "endBinding": {
         "elementId": "iakuGPh8QmAfPrFkN92qK",
-        "focus": 0.5650968198610625,
-        "gap": 3.6019573301209675
+        "focus": 0.565410130644529,
+        "gap": 3.2743157164468357
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -1629,8 +1629,8 @@
     {
       "id": "IQiHYwAF3sTuUUO_kz4aS",
       "type": "arrow",
-      "x": 2280.7464578427957,
-      "y": 2438.0931314563995,
+      "x": 1904.0815420631611,
+      "y": 2269.255914177441,
       "width": 10.296900465747058,
       "height": 82.48455439863073,
       "angle": 0,
@@ -1648,8 +1648,8 @@
         "type": 2
       },
       "seed": 1286711348,
-      "version": 269,
-      "versionNonce": 328416652,
+      "version": 649,
+      "versionNonce": 1746184674,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1657,7 +1657,7 @@
           "id": "NiJKXpxcITFr2aMOKxvBv"
         }
       ],
-      "updated": 1775593381872,
+      "updated": 1775679992186,
       "link": null,
       "locked": false,
       "points": [
@@ -1673,13 +1673,13 @@
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "r_0gw_DSg0eoWxZTfHJM_",
-        "focus": -0.06510939991544375,
-        "gap": 21.368815800840306
+        "focus": -0.08524441970717028,
+        "gap": 19.10720396472334
       },
       "endBinding": {
         "elementId": "iakuGPh8QmAfPrFkN92qK",
-        "focus": 0.07958884617567225,
-        "gap": 8.734140785885756
+        "focus": 0.07632311795994551,
+        "gap": 3.747238097423633
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -1725,8 +1725,8 @@
     {
       "id": "B8Ha6tIrB0lZATt1BWUpz",
       "type": "ellipse",
-      "x": 2714.7625720603887,
-      "y": 2597.3513134672203,
+      "x": 2339.6915462668053,
+      "y": 2273.094400029225,
       "width": 210.36819763051335,
       "height": 204.01772350357533,
       "angle": 0,
@@ -1744,8 +1744,8 @@
         "type": 2
       },
       "seed": 47438900,
-      "version": 230,
-      "versionNonce": 1619493428,
+      "version": 518,
+      "versionNonce": 327700478,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1757,17 +1757,17 @@
           "id": "fW6SSCfynCK4-Q1cb8gRH"
         }
       ],
-      "updated": 1775592958820,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "fW6SSCfynCK4-Q1cb8gRH",
       "type": "text",
-      "x": 2773.1103203928815,
-      "y": 2674.229017333198,
-      "width": 93.919921875,
-      "height": 50,
+      "x": 2380.40929734588,
+      "y": 2337.472103895203,
+      "width": 129.17991638183594,
+      "height": 75,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -1781,30 +1781,30 @@
       "index": "b0ZV",
       "roundness": null,
       "seed": 10031796,
-      "version": 101,
-      "versionNonce": 1581325236,
+      "version": 402,
+      "versionNonce": 137994302,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592958820,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
-      "text": "Primary\nDatabase",
+      "text": "Primary\nDatabase\n(Dynamo DB)",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": "B8Ha6tIrB0lZATt1BWUpz",
-      "originalText": "Primary Database",
+      "originalText": "Primary Database\n(Dynamo DB)",
       "autoResize": true,
       "lineHeight": 1.25
     },
     {
       "id": "F-A8E01RfEX-Kt72Vvh5n",
       "type": "arrow",
-      "x": 2451.667676607528,
-      "y": 2614.778912760933,
-      "width": 258.4027515515072,
-      "height": 56.35386805876078,
+      "x": 2075.0027608278933,
+      "y": 2400.4950249070034,
+      "width": 256.3451874809307,
+      "height": 20.29447810122292,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -1820,8 +1820,8 @@
         "type": 2
       },
       "seed": 807165324,
-      "version": 197,
-      "versionNonce": 199994380,
+      "version": 740,
+      "versionNonce": 1064900962,
       "isDeleted": false,
       "boundElements": [
         {
@@ -1829,7 +1829,7 @@
           "id": "NL_G4UsfRm4SXvsfWpqm6"
         }
       ],
-      "updated": 1775593381872,
+      "updated": 1775679992186,
       "link": null,
       "locked": false,
       "points": [
@@ -1838,20 +1838,20 @@
           0
         ],
         [
-          258.4027515515072,
-          56.35386805876078
+          256.3451874809307,
+          -20.29447810122292
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "iakuGPh8QmAfPrFkN92qK",
-        "focus": -0.1550008275643482,
-        "gap": 5.480658400223547
+        "focus": -0.15553565358343124,
+        "gap": 4.970424502367678
       },
       "endBinding": {
         "elementId": "B8Ha6tIrB0lZATt1BWUpz",
-        "focus": 0.035393935903511135,
-        "gap": 8.46463758088081
+        "focus": 0.035260784671102545,
+        "gap": 8.464629556992682
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -1897,8 +1897,8 @@
     {
       "id": "3dPeFp1vObqKPTUmioLua",
       "type": "text",
-      "x": 2954.1453644335265,
-      "y": 2590.349916304536,
+      "x": 2610.9501928132227,
+      "y": 2283.624698342498,
       "width": 388.2996826171875,
       "height": 225,
       "angle": 0,
@@ -1914,11 +1914,11 @@
       "index": "b0b",
       "roundness": null,
       "seed": 1416756620,
-      "version": 367,
-      "versionNonce": 1618488628,
+      "version": 531,
+      "versionNonce": 1220108542,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593293325,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Ride: \n- id\n- riderId\n- driverId ?  [optional]\n- Fare\n- ETA\n- Source\n- Destination\n- status: pickedup | dropped | in-transit",
@@ -1934,8 +1934,8 @@
     {
       "id": "AZXzFGa5KgYYQDhYOxLyX",
       "type": "text",
-      "x": 1131.5750289057316,
-      "y": 2649.721816130362,
+      "x": 754.910113126097,
+      "y": 2480.8845988514036,
       "width": 173.45986938476562,
       "height": 75,
       "angle": 0,
@@ -1951,11 +1951,11 @@
       "index": "b0d",
       "roundness": null,
       "seed": 379171764,
-      "version": 335,
-      "versionNonce": 2099607436,
+      "version": 461,
+      "versionNonce": 1998623038,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592966554,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Rider:\n- id\n- ...user metadate",
@@ -1971,8 +1971,8 @@
     {
       "id": "NLrsaJGTApYAavQkosY9K",
       "type": "rectangle",
-      "x": 2147.7746694917714,
-      "y": 2837.1965358189655,
+      "x": 1861.6262472979195,
+      "y": 2700.056021639887,
       "width": 315.80722331810375,
       "height": 139.82943701012255,
       "angle": 0,
@@ -1990,8 +1990,8 @@
         "type": 3
       },
       "seed": 532181812,
-      "version": 305,
-      "versionNonce": 2045261452,
+      "version": 591,
+      "versionNonce": 1657037602,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2013,17 +2013,21 @@
         {
           "id": "Dm6LCwZUJ8Gb7Ik0h1kWH",
           "type": "arrow"
+        },
+        {
+          "id": "ol10F2od7Pa8_utkqlgYL",
+          "type": "arrow"
         }
       ],
-      "updated": 1775593383653,
+      "updated": 1775680854899,
       "link": null,
       "locked": false
     },
     {
       "id": "a6o1RbNNAApGDg-SAmS39",
       "type": "text",
-      "x": 2167.4483922348077,
-      "y": 2882.1112543240265,
+      "x": 1881.2999700409557,
+      "y": 2744.970740144948,
       "width": 276.45977783203125,
       "height": 50,
       "angle": 0,
@@ -2039,11 +2043,11 @@
       "index": "b0eG",
       "roundness": null,
       "seed": 1608814348,
-      "version": 205,
-      "versionNonce": 792298764,
+      "version": 490,
+      "versionNonce": 1682943714,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593383653,
+      "updated": 1775680854899,
       "link": null,
       "locked": false,
       "text": "Riding Matching service\n- Matches riders and drives ",
@@ -2059,8 +2063,8 @@
     {
       "id": "CjmE-Kc_t10r65rsvsYL9",
       "type": "ellipse",
-      "x": 2801.4187298278684,
-      "y": 3023.757670618145,
+      "x": 2424.753814048234,
+      "y": 2854.920453339186,
       "width": 298.69752751271625,
       "height": 200.64862830608848,
       "angle": 0,
@@ -2078,8 +2082,8 @@
         "type": 2
       },
       "seed": 1498327436,
-      "version": 589,
-      "versionNonce": 270574260,
+      "version": 715,
+      "versionNonce": 1789719358,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2095,17 +2099,17 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775592806519,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "BjgSFOV0LV8U3UilhY5Cr",
       "type": "text",
-      "x": 2851.442052672915,
-      "y": 3086.641981915682,
+      "x": 2474.7771368932804,
+      "y": 2905.304764636723,
       "width": 198.43983459472656,
-      "height": 75,
+      "height": 100,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2119,28 +2123,28 @@
       "index": "b0k",
       "roundness": null,
       "seed": 1599707148,
-      "version": 522,
-      "versionNonce": 1860316212,
+      "version": 658,
+      "versionNonce": 828889982,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592806519,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
-      "text": "Loction DB\n- stores the driver's\nlocation",
+      "text": "Loction DB\n(Redis)\n- stores the driver's\nlocation",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "center",
       "verticalAlign": "middle",
       "containerId": "CjmE-Kc_t10r65rsvsYL9",
-      "originalText": "Loction DB\n- stores the driver's location",
+      "originalText": "Loction DB\n(Redis)\n- stores the driver's location",
       "autoResize": true,
       "lineHeight": 1.25
     },
     {
       "id": "k8SnDbwO8mk5D7EoBmGm1",
       "type": "rectangle",
-      "x": 2138.9505757368033,
-      "y": 3139.3871738605544,
+      "x": 1762.2856599571687,
+      "y": 2970.549956581596,
       "width": 315.80722331810375,
       "height": 118.07949052484756,
       "angle": 0,
@@ -2158,8 +2162,8 @@
         "type": 3
       },
       "seed": 459400716,
-      "version": 369,
-      "versionNonce": 1807647756,
+      "version": 495,
+      "versionNonce": 1473406014,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2175,15 +2179,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775593385153,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "jKbL2_1yDN2YOnMtBi9NY",
       "type": "text",
-      "x": 2217.584251787945,
-      "y": 3185.9269191229782,
+      "x": 1840.9193360083104,
+      "y": 3017.0897018440196,
       "width": 158.5398712158203,
       "height": 25,
       "angle": 0,
@@ -2199,11 +2203,11 @@
       "index": "b0m",
       "roundness": null,
       "seed": 1691436172,
-      "version": 250,
-      "versionNonce": 2078941836,
+      "version": 376,
+      "versionNonce": 448212094,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593385153,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Location Service",
@@ -2219,8 +2223,8 @@
     {
       "id": "FDNVJVMx9p0gZIlpiVyEN",
       "type": "rectangle",
-      "x": 1284.1852802749793,
-      "y": 2993.428025068643,
+      "x": 907.5203644953447,
+      "y": 2824.5908077896843,
       "width": 160.36963526939837,
       "height": 94.95164211453039,
       "angle": 0,
@@ -2238,8 +2242,8 @@
         "type": 3
       },
       "seed": 1713381044,
-      "version": 457,
-      "versionNonce": 1288166324,
+      "version": 583,
+      "versionNonce": 574051646,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2255,15 +2259,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775593198420,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "Ho-D61EcyAar-_xKfdBKm",
       "type": "text",
-      "x": 1300.7801549775495,
-      "y": 3015.9038461259083,
+      "x": 924.1152391979149,
+      "y": 2847.0666288469497,
       "width": 127.17988586425781,
       "height": 50,
       "angle": 0,
@@ -2279,11 +2283,11 @@
       "index": "b0o",
       "roundness": null,
       "seed": 1334978612,
-      "version": 313,
-      "versionNonce": 128773132,
+      "version": 439,
+      "versionNonce": 223739262,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592606937,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Driver\n(ios/Android)",
@@ -2299,10 +2303,10 @@
     {
       "id": "qYSA6DLAv1MACZKyeUG7V",
       "type": "arrow",
-      "x": 1449.417501735197,
-      "y": 3036.9934122802074,
-      "width": 158.27889949803944,
-      "height": 158.44604038746456,
+      "x": 1072.0312281907466,
+      "y": 2854.9244556532735,
+      "width": 94.4775174076758,
+      "height": 135.48112752331235,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2318,11 +2322,11 @@
         "type": 2
       },
       "seed": 1670535436,
-      "version": 313,
-      "versionNonce": 932026380,
+      "version": 732,
+      "versionNonce": 1311445922,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775592667954,
+      "updated": 1775680564867,
       "link": null,
       "locked": false,
       "points": [
@@ -2331,20 +2335,20 @@
           0
         ],
         [
-          158.27889949803944,
-          -158.44604038746456
+          94.4775174076758,
+          -135.48112752331235
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "FDNVJVMx9p0gZIlpiVyEN",
-        "focus": 0.6377878231500802,
-        "gap": 5.7193949033721765
+        "focus": 0.6358493883949636,
+        "gap": 4.862586190819229
       },
       "endBinding": {
         "elementId": "VbfMC3L05LjnXyAGKI2rz",
-        "focus": 0.31311973391906245,
-        "gap": 17.25564134104684
+        "focus": 0.3133925073684435,
+        "gap": 6.717071239373354
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -2353,10 +2357,10 @@
     {
       "id": "GuoFIqE2-np7xPdvsbnz3",
       "type": "arrow",
-      "x": 1814.2199990405563,
-      "y": 2920.7316706609463,
-      "width": 317.77842261054207,
-      "height": 266.77602732063406,
+      "x": 1366.3105063548192,
+      "y": 2726.6965648751075,
+      "width": 389.52091032005,
+      "height": 296.83801971787625,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2372,8 +2376,8 @@
         "type": 2
       },
       "seed": 1400738956,
-      "version": 82,
-      "versionNonce": 1914564876,
+      "version": 501,
+      "versionNonce": 315626274,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2381,7 +2385,7 @@
           "id": "8acM_HSgUxXaYIH7oj8ZN"
         }
       ],
-      "updated": 1775593385154,
+      "updated": 1775680564868,
       "link": null,
       "locked": false,
       "points": [
@@ -2390,20 +2394,20 @@
           0
         ],
         [
-          317.77842261054207,
-          266.77602732063406
+          389.52091032005,
+          296.83801971787625
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "VbfMC3L05LjnXyAGKI2rz",
-        "focus": -0.14504088232969733,
-        "gap": 10.422568657904776
+        "focus": -0.14609862651890237,
+        "gap": 3.935274144794448
       },
       "endBinding": {
         "elementId": "k8SnDbwO8mk5D7EoBmGm1",
-        "focus": -0.6650851472583051,
-        "gap": 7.4935585544471905
+        "focus": -0.6653314463852733,
+        "gap": 6.952154085704933
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -2449,8 +2453,8 @@
     {
       "id": "qcaBMr37gFvvUjdU4vBsM",
       "type": "arrow",
-      "x": 2465.129070223214,
-      "y": 3193.769545125058,
+      "x": 2088.4641544435794,
+      "y": 3024.9323278460993,
       "width": 334.06992787806166,
       "height": 75.75665768737463,
       "angle": 0,
@@ -2468,8 +2472,8 @@
         "type": 2
       },
       "seed": 870650932,
-      "version": 330,
-      "versionNonce": 1037299596,
+      "version": 710,
+      "versionNonce": 1833117666,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2477,7 +2481,7 @@
           "id": "MAnfP-3pt3fKFaI8Ff7DO"
         }
       ],
-      "updated": 1775593385154,
+      "updated": 1775679992187,
       "link": null,
       "locked": false,
       "points": [
@@ -2493,13 +2497,13 @@
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "k8SnDbwO8mk5D7EoBmGm1",
-        "focus": 0.3534631160792289,
-        "gap": 11.23078230305191
+        "focus": 0.3532215035920229,
+        "gap": 10.371271168306976
       },
       "endBinding": {
         "elementId": "CjmE-Kc_t10r65rsvsYL9",
-        "focus": 0.29848872218438294,
-        "gap": 2.484522697229781
+        "focus": 0.3013601683699011,
+        "gap": 2.4835329429590574
       },
       "startArrowhead": "arrow",
       "endArrowhead": "arrow",
@@ -2545,10 +2549,10 @@
     {
       "id": "autv-8GD-k9wCWiI1di0J",
       "type": "arrow",
-      "x": 2475.7250406535163,
-      "y": 2915.341922584341,
-      "width": 330.51968867820324,
-      "height": 156.68982856745242,
+      "x": 2188.369850008997,
+      "y": 2780.169380107504,
+      "width": 242.7722925425769,
+      "height": 121.25913524947146,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2564,8 +2568,8 @@
         "type": 2
       },
       "seed": 2079980468,
-      "version": 328,
-      "versionNonce": 2052916108,
+      "version": 867,
+      "versionNonce": 1979417250,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2573,7 +2577,7 @@
           "id": "QWKTyDiIyYrG0hEqkvZ59"
         }
       ],
-      "updated": 1775593383654,
+      "updated": 1775680854899,
       "link": null,
       "locked": false,
       "points": [
@@ -2582,20 +2586,20 @@
           0
         ],
         [
-          330.51968867820324,
-          156.68982856745242
+          242.7722925425769,
+          121.25913524947146
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "NLrsaJGTApYAavQkosY9K",
-        "focus": -0.5003172360226259,
-        "gap": 13.504844963064897
+        "focus": -0.4999824298361067,
+        "gap": 12.143147843641145
       },
       "endBinding": {
         "elementId": "CjmE-Kc_t10r65rsvsYL9",
-        "focus": -0.09476947992385432,
-        "gap": 13.253857451438922
+        "focus": -0.09620868220544211,
+        "gap": 13.068916100626446
       },
       "startArrowhead": "arrow",
       "endArrowhead": "arrow",
@@ -2641,10 +2645,10 @@
     {
       "id": "nGz5w4dj5tKkyaZoCklmj",
       "type": "arrow",
-      "x": 2296.2528866146263,
-      "y": 2668.1639777180267,
-      "width": 7.572439918831606,
-      "height": 166.21606798249013,
+      "x": 1938.4837791149566,
+      "y": 2498.2497216784373,
+      "width": 60.929490787063514,
+      "height": 200.645108587481,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2660,8 +2664,8 @@
         "type": 2
       },
       "seed": 439500172,
-      "version": 236,
-      "versionNonce": 1099739660,
+      "version": 775,
+      "versionNonce": 1383521890,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2669,7 +2673,7 @@
           "id": "1VPfaa8wPqc95PGp5NrAf"
         }
       ],
-      "updated": 1775593383654,
+      "updated": 1775680854900,
       "link": null,
       "locked": false,
       "points": [
@@ -2678,20 +2682,20 @@
           0
         ],
         [
-          7.572439918831606,
-          166.21606798249013
+          60.929490787063514,
+          200.645108587481
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "iakuGPh8QmAfPrFkN92qK",
-        "focus": -0.03656328200843907,
-        "gap": 4.377049170283044
+        "focus": -0.03314958642777796,
+        "gap": 1.8324035420114342
       },
       "endBinding": {
         "elementId": "NLrsaJGTApYAavQkosY9K",
-        "focus": 0.010092128544853893,
-        "gap": 6.6754154669160926
+        "focus": 0.00906655307844348,
+        "gap": 2.8164901184486553
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -2737,8 +2741,8 @@
     {
       "id": "E8PRJwqGrM4US0wErtsGV",
       "type": "text",
-      "x": 1064.0912359676227,
-      "y": 3116.7811381702686,
+      "x": 687.426320187988,
+      "y": 2947.94392089131,
       "width": 457.5396728515625,
       "height": 100,
       "angle": 0,
@@ -2754,11 +2758,16 @@
       "index": "b0z",
       "roundness": null,
       "seed": 1726517644,
-      "version": 250,
-      "versionNonce": 77215924,
+      "version": 393,
+      "versionNonce": 757340450,
       "isDeleted": false,
-      "boundElements": [],
-      "updated": 1775592970587,
+      "boundElements": [
+        {
+          "id": "T25Xx-nJ-Aebsa-I94WSK",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1775679992188,
       "link": null,
       "locked": false,
       "text": "Driver:\n- id\n- ...user metadata like vehicle licence, name, etc\n- status: inRide | offline | available",
@@ -2774,10 +2783,10 @@
     {
       "id": "xcmJvGirKfa7aGt3cVO34",
       "type": "arrow",
-      "x": 1814.8520782476885,
-      "y": 2859.990050460162,
-      "width": 328.1816851132671,
-      "height": 28.69709814072621,
+      "x": 1365.4769456334275,
+      "y": 2694.083749049811,
+      "width": 208.51159648195267,
+      "height": 1.7642307280502791,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2793,8 +2802,8 @@
         "type": 2
       },
       "seed": 1608880012,
-      "version": 127,
-      "versionNonce": 331518092,
+      "version": 971,
+      "versionNonce": 1086248446,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2802,7 +2811,7 @@
           "id": "ViJ6e_TKE4ihJOF5klap8"
         }
       ],
-      "updated": 1775593383654,
+      "updated": 1775680858667,
       "link": null,
       "locked": false,
       "points": [
@@ -2811,20 +2820,20 @@
           0
         ],
         [
-          328.1816851132671,
-          28.69709814072621
+          208.51159648195267,
+          -1.7642307280502791
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "VbfMC3L05LjnXyAGKI2rz",
-        "focus": -0.1270435306255327,
-        "gap": 12.008096374859178
+        "focus": -0.01674525978040881,
+        "gap": 1.6757822096424206
       },
       "endBinding": {
-        "elementId": "NLrsaJGTApYAavQkosY9K",
-        "focus": 0.05032315721698707,
-        "gap": 5.219630295360275
+        "elementId": "rScUZenzE4_B4Kp3r4C3z",
+        "focus": 0.3214326503204386,
+        "gap": 16.570909292660644
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -2870,8 +2879,8 @@
     {
       "id": "9sB-zzykbH_8ntXSEOzs4",
       "type": "rectangle",
-      "x": 1454.4665862486909,
-      "y": 3334.8476336960844,
+      "x": 1077.8016704690563,
+      "y": 3166.0104164171257,
       "width": 412.2190622832378,
       "height": 110,
       "angle": 0,
@@ -2889,8 +2898,8 @@
         "type": 3
       },
       "seed": 364504628,
-      "version": 169,
-      "versionNonce": 111339276,
+      "version": 295,
+      "versionNonce": 1329780734,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2906,15 +2915,15 @@
           "type": "arrow"
         }
       ],
-      "updated": 1775593213976,
+      "updated": 1775679990849,
       "link": null,
       "locked": false
     },
     {
       "id": "64QYkdKMH-JARPg5BomfZ",
       "type": "text",
-      "x": 1481.7762516676535,
-      "y": 3352.3476336960844,
+      "x": 1105.1113358880189,
+      "y": 3183.5104164171257,
       "width": 357.5997314453125,
       "height": 75,
       "angle": 0,
@@ -2930,11 +2939,11 @@
       "index": "b14",
       "roundness": null,
       "seed": 1426101900,
-      "version": 197,
-      "versionNonce": 575284620,
+      "version": 323,
+      "versionNonce": 2070095934,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593213976,
+      "updated": 1775679990849,
       "link": null,
       "locked": false,
       "text": "Notification Service\n- Apple Native Push Notification\n- Android Native Notification Service",
@@ -2950,10 +2959,10 @@
     {
       "id": "Dm6LCwZUJ8Gb7Ik0h1kWH",
       "type": "arrow",
-      "x": 2139.2728515610343,
-      "y": 2957.897233215015,
-      "width": 260.84710496400885,
-      "height": 435.2631838178322,
+      "x": 1852.7487540869954,
+      "y": 2776.436782147259,
+      "width": 351.5028821631272,
+      "height": 448.18074260979483,
       "angle": 0,
       "strokeColor": "#1e1e1e",
       "backgroundColor": "transparent",
@@ -2969,8 +2978,8 @@
         "type": 2
       },
       "seed": 721036812,
-      "version": 369,
-      "versionNonce": 280534796,
+      "version": 908,
+      "versionNonce": 110150178,
       "isDeleted": false,
       "boundElements": [
         {
@@ -2978,7 +2987,7 @@
           "id": "qe_gEzA2Bz_FlO3JpQeG2"
         }
       ],
-      "updated": 1775593383655,
+      "updated": 1775680854901,
       "link": null,
       "locked": false,
       "points": [
@@ -2987,24 +2996,24 @@
           0
         ],
         [
-          -117.21227401429769,
-          353.16862713461796
+          -207.35309231989345,
+          365.7918609234157
         ],
         [
-          -260.84710496400885,
-          435.2631838178322
+          -351.5028821631272,
+          448.18074260979483
         ]
       ],
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "NLrsaJGTApYAavQkosY9K",
-        "focus": 0.825755314261541,
-        "gap": 10.14413627174036
+        "focus": 0.8257540244125626,
+        "gap": 9.82970578602195
       },
       "endBinding": {
         "elementId": "9sB-zzykbH_8ntXSEOzs4",
-        "focus": 0.739718535954082,
-        "gap": 12.284644013674324
+        "focus": 0.7397185359540898,
+        "gap": 11.740098065096845
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
@@ -3015,7 +3024,7 @@
       "type": "text",
       "x": 1914.5806657425373,
       "y": 3286.065860349633,
-      "width": 214.95982360839844,
+      "width": 246.0198211669922,
       "height": 50,
       "angle": 0,
       "strokeColor": "#1e1e1e",
@@ -3030,14 +3039,14 @@
       "index": "b15V",
       "roundness": null,
       "seed": 968928436,
-      "version": 46,
-      "versionNonce": 1388106164,
+      "version": 49,
+      "versionNonce": 868671586,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593234113,
+      "updated": 1775680854818,
       "link": null,
       "locked": false,
-      "text": "Ride notification sent\nto Drivers",
+      "text": "Ride notification sent to\nDrivers",
       "fontSize": 20,
       "fontFamily": 5,
       "textAlign": "center",
@@ -3050,8 +3059,8 @@
     {
       "id": "T25Xx-nJ-Aebsa-I94WSK",
       "type": "arrow",
-      "x": 1439.3628460129194,
-      "y": 3386.142146523226,
+      "x": 1062.6979302332848,
+      "y": 3217.3049292442674,
       "width": 148.1984241610321,
       "height": 296.8585558899217,
       "angle": 0,
@@ -3069,11 +3078,11 @@
         "type": 2
       },
       "seed": 120819468,
-      "version": 262,
-      "versionNonce": 407843468,
+      "version": 642,
+      "versionNonce": 644420962,
       "isDeleted": false,
       "boundElements": [],
-      "updated": 1775593213976,
+      "updated": 1775679992188,
       "link": null,
       "locked": false,
       "points": [
@@ -3093,17 +3102,647 @@
       "lastCommittedPoint": null,
       "startBinding": {
         "elementId": "9sB-zzykbH_8ntXSEOzs4",
-        "focus": -0.6412710303546283,
-        "gap": 15.854605164917984
+        "focus": -0.6412710303546314,
+        "gap": 15.103740235771511
       },
       "endBinding": {
-        "elementId": "FDNVJVMx9p0gZIlpiVyEN",
-        "focus": -0.3890867245407906,
-        "gap": 1.7551537966041906
+        "elementId": "E8PRJwqGrM4US0wErtsGV",
+        "focus": 0,
+        "gap": 14
       },
       "startArrowhead": null,
       "endArrowhead": "arrow",
       "elbowed": false
+    },
+    {
+      "id": "E1i67UQTXnPqKmOfDbZVR",
+      "type": "text",
+      "x": 1841.2522319465234,
+      "y": 3153.817736111383,
+      "width": 737.51953125,
+      "height": 75,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b17",
+      "roundness": null,
+      "seed": 895437218,
+      "version": 316,
+      "versionNonce": 166478206,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775679990849,
+      "link": null,
+      "locked": false,
+      "text": "6M drivers\n3M active in any given time\n3M * 5 -> 600k Transaction Per Second (TPS) -> That's a lot of updates.",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "6M drivers\n3M active in any given time\n3M * 5 -> 600k Transaction Per Second (TPS) -> That's a lot of updates.",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "B4XYWzVxyYEEaYaXvNYPK",
+      "type": "text",
+      "x": 2779.2636937532916,
+      "y": 2767.4762476119067,
+      "width": 1989.958740234375,
+      "height": 1000,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b18",
+      "roundness": null,
+      "seed": 799406114,
+      "version": 3399,
+      "versionNonce": 1076060606,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775679990849,
+      "link": null,
+      "locked": false,
+      "text": "Case1: Postgress DB\n    -- We can store lat/long in colums and then let's say we search it based on rider's location.\n    Sucks:\n        -- Postgress uses Btree from indexing -> which is optimised for 1D scanning not 2D with lat & long\n        -- Queries will suck, slow transactions and lagging.\n        -- Most of all -> there would be a lot of rows to scans.\n        -- Postgress can handle 2-3k TPS at max with replicas and optimised hardware.\n    \n    BAD CHOICE !!\n\n    Possible sol for above:\n        -- We need to optimise the lookup this search -> \"Geo-Spatial Index\" [Makes Querying geo data faster] -> Go with a Quard Tree [Postgress has extension as PostGIS ]\n            -- Quard Trees:\n                -> They take a map -> they recursively keeps on dividing it into quadrants, smaller and smaller.\n                -> there is a k value -> thats like it will keep on dividing till it reaches that limit.\n                -> Kind of divide till you reduce it to k elements present in a particular region i.e till you get those leaf nodes while keep on branching the tree.\n            -- issue:\n                -> New location added -> we need to re-index the quard tree to find new leaf nodes again -> that's a computation headache !\n                \n        -- This high TPS req we need to reduce it to may be 4k or so -> Well add a queue before the location DB -> it will queue the incoming req and process it async way.\n            -> issues:\n                1. Well the batching that high TPS -> introduce good amount of Latency in location updates.\n\n        \n        \"Quard- Tree\" is good when we have uneven density of the nodes eg: you searching campsites in a country, lot of nodes but in ocean few nodes. Also No high TPS [ Re-indexing the tree is costly ]\n            \n\n\nCase2: Redis \n    -- An in-memory datastore can handle high TPS. [100k to 1M TPS if optimised well ] -> we have a redis cluster.\n    -- For Quering Geo-spatial Index:\n        - Redis supports \"Geo-hashing\"  -> Map Region into 4 quadrants -> Recursively keeps on breaking each quadrants into 4 again and again -> untill we have what we need.\n        - Endsup with a base32 Encoded string eg: \"u4pruydaavj\"  --> longer the string more precise and accurate the location is.  [Fucking amazing !! ]\n        - also chars from left to right -> it zooms in like first 4 can tell you about the region, next would tell the country, then next would be city and so on....\n        Advantages:\n              1. Cheap and easy to calculate a geo-hash  2. Easy to store  3. It dosnot need any DS like quard-Tree.\n\n    \n       \"Geo Hashing\" best for Proximity based queries for location, Supports out of the box from Redis\n        ",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Case1: Postgress DB\n    -- We can store lat/long in colums and then let's say we search it based on rider's location.\n    Sucks:\n        -- Postgress uses Btree from indexing -> which is optimised for 1D scanning not 2D with lat & long\n        -- Queries will suck, slow transactions and lagging.\n        -- Most of all -> there would be a lot of rows to scans.\n        -- Postgress can handle 2-3k TPS at max with replicas and optimised hardware.\n    \n    BAD CHOICE !!\n\n    Possible sol for above:\n        -- We need to optimise the lookup this search -> \"Geo-Spatial Index\" [Makes Querying geo data faster] -> Go with a Quard Tree [Postgress has extension as PostGIS ]\n            -- Quard Trees:\n                -> They take a map -> they recursively keeps on dividing it into quadrants, smaller and smaller.\n                -> there is a k value -> thats like it will keep on dividing till it reaches that limit.\n                -> Kind of divide till you reduce it to k elements present in a particular region i.e till you get those leaf nodes while keep on branching the tree.\n            -- issue:\n                -> New location added -> we need to re-index the quard tree to find new leaf nodes again -> that's a computation headache !\n                \n        -- This high TPS req we need to reduce it to may be 4k or so -> Well add a queue before the location DB -> it will queue the incoming req and process it async way.\n            -> issues:\n                1. Well the batching that high TPS -> introduce good amount of Latency in location updates.\n\n        \n        \"Quard- Tree\" is good when we have uneven density of the nodes eg: you searching campsites in a country, lot of nodes but in ocean few nodes. Also No high TPS [ Re-indexing the tree is costly ]\n            \n\n\nCase2: Redis \n    -- An in-memory datastore can handle high TPS. [100k to 1M TPS if optimised well ] -> we have a redis cluster.\n    -- For Quering Geo-spatial Index:\n        - Redis supports \"Geo-hashing\"  -> Map Region into 4 quadrants -> Recursively keeps on breaking each quadrants into 4 again and again -> untill we have what we need.\n        - Endsup with a base32 Encoded string eg: \"u4pruydaavj\"  --> longer the string more precise and accurate the location is.  [Fucking amazing !! ]\n        - also chars from left to right -> it zooms in like first 4 can tell you about the region, next would tell the country, then next would be city and so on....\n        Advantages:\n              1. Cheap and easy to calculate a geo-hash  2. Easy to store  3. It dosnot need any DS like quard-Tree.\n\n    \n       \"Geo Hashing\" best for Proximity based queries for location, Supports out of the box from Redis\n        ",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "gvPn3pbLLgSUj80ZFr0im",
+      "type": "text",
+      "x": 1759.4135520898521,
+      "y": 3314.9083788398248,
+      "width": 827.9395751953125,
+      "height": 200,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b19",
+      "roundness": null,
+      "seed": 533038690,
+      "version": 726,
+      "versionNonce": 453802494,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775679990849,
+      "link": null,
+      "locked": false,
+      "text": "Can we reduce this high TPS ? \n    1. Well we can have some Product trade-offs -> update location in 1 min.\n    2. Adaptive updates in client itself !\n        -- status of drivers -> accepting ride or not ?\n        -- Speed -> is vehicle parked -> No need to update same location.\n        -- proximity to rider location.\n\n--> This should reduce 600k to some 100-200k !  [ Minor Trade-offs do help, huh !]",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Can we reduce this high TPS ? \n    1. Well we can have some Product trade-offs -> update location in 1 min.\n    2. Adaptive updates in client itself !\n        -- status of drivers -> accepting ride or not ?\n        -- Speed -> is vehicle parked -> No need to update same location.\n        -- proximity to rider location.\n\n--> This should reduce 600k to some 100-200k !  [ Minor Trade-offs do help, huh !]",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "xyd4Jkm0DzrT66KDCH0_k",
+      "type": "text",
+      "x": 636.9419578268598,
+      "y": 3356.528369254588,
+      "width": 2012.278564453125,
+      "height": 975,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1A",
+      "roundness": null,
+      "seed": 1976005538,
+      "version": 2779,
+      "versionNonce": 1394169890,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680058604,
+      "link": null,
+      "locked": false,
+      "text": "Consistency matching:\n    \n1. We don't send more then 1 req at a time for a given ride\n    - Can be logic in the Ride Matching Microservice.\n    - So we have let's say list of 10 top drivers -> eligible for ride.\n    - Send req to a driver -> wait for 10s -> if not responded -> move to the next guy !\n\n\n2. We don't send any driver more than 1 req at a time.\n    - This is tricky ! \n    - So in case of horizontal scaled system -> multiple instance of Ride matching microservie is up.\n    - Somehow we need to track -> which driver we have requested so that it doesn't clash with same req from different instance of the same service !\n    - Sol:\n         -- add a status field in driver Entity -> when we send a req to driver -> update this status to \"Requested\".\n         -- next if any one requesting this driver -> First check if he is available or not ?\n      Issues:\n         -- This approach is okay ! but we want the driver to accept/decline in 5 sec so, doesnot really make sense in adding a status field.\n         --  In above sol, if the driver don;t perfrom any action, he is stuck with a stale state that prevents him for getting any other ride !\n        Sol: \n            \"Distribured lock with Redis\"\n            -- \"Redis Cluster\"  -> Comes with build-in TTL out of the box.\n            --  So we can set driverId set to \"True\" with a TTL of 5 sec.  --> So for 5 sec that driverId is not locaked after 5sec, it automatically removed.\n            -- So now any instance trying to request a driver --> first check in the distributed lock  [ Fast since Hash-Map ] -> If present it ignores -> If not then add a entry there and send a notification.\n            -- A driver doesnot reply -> TTL will remove it from the lock.\n\n        case2: Use the Primary DB as Dynamo DB\n            -- In Dynamo DB we can have a seperate table saying Driver Lock  -> takes DriverId  and set TTLs in it.\n\n        \n            \nIn the Ride Matching Service:\n            \n            while (noMatch) {\n                driver = nextDriver\n                lock(driver)\n                sendNotification(driver)\n                wait(10s)\n            }\n            ",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Consistency matching:\n    \n1. We don't send more then 1 req at a time for a given ride\n    - Can be logic in the Ride Matching Microservice.\n    - So we have let's say list of 10 top drivers -> eligible for ride.\n    - Send req to a driver -> wait for 10s -> if not responded -> move to the next guy !\n\n\n2. We don't send any driver more than 1 req at a time.\n    - This is tricky ! \n    - So in case of horizontal scaled system -> multiple instance of Ride matching microservie is up.\n    - Somehow we need to track -> which driver we have requested so that it doesn't clash with same req from different instance of the same service !\n    - Sol:\n         -- add a status field in driver Entity -> when we send a req to driver -> update this status to \"Requested\".\n         -- next if any one requesting this driver -> First check if he is available or not ?\n      Issues:\n         -- This approach is okay ! but we want the driver to accept/decline in 5 sec so, doesnot really make sense in adding a status field.\n         --  In above sol, if the driver don;t perfrom any action, he is stuck with a stale state that prevents him for getting any other ride !\n        Sol: \n            \"Distribured lock with Redis\"\n            -- \"Redis Cluster\"  -> Comes with build-in TTL out of the box.\n            --  So we can set driverId set to \"True\" with a TTL of 5 sec.  --> So for 5 sec that driverId is not locaked after 5sec, it automatically removed.\n            -- So now any instance trying to request a driver --> first check in the distributed lock  [ Fast since Hash-Map ] -> If present it ignores -> If not then add a entry there and send a notification.\n            -- A driver doesnot reply -> TTL will remove it from the lock.\n\n        case2: Use the Primary DB as Dynamo DB\n            -- In Dynamo DB we can have a seperate table saying Driver Lock  -> takes DriverId  and set TTLs in it.\n\n        \n            \nIn the Ride Matching Service:\n            \n            while (noMatch) {\n                driver = nextDriver\n                lock(driver)\n                sendNotification(driver)\n                wait(10s)\n            }\n            ",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "JeTrVotwYiN_3bsxzbpZ7",
+      "type": "ellipse",
+      "x": 2353.6699089488648,
+      "y": 2535.007602624933,
+      "width": 285.2887975734676,
+      "height": 120,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1B",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 1601081790,
+      "version": 374,
+      "versionNonce": 576440738,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "XV196r2Ilm6Bp_BwI-Ask"
+        },
+        {
+          "id": "ol10F2od7Pa8_utkqlgYL",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1775680540099,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "XV196r2Ilm6Bp_BwI-Ask",
+      "type": "text",
+      "x": 2411.0695574663537,
+      "y": 2570.0811957537403,
+      "width": 170.75985717773438,
+      "height": 50,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1C",
+      "roundness": null,
+      "seed": 839777214,
+      "version": 338,
+      "versionNonce": 959858018,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680540099,
+      "link": null,
+      "locked": false,
+      "text": "Redis\n(Distribured lock)",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "JeTrVotwYiN_3bsxzbpZ7",
+      "originalText": "Redis\n(Distribured lock)",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "ol10F2od7Pa8_utkqlgYL",
+      "type": "arrow",
+      "x": 2186.519435534999,
+      "y": 2762.238210835251,
+      "width": 169.42698312738457,
+      "height": 140.48991251898087,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1D",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 488160830,
+      "version": 698,
+      "versionNonce": 758656482,
+      "isDeleted": false,
+      "boundElements": [],
+      "updated": 1775680854902,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          169.42698312738457,
+          -140.48991251898087
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "NLrsaJGTApYAavQkosY9K",
+        "focus": 0.6507565851980198,
+        "gap": 10.063387402665285
+      },
+      "endBinding": {
+        "elementId": "JeTrVotwYiN_3bsxzbpZ7",
+        "focus": 0.5057095280496514,
+        "gap": 9.449750723700006
+      },
+      "startArrowhead": "arrow",
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "8rkdi22qyXaSkOQLwTjcl",
+      "type": "text",
+      "x": 2370.8448001051433,
+      "y": 2674.4717043819055,
+      "width": 356.0798034667969,
+      "height": 25,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1F",
+      "roundness": null,
+      "seed": 1485031166,
+      "version": 275,
+      "versionNonce": 1995399714,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "ol10F2od7Pa8_utkqlgYL",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1775680542599,
+      "link": null,
+      "locked": false,
+      "text": "SET driverId True EXPIRE 5s TTL",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "SET driverId True EXPIRE 5s TTL",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "zteFX_VL2XSzX0MA0mRaI",
+      "type": "text",
+      "x": 2273.4820475146685,
+      "y": 2000.185038691479,
+      "width": 550.0396728515625,
+      "height": 200,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1G",
+      "roundness": null,
+      "seed": 1124210046,
+      "version": 485,
+      "versionNonce": 1855218558,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775679990849,
+      "link": null,
+      "locked": false,
+      "text": "Reason for Dynamo DB ?\n    1. This is high availablity.\n    2. Not much complex relation here.\n    3. Can scale perfectly.\n\nOptional: \n    - Add a new table -> driverLock (TTL) for driversId.\n    - Remove the use of Redis for distribured lock.",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "Reason for Dynamo DB ?\n    1. This is high availablity.\n    2. Not much complex relation here.\n    3. Can scale perfectly.\n\nOptional: \n    - Add a new table -> driverLock (TTL) for driversId.\n    - Remove the use of Redis for distribured lock.",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "w0TCs0Ayp_rDkfrn0JsO7",
+      "type": "rectangle",
+      "x": 1872.393847271837,
+      "y": 2718.1663764419914,
+      "width": 289.939606922836,
+      "height": 99.36314180883437,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1H",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 217271294,
+      "version": 388,
+      "versionNonce": 729555362,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680854902,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "PyZFhHkaUxFxo9zpw5eCH",
+      "type": "rectangle",
+      "x": 1852.9650910531757,
+      "y": 2690.132219324529,
+      "width": 300.4013735290519,
+      "height": 129.97779225996558,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1K",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 1126696510,
+      "version": 614,
+      "versionNonce": 1821089122,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "id": "cdVRpyo2biGu9qbjzSSwt",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1775680854902,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "o09-2OAgrpEmf4o3EI0YV",
+      "type": "text",
+      "x": 773.8143897530066,
+      "y": 2062.953309680622,
+      "width": 890.3594360351562,
+      "height": 200,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1L",
+      "roundness": null,
+      "seed": 1878277758,
+      "version": 793,
+      "versionNonce": 141401726,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680655784,
+      "link": null,
+      "locked": false,
+      "text": "How do we allow high surges ?\n    -- It's possible that we have multiple instances running.\n    -- sometimes it also get's overwhellemed and crash unexpecedly.\n    -- Sol:\n        - we introduce a Queue infront of Ride Request Queue.\n        - it will add some breathing space for the overwhellemed service.\n     - Cannot be a FIFO Queue. Reason: There won;t be any logical seperation of requests.\n        - It has to be partitioned based on Regions / locations. -> beeter management.",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "How do we allow high surges ?\n    -- It's possible that we have multiple instances running.\n    -- sometimes it also get's overwhellemed and crash unexpecedly.\n    -- Sol:\n        - we introduce a Queue infront of Ride Request Queue.\n        - it will add some breathing space for the overwhellemed service.\n     - Cannot be a FIFO Queue. Reason: There won;t be any logical seperation of requests.\n        - It has to be partitioned based on Regions / locations. -> beeter management.",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "rScUZenzE4_B4Kp3r4C3z",
+      "type": "rectangle",
+      "x": 1587.8005745512273,
+      "y": 2662.7606812628574,
+      "width": 146.4642763915199,
+      "height": 85.91233432251829,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1M",
+      "roundness": {
+        "type": 3
+      },
+      "seed": 2039567010,
+      "version": 439,
+      "versionNonce": 692428158,
+      "isDeleted": false,
+      "boundElements": [
+        {
+          "type": "text",
+          "id": "tZHZYLg_7dUeOUsF4HHSQ"
+        },
+        {
+          "id": "xcmJvGirKfa7aGt3cVO34",
+          "type": "arrow"
+        },
+        {
+          "id": "cdVRpyo2biGu9qbjzSSwt",
+          "type": "arrow"
+        }
+      ],
+      "updated": 1775680858666,
+      "link": null,
+      "locked": false
+    },
+    {
+      "id": "tZHZYLg_7dUeOUsF4HHSQ",
+      "type": "text",
+      "x": 1595.88276462687,
+      "y": 2680.7168484241165,
+      "width": 130.29989624023438,
+      "height": 50,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1N",
+      "roundness": null,
+      "seed": 953114686,
+      "version": 404,
+      "versionNonce": 1676754366,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680858666,
+      "link": null,
+      "locked": false,
+      "text": "Ride Request\nQueue",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "center",
+      "verticalAlign": "middle",
+      "containerId": "rScUZenzE4_B4Kp3r4C3z",
+      "originalText": "Ride Request Queue",
+      "autoResize": true,
+      "lineHeight": 1.25
+    },
+    {
+      "id": "cdVRpyo2biGu9qbjzSSwt",
+      "type": "arrow",
+      "x": 1736.6201431423929,
+      "y": 2710.1298967912517,
+      "width": 113.84674638813112,
+      "height": 69.1720618796212,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1O",
+      "roundness": {
+        "type": 2
+      },
+      "seed": 387639422,
+      "version": 317,
+      "versionNonce": 414148158,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680858668,
+      "link": null,
+      "locked": false,
+      "points": [
+        [
+          0,
+          0
+        ],
+        [
+          113.84674638813112,
+          69.1720618796212
+        ]
+      ],
+      "lastCommittedPoint": null,
+      "startBinding": {
+        "elementId": "rScUZenzE4_B4Kp3r4C3z",
+        "focus": -0.47242770910067994,
+        "gap": 2.7485758996672303
+      },
+      "endBinding": {
+        "elementId": "PyZFhHkaUxFxo9zpw5eCH",
+        "focus": -0.7504196222011169,
+        "gap": 2.732175704168867
+      },
+      "startArrowhead": null,
+      "endArrowhead": "arrow",
+      "elbowed": false
+    },
+    {
+      "id": "AeFhmb-nS6FEHmUyNhCqN",
+      "type": "text",
+      "x": 1442.5963819187996,
+      "y": 1830.5190500959322,
+      "width": 675.8994750976562,
+      "height": 150,
+      "angle": 0,
+      "strokeColor": "#1e1e1e",
+      "backgroundColor": "transparent",
+      "fillStyle": "solid",
+      "strokeWidth": 1,
+      "strokeStyle": "solid",
+      "roughness": 1,
+      "opacity": 100,
+      "groupIds": [],
+      "frameId": null,
+      "index": "b1P",
+      "roundness": null,
+      "seed": 2015007650,
+      "version": 472,
+      "versionNonce": 1303615586,
+      "isDeleted": false,
+      "boundElements": null,
+      "updated": 1775680814833,
+      "link": null,
+      "locked": false,
+      "text": "For High Availability:\n    -- Each of microservices will have multiple instances running.\n    -- they will have their own load-balancers.\n    -- We have Dynamo DB for scaling and high availablity.\n    -- Redis cluster handles freq location updates with \"Geo-Hashing\".\n-- Below setup will be cloned and split based on regions. ",
+      "fontSize": 20,
+      "fontFamily": 5,
+      "textAlign": "left",
+      "verticalAlign": "top",
+      "containerId": null,
+      "originalText": "For High Availability:\n    -- Each of microservices will have multiple instances running.\n    -- they will have their own load-balancers.\n    -- We have Dynamo DB for scaling and high availablity.\n    -- Redis cluster handles freq location updates with \"Geo-Hashing\".\n-- Below setup will be cloned and split based on regions. ",
+      "autoResize": true,
+      "lineHeight": 1.25
     }
   ],
   "appState": {
