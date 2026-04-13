@@ -162,8 +162,8 @@
 [*] Surrounded Regions (Medium) => Reverse DFS exploration: use a DFS on boundary cells with 'O' -> explore nearby and find cells 'O' attached to it. Mark them as 'T' temporary. Rest all 'O' you update to 'X', this are surrounded regions for sure. Now loop and revert those 'T' back to 'O'. TC: O(M x N), each node visited just once.
 [*] Graph Valid Tree (Medium) [solved on neetcode] => Valid Tree cond: 1. There should be no loop. 2. All nodes must be connected. 3. valid edges must be totalnodes - 1. use BFS exploration with [currNode, parentNode], create a nodeMap, it's bidirectional so includes both curr -> next and next -> curr. Next for each node, explore and make sure it's not visited. include it's nei into the que if they are not it's immediate parent. At the end, all nodes must be visited.
 [ ] Number of Connected Components In An Undirected Graph (Medium)
-[ ] Redundant Connection (Medium)
-[ ] Word Ladder (Medium)
+[*] Redundant Connection (Medium) => [Cycle Detection] => DFS Appraoch: EXplore each node using DFS + AdjacencyMAp + VisitedSEt -> Mark cycleStart, which coming back in Recursion, put the nodes part of cycle in cycleSet. --> Iterate in edges (u,v) from reverse -> Find the (u,v) forming a loop.   Appraoch2: Using Disjoint-Set Union (UnionFind) -> A higher level DS which uses Path Compression + Union By Rank + Basically while buiding the edges, What if we somehow know, a path from u to v already exist and we arge again connecting them again. Thus a loop -> thus return it  [** Same TC: O(u+v) **] 
+[*] Word Ladder (Medium) => Pattern Based AdajList + BFS to find the shortest Path => Take a word, create pattern of it > use it as key and in values, add the words that matches it. We will know who all are the neighbours of the current node. -> Find a shortest Path using BFS from start node to end. TC: O(n * m^2) -> n is len of wordlist, m is the len of each word [This is because of building that adjacentList]
 
 ### Advanced Graph Problems: 
 [ ] Network Delay Time (Medium)
