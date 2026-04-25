@@ -161,14 +161,15 @@
 [*] Pacific Atlantic Water Flow (Medium) => Interesting piece: idea is, solve from the boundaries and see in reverse, where the water can climb till. maintain a set for pacific waters and atlantic waters. For each cell, use DFS exploration of neighbours and if it satisfies then add it to respective set. At the end collect and return those cell present in both pacific and atlantc.
 [*] Surrounded Regions (Medium) => Reverse DFS exploration: use a DFS on boundary cells with 'O' -> explore nearby and find cells 'O' attached to it. Mark them as 'T' temporary. Rest all 'O' you update to 'X', this are surrounded regions for sure. Now loop and revert those 'T' back to 'O'. TC: O(M x N), each node visited just once.
 [*] Graph Valid Tree (Medium) [solved on neetcode] => Valid Tree cond: 1. There should be no loop. 2. All nodes must be connected. 3. valid edges must be totalnodes - 1. use BFS exploration with [currNode, parentNode], create a nodeMap, it's bidirectional so includes both curr -> next and next -> curr. Next for each node, explore and make sure it's not visited. include it's nei into the que if they are not it's immediate parent. At the end, all nodes must be visited.
-[ ] Number of Connected Components In An Undirected Graph (Medium) [neesolved on neetcodetcode] => 
+[ ] Number of Connected Components In An Undirected Graph (Medium) [neesolved on neetcodetcode] => Logic1: You perfrom a DFS on all nodes, keep track of all ready visited nodes and count. Logic2: Union Find: use Parent & Rank, the no of times you perfrom union operation, decrement the no of componenets => this gives no of unconnected graphs.
+[ ] Number of Provinces (Medium) => On Leetcode, Solve using Union Find Approach. Similar to above problem.
 [*] Redundant Connection (Medium) => [Cycle Detection] => DFS Appraoch: EXplore each node using DFS + AdjacencyMAp + VisitedSEt -> Mark cycleStart, which coming back in Recursion, put the nodes part of cycle in cycleSet. --> Iterate in edges (u,v) from reverse -> Find the (u,v) forming a loop.   Appraoch2: Using Disjoint-Set Union (UnionFind) -> A higher level DS which uses Path Compression + Union By Rank + Basically while buiding the edges, What if we somehow know, a path from u to v already exist and we arge again connecting them again. Thus a loop -> thus return it  [** Same TC: O(u+v) **] 
 [*] Word Ladder (Medium) => Pattern Based AdajList + BFS to find the shortest Path => Take a word, create pattern of it > use it as key and in values, add the words that matches it. We will know who all are the neighbours of the current node. -> Find a shortest Path using BFS from start node to end. TC: O(n * m^2) -> n is len of wordlist, m is the len of each word [This is because of building that adjacentList]
 
 ### Advanced Graph Problems: 
-[ ] Network Delay Time (Medium)
-[ ] Min Cost to Connect All Points (Medium)
-[*] Cheapest Flights Within K Stops (Medium)
+[ ] Network Delay Time (Medium) => Dijkstar Algo -> Find the shortest path from src to dest => uses BFS with MinHeap to select the smallest path to travel. With adajMatrix, Start the heap with cost 0 and start node -> till heap exist, pull the top item -> if node already vistied skip it, else mark as visited, update minCost as the cost you got from top item in heap [would be smallest] -> then explore it's neighbours -> push in heap with the update total minCost Path that we have seen so far.  TC: O( E * log V)
+[ ] Min Cost to Connect All Points (Medium) => Problem is based on Minimum Spanning Tree [MSP] => Prim's Algo -> 1. Graph with n nodes can have maximum n-1 edges which doesn't form a cycle. 2. a node can connect to all other nodes, choose the edge with min cost. idea => create adajMatrix to track cost of all possible edges, a visited to keep track of visited points. A heap track the min edge cost for a point to all other point. -> Do this till we have vistited all points, keep track of the min edge cost in the process. TC: O(n2 * logn) -> n nodes can be interconnected to rest n-1 nodes in n^2 ways and logn is for insertion/pop operation of minheap.
+[*] Cheapest Flights Within K Stops (Medium) => Use Bellman Ford Algorithm => Basically for K stops, we run a loop k + 1 times, explore all edges, update price to reach each node per level basic -> this will give the short val to reach dst. [TC: O(E*K) -> E is total no of edges, K is the allowed stops.] Logic2: use a BFS Traversal with AdjacencyMatrix & Queue -> Iterate for max k + 1 times, Keep track of min Price to reach each node. TC: O(V + E*K) [****More Intuitive***]
 [ ] Reconstruct Itinerary (Hard)
 [ ] Swim In Rising Water (Hard)
 [ ] Alien Dictionary(Hard)
@@ -301,6 +302,50 @@
 			std::vector<int> v = {1, 2, 5};
 			std::vector<int> extra = {3, 4};
 			v.insert(v.begin() + 2, extra.begin(), extra.end()); // Inser a range inside vector =>  v = {1, 2, 3, 4, 5}
+
+
+## Notes on Graph Algorithms:
+	1. Bellman Ford Algorithm: 
+		- This Alogrithm is used find the shortest path between src and dst with some constaraint of K stops between.
+		- Dijkstar Algo can find the shortest path but we have this Constraint to take care of.
+		- Also, Bellman Fored Algorithm works even with negative weights. unlike Dijkstar Algorithm.
+		- Logic: For K stops, i.e loop for k + 1 times (since K + 1 edges will be there) -> update the price temp arr in each iteration if not inf and less than the defauult value -> use temp as updated price in next interation.
+		- Algorithm:
+			1. A Price arr with src set to 0 and rest others set to inf.
+			2. Now iterate a loop for K +1 times, create a tempArr to track the updated price for each iteration of all edges.
+			3. cond:
+				1. if the source is inf, i.e we haven,t reach to that node yet in any path -> ignore it.
+				2. Check if the new price -> price at src + price on the edge between src -> d is less that what priceArr holds. -> If yes, update in tmepArr.
+			4. After the first iteration finished:
+				- we have the min cost to reach all node from src with 0 step. --> Next iteration would the cost to reach each node with 1 stop.
+			5. At the end:
+				add a edgecase check, if the edge is inf -> we haven't able to reach to dist node from any path -> so -1 else price will have the min Price.
+
+		-> This actually BFS in a speacial way !!
+	
+	2. Dijkstar Algorithm:
+		- Find the shortest path between the nodes of a non-negative weighted graph !
+		- Algorithm idea, Pick the node with smallest known distance so far...
+		- steps:
+			1. Initialize the distance to source as 0 and other as inf.
+			2. use a priorityQueue or MinHeap.
+			3. Peak the node with minmium distance and explore it's neighbour !
+			4. update the distances to node if shortest path is found.
+	
+	3. Union Find:
+		- Very helpful to find, no of dis-connected nodes in a graph.
+		- works on compressing the graph path using path compression [Finding root parent] & Union [update parent & Rank]
+		-  you need 2 DS: Parent & Rank, need 2 methods: findRootParent [uses Path Compression] & Union [Update Parent & Rank].
+		- Algo: 
+			1. Parent Arr must be points to themselved. since, all node's parent is themselves. 
+			2. Rank is also set to 1 for all nodes. since they are all disconnected.
+			3. Define 2 methods:
+				1. findRootParent(n1)
+				2. union(n1, n2)
+			4. Iterate all edges, see if we can merge them or not.
+			5. keep track of the no of times we are performing union i.e compressing the graph.
+
+
 
 
 
